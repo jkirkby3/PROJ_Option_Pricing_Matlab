@@ -1,4 +1,4 @@
-# PROJ_Option_Pricing_Matlab
+# Option Pricing PROJ Method (Exotic/Vanilla Options)
 Option pricing libraries (Matlab) based on the PROJ method (short for Frame Projection), an efficient and general Fourier transform based option pricing framework for Vanilla and Exotic options. The modules are organized by Model, and then by contract type. Each contract has a run script, which starts with "Script_", e.g. "Script_BarrierOptions.m".
 
 <b>Contract types suppoerted:</b>
