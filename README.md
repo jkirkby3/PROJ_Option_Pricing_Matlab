@@ -63,6 +63,9 @@ These pricing libraries have been built in collaboration with:
   </li>
   <li> <a href="https://www.researchgate.net/publication/330401656_Continuous-Time_Markov_Chain_and_Regime_Switching_Approximations_with_Applications_to_Options_Pricing"> Continuous-Time Markov Chain and Regime Switching Approximations with Applications to Options Pricing. IMA Volumes on Mathematics (2019)</a> 
   </li>
+  <li>
+    <a href="https://smartech.gatech.edu/bitstream/handle/1853/59138/KIRKBY-DISSERTATION-2016.pdf"> Frame and Fourier Methods for Exotic Option Pricing and Hedging. Georgia Institute of Technology (2016). </a>
+  </li>
 </ul>
 
 
