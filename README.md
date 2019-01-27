@@ -21,7 +21,7 @@ Option pricing (exotic/vanilla derivatives) based on an efficient and general Fo
 <ul>
   <li> Diffusions (Black-Scholes-Merton) </li>
   <li> Jump Diffusions (Merton Jump, Kou double exponential, Mixed-Normal)  </li>
-  <li> General Levy processes (CGMY/KoBoL, Meixner, Variance Gamma) </li>
+  <li> General Levy processes (CGMY/KoBoL, Normal-Inverse-Gaussian (NIG), Variance Gamma, Meixner) </li>
   <li> Regime switching jump diffusions </li>
   <li> Time-changed processes </li>
   <li> Stochastic Volatility (Heston/Bates, Hull-White, 4/2, 3/2, alpha-hypergeometric, Jacobi, Schobel-Zhu, Stein-Stein, Scott, tau/2)   </li>
