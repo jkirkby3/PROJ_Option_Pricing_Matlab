@@ -1,7 +1,7 @@
 # Option Pricing PROJ Method (Exotic/Vanilla Options)
 Option pricing (exotic/vanilla derivatives) based on an efficient and general Fourier transform pricing framework - the PROJ method (short for Frame Projection). The modules are organized by Model, and then by contract type. Each contract has a run script, which starts with "Script_", e.g. "Script_BarrierOptions.m".
 
-<b>Contract types suppoerted:</b>
+<b>Contract types supported:</b>
 <ul>
   <li> European Options </li>
   <li> Barrier Options (Single/Double barrier, with early excercise, and rebates) </li>
@@ -26,4 +26,22 @@ Option pricing (exotic/vanilla derivatives) based on an efficient and general Fo
   <li> Time-changed processes </li>
   <li> Stochastic Volatility (Heston/Bates, Hull-White, 4/2, 3/2, alpha-hypergeometric, Jacobi, Schobel-Zhu, Stein-Stein, Scott, tau/2)   </li>
 </ul>
+
+<b>Acknowledgement:</b>
+These pricing methods libraries have been built in collaboration with
+<ul>
+  <li> <a href="https://www.researchgate.net/profile/Justin_Kirkby"> Justin Lars Kirkby </a> </li>
+  <li><a href="https://www.researchgate.net/profile/Duy_Nguyen125">Duy Nguyen </a> </li>
+  <li><a href="https://www.researchgate.net/profile/Zhenyu_Cui"> Zhenyu Cui </a> </li>
+  <li><a href="https://www2.isye.gatech.edu/people/faculty/Shijie_Deng/"> Shijie Deng </a> </li>
+ </ul>
+
+<b> Supporting Research Articles: </b>
+<ul>
+  <li> 
+    <a href="https://www.researchgate.net/publication/271529024_Efficient_Option_Pricing_by_Frame_Duality_with_the_Fast_Fourier_Transform"> Efficient Option Pricing by Frame Duality with the Fast Fourier Transform, SIAM J. Financial Math (2015)</a>
+    </li>
+  <li> <a href=""> </a> </li>
+</ul>
+
 
