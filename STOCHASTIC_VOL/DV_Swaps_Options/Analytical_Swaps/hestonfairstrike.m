@@ -1,0 +1,22 @@
+function [KdH, KcH] = hestonfairstrike(r, V0, theta, kappa, gamma, T, rho, n)
+% From C. Bernard and Z. Cui, Prices and Asymptotics for Discrete Variance
+% Swaps, Applied Mathematical Finance 2014, 21(2), 140-173
+
+%%%%%% for Heston - Proposition 3.1 %%%%%%
+KcH=continuousstrikeHeston(theta,T,kappa,V0);
+KdH=discreteHeston(n, rho, r, kappa,theta,gamma,T,V0);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Proposition 3.1 %%%%%%%%%
+function K=continuousstrikeHeston(theta,T,kappa,V0)
+    % Expected integral of Vs between 0 and T
+    % need to be divided by T
+    K=(theta*T+(1-exp(-kappa*T))*(V0-theta)/kappa)/T;
+end
+
+function Kd=discreteHeston(n, rho, r, kappa,theta,gamma,T,V0)
+    % sum of E[ln(S_{ti+1}/S_{ti})^2] for i=0 to n, such that ti=i*T/n Vs 
+    Kd=(1/(8*T))*((2*n*V0^2*kappa*exp(2*T*kappa/n)+8*rho*kappa*gamma*V0*n-4*theta^2*T*kappa^2*exp(2*T*kappa/n)+2*gamma^2*theta*exp(2*T*kappa/n)*T*kappa*n-3*theta*gamma^2*n*exp(2*T*kappa/n)-8*kappa^2*theta*n*exp(2*T*kappa/n)-8*rho*kappa*gamma*exp(-T*kappa)*n*V0-8*kappa^2*exp(-T*kappa*(n-2)/n)*V0*n+4*exp(-T*kappa*(n-2)/n)*theta^2*T*kappa^2+2*gamma^2*exp(-2*T*kappa)*n*V0-4*theta*V0*T*kappa^2+8*kappa^2*exp(-T*kappa)*n*V0+8*kappa^2*V0*n*exp(2*T*kappa/n)+4*exp(-T*kappa*(2*n-1)/n)*n*V0^2*kappa+8*rho*kappa^2*gamma*exp(-T*kappa*(n-1)/n)*theta*T+8*kappa^2*n*theta-8*rho*kappa*gamma*theta*n^2+2*gamma^2*exp(-T*kappa*(2*n-1)/n)*n*theta-8*kappa^2*n*V0-4*theta*V0*n*kappa-2*kappa^3*theta^2*T^2-gamma^2*exp(-2*T*kappa*(n-1)/n)*n*theta-4*exp(-T*kappa)*theta^2*T*kappa^2-4*V0*gamma^2*T*kappa+8*kappa^2*T*r*V0*exp(-T*kappa*(n-2)/n)+8*rho*kappa*gamma*theta*n*exp(2*T*kappa/n)-2*exp(2*T*kappa/n)*n^2*theta*gamma^2+8*rho*kappa^2*gamma*exp(-T*kappa)*theta*T+8*kappa^2*T*r*theta*exp(-T*kappa)+4*exp(-T*kappa)*theta*V0*T*kappa^2+4*gamma^2*exp(-T*kappa)*V0*T*kappa-4*exp(T*kappa/n)*theta^2*n*kappa-4*exp(T*kappa/n)*n*V0^2*kappa-4*exp(-T*kappa*(n-2)/n)*theta*V0*T*kappa^2+8*rho*kappa*gamma*exp(-T*kappa*(n-2)/n)*V0*n-8*kappa^2*exp(-T*kappa)*n*theta+8*rho*kappa^2*gamma*theta*T*n-8*kappa^2*T*r*V0*exp(2*T*kappa/n)-8*rho*kappa^2*gamma*exp(-T*kappa*(n-1)/n)*V0*T+4*theta*gamma^2*T*exp(T*kappa/n)*kappa-4*V0*gamma^2*T*exp(T*kappa/n)*kappa-4*gamma^2*exp(-T*kappa)*n*theta-4*gamma^2*exp(-T*kappa)*theta*T*kappa-4*n*theta*V0*kappa*exp(2*T*kappa/n)+4*theta*V0*T*kappa^2*exp(2*T*kappa/n)+8*kappa^3*n*theta*T*exp(2*T*kappa/n)+2*n^2*theta*gamma^2-8*rho*kappa*gamma*V0*n*exp(2*T*kappa/n)+8*kappa^3*T^2*r*theta-8*kappa^2*T*r*theta-8*rho*kappa*gamma*theta*exp(T*kappa/n)*n^2+8*kappa^2*T*r*V0-8*rho*kappa^2*gamma*theta*exp(2*T*kappa/n)*T*n+4*exp(-T*kappa*(2*n-1)/n)*n*theta^2*kappa+8*kappa^2*exp(-T*kappa*(n-2)/n)*theta*n-2*exp(-2*T*kappa)*n*V0^2*kappa-2*exp(-2*T*kappa*(n-1)/n)*n*V0^2*kappa-2*exp(-2*T*kappa*(n-1)/n)*n*kappa*theta^2+4*V0*gamma^2*n*exp(T*kappa/n)-2*theta*gamma^2*n*exp(T*kappa/n)-2*exp(-2*T*kappa)*n*kappa*theta^2-2*gamma^2*theta*exp(-T*kappa/n)*n^2+2*n*kappa*theta^2*exp(2*T*kappa/n)+2*V0*gamma^2*n*exp(2*T*kappa/n)+4*gamma^2*exp(-T*kappa*(n-2)/n)*theta*n-8*rho*kappa*gamma*exp(-T*kappa*(n-2)/n)*theta*n-8*rho*kappa*gamma*n*theta-4*gamma^2*exp(-T*kappa*(2*n-1)/n)*n*V0+4*gamma^2*exp(-T*kappa*(n-1)/n)*V0*T*kappa+2*gamma^2*exp(-2*T*kappa*(n-1)/n)*n*V0-gamma^2*exp(-2*T*kappa)*n*theta+8*rho*kappa^2*gamma*V0*T*exp(T*kappa/n)-8*rho*kappa^2*gamma*exp(-T*kappa)*V0*T-8*kappa^2*T*r*V0*exp(-T*kappa)-8*rho*kappa^2*gamma*theta*T*exp(T*kappa/n)-8*rho*kappa^2*gamma*theta*T+8*rho*kappa^2*gamma*V0*T+4*theta^2*T*kappa^2+4*gamma^2*exp(-T*kappa)*n*V0-8*T^2*kappa^3*r^2-8*kappa^3*T^2*r*theta*exp(2*T*kappa/n)+2*n^2*theta*gamma^2*exp(T*kappa/n)+2*theta^2*exp(2*T*kappa/n)*T^2*kappa^3-8*kappa^3*n*theta*T+8*exp(T*kappa/n)*theta*V0*n*kappa+2*theta^2*n*kappa-4*gamma^2*exp(-T*kappa*(n-1)/n)*theta*T*kappa+8*kappa^2*T*r*theta*exp(2*T*kappa/n)+8*rho*kappa*gamma*theta*exp(-T*kappa/n)*n^2-2*n*theta*gamma^2*kappa*T+8*T^2*kappa^3*r^2*exp(2*T*kappa/n)+2*n*V0^2*kappa+5*n*theta*gamma^2-6*n*V0*gamma^2+4*exp(-2*T*kappa*(n-1)/n)*n*theta*V0*kappa+8*rho*kappa*gamma*exp(-T*kappa)*n*theta-8*exp(-T*kappa*(2*n-1)/n)*n*theta*V0*kappa+4*exp(-2*T*kappa)*n*theta*V0*kappa-8*kappa^2*T*r*theta*exp(-T*kappa*(n-2)/n)+4*theta*gamma^2*T*kappa-4*gamma^2*exp(-T*kappa*(n-2)/n)*V0*n+8*rho*kappa*gamma*theta*exp(2*T*kappa/n)*n^2)/(kappa^3*n*(exp(2*T*kappa/n)-1)));
+end
+
+
+end
