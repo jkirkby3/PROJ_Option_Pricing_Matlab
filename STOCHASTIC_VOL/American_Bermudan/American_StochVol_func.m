@@ -70,176 +70,22 @@ Gs(1:nbar)      = W - Gs(1:nbar); %For American options (otherwise no need for G
 %%%% Intialize Q matrix and variance set
 %%%%////////////////////////////////////////////////////////
 t = T/2;
+[lx, ux] = get_variance_grid_boundaries( model, modparam, t, gamma);
 
-if model == 1 %HESTON  (eta, theta, Rho, Sigmav, v0)
-    eta = modparam.eta; theta = modparam.theta; Rho = modparam.rho; Sigmav = modparam.Sigmav; v0 = modparam.v0; 
-    mu_func  = @(v)eta*(theta-v);  %variance process drift
-    sig_func = @(v)Sigmav*sqrt(v); %variance process vol
-    
-    mu_H = exp(-eta*t)*v0 + theta*(1-exp(-eta*t));
-    sig2_H = Sigmav^2/eta*v0*(exp(-eta*t)-exp(-2*eta*t)) +theta*Sigmav^2/(2*eta)*(1-exp(-eta*t)+exp(-2*eta*t));
-    
-elseif model == 2 || model == 6 %STEIN STEIN / SCOTT (eta, theta, Rho, Sigmav, v0)
-    eta = modparam.eta; theta = modparam.theta; Rho = modparam.rho; Sigmav = modparam.Sigmav; v0 = modparam.v0;
-    mu_func  = @(v)eta*(theta-v);
-    sig_func = @(v)Sigmav*(v>-100); %note the (v>-100) just ensures that sig_func returns a vector
-    
-    mu_H = exp(-eta*t)*v0 + theta*(1-exp(-eta*t));
-    sig2_H = Sigmav^2/(2*eta)*(1 -exp(-2*eta*t));
-    
-elseif model == 3 % 3/2 MODEL
-    %Transform to parameters that can be use in 4/2 model
-    eta = modparam.eta*modparam.theta;
-    theta = (modparam.eta + modparam.Sigmav^2)/eta;
-    Sigmav = -modparam.Sigmav;
-    v0 = 1/modparam.v0;
-    Rho = modparam.rho;
-    aa = 0; bb = 1; %Now use the 4/2 Model:
-    
-    mu_func  = @(v)eta*(theta-v);
-    sig_func = @(v)Sigmav*sqrt(v);
-    
-    mu_H = exp(-eta*t)*v0 + theta*(1-exp(-eta*t));
-    sig2_H = Sigmav^2/eta*v0*(exp(-eta*t)-exp(-2*eta*t)) +theta*Sigmav^2/(2*eta)*(1-exp(-eta*t)+exp(-2*eta*t));
-    
-elseif model == 4 % 4/2 MODEL (aa,bb, eta,theta, Rho, Sigmav, v0)
-    eta = modparam.eta; theta = modparam.theta; Rho = modparam.rho; Sigmav = modparam.Sigmav; v0 = modparam.v0;
-    aa = modparam.aa; bb = modparam.bb;
-    
-    mu_func  = @(v)eta*(theta-v);
-    sig_func = @(v)Sigmav*sqrt(v);
-    
-    mu_H = exp(-eta*t)*v0 + theta*(1-exp(-eta*t));
-    sig2_H = Sigmav^2/eta*v0*(exp(-eta*t)-exp(-2*eta*t)) +theta*Sigmav^2/(2*eta)*(1-exp(-eta*t)+exp(-2*eta*t));
-    
-elseif model == 5 % Hull White Model  (av, Rho, Sigmav, v0)
-    Rho = modparam.rho; Sigmav = modparam.Sigmav; v0 = modparam.v0; av = modparam.av;
-    
-    mu_func  = @(v)av*v;
-    sig_func = @(v)Sigmav*v;
-    
-    mu_H = v0*exp(av*t);
-    sig2_H = v0^2*exp(2*av*t)*(exp(Sigmav^2*t)-1);
-elseif model == 7 % alpha-Hypergeometric
-%      %%% Commented Version is With the Second Formultion
-%     Rho = modparam.rho; Sigmav = modparam.Sigmav; v0 = modparam.v0; alphav = modparam.alphav; av = modparam.av; bv = modparam.bv;
-%     
-%     mu_func = @(v)2*(a+Sigmav^2)*v - 2*bv*v.^(1+alphav/2);
-%     sig_func = @(v)2*Sigmav*v;
-%     
-%     Av     = 2*(av + Sigmav^2 - (v0)^(alphav/2)); 
-%     mu_H   = v0*exp(Av*t);
-%     sig2_H = v0^2*exp(2*av*t)*(exp((2*Sigmav)^2*t)-1);
-    Rho = modparam.rho; Sigmav = modparam.Sigmav; v0 = modparam.v0; eta = modparam.eta; av = modparam.av; theta = modparam.theta;
-    mu_func = @(v)eta - theta*exp(av*v);
-    sig_func = @(v)Sigmav*(v>-100);
-    
-    %%% Estimate Mean and Variance Using Stein Stein and First order approx
-    EtaBar = theta*av*exp(av*v0); ThetaBar = (eta - theta*exp(av*v0)*(1-av*v0))/EtaBar;
-    mu_H = exp(-EtaBar*t)*v0 + ThetaBar*(1-exp(-EtaBar*t));
-    %mu_H = v0;
-    sig2_H = Sigmav^2/(2*EtaBar)*(1 -exp(-2*EtaBar*t));
-    
-elseif model == 8 % JACOBI
-    Rho = modparam.rho; Sigmav = modparam.Sigmav; v0 = modparam.v0; eta = modparam.eta; theta = modparam.theta; vmin = modparam.vmin; vmax = modparam.vmax;
-    %Qfunc = @(v) (v - vmin).*(vmax - v)/denomQ;
-    %Qsqrt = @(v) sqrt((v - vmin).*(vmax - v)/denomQ);
-    denomQ = (sqrt(vmax) - sqrt(vmin))^2;
-    mu_func  = @(u) eta*(theta - u);
-    sig_func = @(u) Sigmav/sqrt(denomQ)*sqrt((u - vmin).*(vmax - u));
-end
-
-%%% Determine Variance Grids
-if model == 8 %JACOBI
-    lx = vmin ; %For now (but maybe make it a little bigger than vmin, so vol doesnt hit zero)
-    ux = vmax; %For now
-else
-    if model == 2 %For Stein-Stein, more sensitive
-        lx = max(0.01,mu_H - gamma*sqrt(sig2_H));  %variance grid lower bound
-    elseif model == 6 || model == 7   %For Scott/alpha-Hyper, allow lx negative
-        lx = mu_H - gamma*sqrt(sig2_H);
-    else
-        lx = max(0.00001,mu_H - gamma*sqrt(sig2_H));  %variance grid lower bound
-    end
-    ux = mu_H + gamma*sqrt(sig2_H);  %variance grid upper bound
-end
-
+[mu_func,  sig_func] = get_SV_variance_grid_diffusion_funcs( model,  modparam);
 boundaryMethod = 1;
+v0 = modparam.v0;
 center = v0; %this is where grid clusters... we can experiment with other choices.. 
+
 [Q,v]  = Q_Matrix_AllForms(m_0,mu_func,sig_func,lx,ux,gridMethod, gridMultParam, center, boundaryMethod);
-
-
-% GridMultParam = 0.2;
-% [Q,v]  = General_Q_Matrix_Newest(m_0,mu_func,sig_func,lx,ux,gridMethod,center, GridMultParam);
 
 %%%%////////////////////////////////////////////////////////
 %%%% Populate the Matrix Exponentials
 %%%%////////////////////////////////////////////////////////
-
 dxi    = 2*pi*a/N;
 xi     = dxi*(0:N-1)';  
 
-if model == 1 %HESTON
-    c1 = (Rho*eta/Sigmav - .5);  c2 = (r - Rho*eta*theta/Sigmav);   c3 = .5*(1-Rho^2);
-    v1 = dt*1i*(c1*v + c2 - psi_J(-1i));  %Note: we now have the compensated jump component
-    v2 = dt*c3*v;
-    fv = (1i*dxi*Rho/Sigmav)*v;
-    
-elseif model == 2 %STEIN STEIN
-    c1 = Rho*eta/Sigmav - .5;  c2 = Rho*eta*theta/Sigmav;  c3 = r  - psi_J(-1i) - Rho*Sigmav/2; 
-    vsq = v.^2;
-    v1 = dt*1i*(c1*vsq - c2*v + c3);
-    v2 = dt*.5*vsq*(1-Rho^2);
-    fv = (1i*dxi*.5*Rho/Sigmav)*vsq;
-    
-elseif model == 3 || model  == 4 % 3/2 or 4/2 Model  (3/2 uses transformation then applies 4/2)
-    c1 = aa*Rho*eta/Sigmav - .5*aa^2; c2 = .5*(Rho*bb*Sigmav-bb^2) - bb*Rho*eta*theta/Sigmav;
-    c3 = Rho*eta/Sigmav*(bb-aa*theta) + r - psi_J(-1i) - aa*bb; 
-    sqrtv = sqrt(v);
-    v1 = dt*1i*(c1*v + c2./v + c3);
-    v2 = dt*.5*(1-Rho^2)*(aa*sqrtv + bb./sqrtv).^2;
-    fv = (1i*dxi*Rho/Sigmav)*(aa*v + bb*log(v));
-
-elseif model == 5 % Hull White Model
-    c1 = .25*Rho*Sigmav - av*Rho/Sigmav;  c2 = .5;  c3 = r - psi_J(-1i);
-    sqrtv = sqrt(v);
-    v1 = dt*1i*(c1*sqrtv - c2*v + c3);
-    v2 = dt*.5*(1-Rho^2)*v;
-    fv = 1i*dxi*2*Rho/Sigmav*sqrtv;
-elseif model == 6 % Scott
-    c1v = Rho*(eta/Sigmav*(v - theta)-Sigmav/2);  %Note: this depends on v
-    c2 = .5; c3 = r - psi_J(-1i);
-    expv = exp(v); expv2 = expv.^2;
-    v1 = dt*1i*(c1v.*expv - c2*expv2 + c3);
-    v2 = dt*.5*(1-Rho^2)*expv2;
-    fv = 1i*dxi*Rho/Sigmav*expv;
-elseif model == 7 % alpha-Hypergeometric
-    %%% Commented Version is With the Second Formultion
-%     c1 = (Rho*Sigmav*.5 - Rho*(av + Sigmav)/Sigmav);
-%     c2 = .5; c3 = Rho*bv/Sigmav; c4 = r - psi_J(-1i);
-%     sqrtv = sqrt(v);
-%     v1 = dt*1i*(c1*sqrtv  - c2*v + c3*v.^(1+alphav)/2 + c4 );
-%     v2 = dt*.5*(1-Rho^2)*v;
-%     fv = 1i*dxi*Rho/Sigmav*sqrtv;
-
-    c1 = Rho*theta/Sigmav;
-    c2 = Rho*(eta/Sigmav + Sigmav/2); c3 = .5; c4 = r - psi_J(-1i);
-    expv = exp(v); expv2 = expv.^2;
-    v1 = dt*1i*(c1*exp((1+av)*v) - c2*expv - c3*expv2 + c4);
-    v2 = dt*.5*(1-Rho^2)*expv2;
-    fv = 1i*dxi*Rho/Sigmav*expv;
-elseif model == 8 % JACOBI
-%     c1 = (Rho*eta/Sigmav - .5);  c2 = (r - Rho*eta*theta/Sigmav);   c3 = .5*(1-Rho^2);
-%     v1 = dt*1i*(c1*v + c2 - psi_J(-1i));  %Note: we now have the compensated jump component
-%     v2 = dt*c3*v;
-    c1 = r - Rho*eta*theta/Sigmav - psi_J(-1i);
-    c2 = Rho*eta/Sigmav - 0.5;
-
-    v1 = dt*1i*(c1 + v*c2);
-    v2 = dt*.5*(v - Rho^2/denomQ*(v - vmin).*(vmax - v));
-    fv = (1i*dxi*Rho/Sigmav)*v;
-end
-
+[v1, v2, fv] = get_SV_matrix_expo_inputs( model,  modparam, psi_J, dt, v, dxi, r);
 EXP_A = get_SV_matrix_exponential( Q, dt, xi, v1, v2, fv, psi_J, m_0, N );
 
 %%%%////////////////////////////////////////////////////////
