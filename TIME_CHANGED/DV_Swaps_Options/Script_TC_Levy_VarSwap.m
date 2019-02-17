@@ -1,7 +1,13 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Test Script For Variance Swaps under Time-Changed Markov Models
-% This example is a time-changed representation of Heston's model
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Variance Swaps - Time Changed Heston Option Pricer (This example is a time-changed representation of Heston's model)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Descritpion: Script to Price Discrete Variance Swap under Hestons Model
+% Author:      Justin Kirkby
+% References:  (1) A General Framework for tim changed Markov Processes and Applications
+%              European J. Operational research, 2018
+%              (2) Efficient Option Pricing By Frame Duality with The Fast
+%              Fourier Transform, SIAM J. Financial Math., 2015
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 [folder, name, ext] = fileparts(which( mfilename('fullpath')));
 cd(folder);
 

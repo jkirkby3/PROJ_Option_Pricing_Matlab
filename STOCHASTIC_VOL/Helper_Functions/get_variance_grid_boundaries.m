@@ -1,4 +1,4 @@
-function [lx, ux] = get_variance_grid_boundaries( model, modparam, t, gamma)
+function [lx, v0, ux] = get_variance_grid_boundaries( model, modparam, t, gamma)
 % Retrive lower and upper boundaries for variance grid, based on first two moments of variance process
 % model : see below
 % modparam : container with each of the model parameters required
@@ -66,6 +66,7 @@ else
     end
     ux = mu_H + gamma*sqrt(sig2_H);  %variance grid upper bound
 end
+
 
 end
 

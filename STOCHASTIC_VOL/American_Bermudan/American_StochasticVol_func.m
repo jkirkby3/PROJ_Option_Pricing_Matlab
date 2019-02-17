@@ -1,4 +1,4 @@
-function price = American_StochVol_func( N,alph,M,r,T,S_0,W,m_0,psi_J,model, modparam, gridMethod, gamma, gridMultParam)
+function price = American_StochasticVol_func( N,alph,M,r,T,S_0,W,m_0,psi_J,model, modparam, gridMethod, gamma, gridMultParam)
 %  American PUT Option
 %-----------------------------
 % N  : size of density grid (value grid is K:=N/2)
@@ -70,11 +70,11 @@ Gs(1:nbar)      = W - Gs(1:nbar); %For American options (otherwise no need for G
 %%%% Intialize Q matrix and variance set
 %%%%////////////////////////////////////////////////////////
 t = T/2;
-[lx, ux] = get_variance_grid_boundaries( model, modparam, t, gamma);
+[lx, v0, ux] = get_variance_grid_boundaries( model, modparam, t, gamma);
 
 [mu_func,  sig_func] = get_SV_variance_grid_diffusion_funcs( model,  modparam);
 boundaryMethod = 1;
-v0 = modparam.v0;
+
 center = v0; %this is where grid clusters... we can experiment with other choices.. 
 
 [Q,v]  = Q_Matrix_AllForms(m_0,mu_func,sig_func,lx,ux,gridMethod, gridMultParam, center, boundaryMethod);

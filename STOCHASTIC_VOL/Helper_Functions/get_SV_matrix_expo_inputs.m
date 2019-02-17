@@ -1,5 +1,5 @@
 function [ v1, v2, fv] = get_SV_matrix_expo_inputs( model,  modparam, psi_J, dt, v, dxi, r)
-% 
+
 if model == 1 %HESTON  (eta, theta, Rho, Sigmav, v0)
     eta = modparam.eta; theta = modparam.theta; Rho = modparam.rho; Sigmav = modparam.Sigmav;
 

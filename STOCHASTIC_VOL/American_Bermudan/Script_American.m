@@ -17,18 +17,18 @@ addpath('../Helper_Functions')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-S_0 = 50;
-W   = 55;  %strike
+S_0 = 100;
+W   = 100;  %strike
 r   = 0.05; 
-T   = .25;
-M   = 80;
+T   = 0.5;
+M   = 50;
 
 %%%----------------------------
 N    = 2^10;    %number of points in density expansion... Value grid size is K:=N/2
 alph = 6;  %density projection grid on [-alpha,alpha]
 %%%----------------------------
-m_0           = 40;
-gamma         = 4.5;
+m_0           = 50;
+gamma         = 3.3;
 gridMethod    = 4;
 gridMultParam = 0.2;
 
@@ -115,11 +115,11 @@ elseif model == 3
     %%%=============================================================
     %%% 3/2 MODEL  Parameters
     %%%=============================================================
-    modparam.Sigmav = 0.10; 
-    modparam.eta    = 3; 
-    modparam.rho    = -0.7; 
-    modparam.theta  = 0.04; 
-    modparam.v0     = 0.04 ;
+    modparam.Sigmav = 0.15; 
+    modparam.eta    = 4; 
+    modparam.rho    = -0.6; 
+    modparam.theta  = 0.03; 
+    modparam.v0     = 0.03;
     
 elseif model == 4
     %%%=============================================================
@@ -168,7 +168,7 @@ end
 %%% PRICE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tic
-price = American_StochVol_func( N,alph,M,r,T,S_0,W,m_0,psi_J,model, modparam, gridMethod, gamma, gridMultParam);
+price = American_StochasticVol_func( N,alph,M,r,T,S_0,W,m_0,psi_J,model, modparam, gridMethod, gamma, gridMultParam);
 toc
 fprintf('%.8f \n', price)
 

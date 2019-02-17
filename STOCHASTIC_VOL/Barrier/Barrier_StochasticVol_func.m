@@ -1,4 +1,4 @@
-function price = Barrier_StochVol_func(N,alph,call,down,S_0,W,H,M,r,T,m_0,psi_J,model, modparam, gridMethod, gamma, gridMultParam)
+function price = Barrier_StochasticVol_func(N,alph,call,down,S_0,W,H,M,r,T,m_0,psi_J,model, modparam, gridMethod, gamma, gridMultParam)
 %-----------------------------
 % H  : Barrier (either up and out, or down and out... No double barrier yet
 % call : 1 for a call, else a put (easily can add digitals, etc)
@@ -61,11 +61,10 @@ zeta  = a*rho;
 %%%%////////////////////////////////////////////////////////
 
 t = T/2;
-[lx, ux] = get_variance_grid_boundaries( model, modparam, t, gamma);
+[lx, v0, ux] = get_variance_grid_boundaries( model, modparam, t, gamma);
 
 [ mu_func,  sig_func] = get_SV_variance_grid_diffusion_funcs( model,  modparam);
 boundaryMethod = 1;
-v0 = modparam.v0;
 center = v0; %this is where grid clusters... we can experiment with other choices.. 
 
 [Q,v]  = Q_Matrix_AllForms(m_0,mu_func,sig_func,lx,ux,gridMethod, gridMultParam, center, boundaryMethod);

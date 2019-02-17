@@ -38,7 +38,7 @@ gridMethod = 4;     % Determines the grid method... 4 is a good choice
 %%%========================
 %%%% Select Stochastic Volatility Model
 %%%========================
-model = 2;    % 1 = Heston (output compares with analytical)
+model = 1;    % 1 = Heston (output compares with analytical)
               % 2 = Stein-Stein
               % 3 = 3/2 Model
               % 4 = 4/2 Model
@@ -171,7 +171,7 @@ end
 %   PRICE CONTACT
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 alph = GetAlph_DisreteVariance( c2Jump, c4Jump, model, modparam, T, L1 );
-PROJ_Price = DiscreteVariance_PROJ( N,alph,M,r,T,K,m_0,psi_J, model, modparam, gridMethod, gamma, varGridMult, contract );
+PROJ_Price = DiscreteVariance_StochasticVol_PROJ( N,alph,M,r,T,K,m_0,psi_J, model, modparam, gridMethod, gamma, varGridMult, contract );
 fprintf('PROJ Price: %.8f \n', PROJ_Price)
 
 %%% In the special cases where analytic prices are known, also print the error
