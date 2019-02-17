@@ -1,43 +1,33 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Barrier Option Pricier
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Descritpion: Script to Price Barrier Options in Stochastic volatility models (with jumps)
-%              using the PROJ method
+% Descritpion: Script to Price European options under Stochastic Volatility Models (with Jumps) using Monte Carlo simulation
 % Author:      Justin Kirkby
-% References:  (1) A unified approach to Bermudan and Barrier options under stochastic
+% For more details on these models see:
+%          (1) A General Framework for discretely sampled realized
+%              variance derivatives in stocahstic volatility models with
+%              jumps, EJOR, 2017
+%          (2) A unified approach to Bermudan and Barrier options under stochastic
 %               volatility models with jumps. J. Economic Dynamics and Control, 2017
-%              (2) Robust barrier option pricing by Frame Projection under
-%               exponential Levy Dynamics. Applied Mathematical Finance, 2018.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 [folder, name, ext] = fileparts(which( mfilename('fullpath')));
 cd(folder);
-addpath('../Helper_Functions')
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-S_0  = 55;
-W    = 55;  %strike
-r    = 0.05; 
-T    = .25;
-M    = 80;
+addpath('../')
 
-call = 1;
-down = 1;
-H    = 50;
-
-%%%----------------------------
-N    = 2^10;    %number of points in density expansion... Value grid size is K:=N/2
-alph = 6;  %density projection grid on [-alpha,alpha]
-%%%----------------------------
-m_0           = 30;  % number of CTMC grid points
-gamma         = 3.3;  % CTMC grid width param
-gridMethod    = 4;
-gridMultParam = 0.2;
+% ---------------------
+%  Contract/Market Params
+% ---------------------
+call = 1;    %For call use 1 (else, its a put)
+S_0  = 100;  %Initial price
+r    = .05;  %Interest rate
+q    = .00;  %dividend yield
+T    = 1;    %Time (in years)
+Kvec = [95 100 105];
 
 %%%========================
 %%%% Select Stochastic Volatility Model
 %%%========================
-model = 3;    % 1 = Heston (output compares with analytical)
+model = 1;    % 1 = Heston (output compares with analytical)
               % 2 = Stein-Stein
               % 3 = 3/2 Model
               % 4 = 4/2 Model
@@ -51,44 +41,45 @@ model = 3;    % 1 = Heston (output compares with analytical)
 jumpModel = 0;    % 0 = No Jumps 
                   % 1 = Normal Jumps
                   % 2 = Double Exponential Jumps
+                  % 3 = Mixed normal Jumps
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  Jump Model Parameters
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ---------------------
+% Sim Params
+% ---------------------
+N_sim = 10^4;
+M = 500;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 jumpParams = {};
 
-if jumpModel == 0    %%%%% NO Jumps
-    jumpParams.Nothing = 0;
-    psi_J = @(u)0*[u>0];
+if jumpModel == 1 %Normal Jumps, e.g. Merton
+    lambda = 1;  
+    muJ = -.10; 
+    sigJ = 0.3;
     
-    c2Jump = 0;
-    c4Jump = 0;
-    
-elseif jumpModel == 1  %%%% Normal Jumps
-    lambda = 1;  muJ = -.12;  sigJ = 0.15;
-    
-    jumpParams.kappa = exp(muJ + .5*sigJ^2)-1;
-    jumpParams.lambda = lambda; jumpParams.muJ = muJ; jumpParams.sigJ = sigJ;
-    psi_J = @(u) lambda*(exp(1i*u*muJ - .5*sigJ^2*u.^2)-1);    
-    
-    c2Jump = lambda*(muJ^2 +sigJ^2); %2nd cumulant of jump component
-    c4Jump = lambda*(muJ^4 + 6*sigJ^2*muJ^2+3*sigJ^4*lambda);    
-    
-elseif jumpModel == 2 %%%% DE Jumps
+    jumpParams.kappa = exp(muJ + .5*sigJ^2)-1;  jumpParams.lambda = lambda; jumpParams.muJ = muJ; jumpParams.sigJ = sigJ;
+
+elseif jumpModel == 2 %Double Exponenial Jumps     
     lambda = 1;
     p_up   = 0.5; % up jump probability    
     eta1   = 25;
     eta2   = 30;
     
     kappa  = p_up*eta1/(eta1-1)+(1-p_up)*eta2/(eta2+1)-1;
-    jumpParams.lambda = lambda; jumpParams.kappa = kappa; jumpParams.eta1 = eta1; jumpParams.eta2 = eta2; jumpParams.p_up = p_up;     
-    psi_J = @(u) lambda*(p_up*eta1./(eta1-1i*u) + (1-p_up)*eta2./(eta2+1i*u) -1) ;
-    
-    c2Jump = 2*lambda*p_up/eta1^2 + 2*lambda*(1-p_up)/eta2^2; %2nd cumulant of jump component
-    c4Jump = 24*lambda*(p_up/eta1^4 + (1-p_up)/eta2^4);
-    
-end
+    jumpParams.lambda = lambda; jumpParams.kappa = kappa; jumpParams.eta1 = eta1; jumpParams.eta2 = eta2; jumpParams.p_up = p_up;    
 
+elseif jumpModel == 3 %Mixed normal Jumps
+    lambda = 1; 
+    a1 = -0.05; 
+    b1 = 0.07;    
+    a2 = 0.02; 
+    b2 = 0.03;
+    p_up = 0.6;
+
+    kappa = p_up*exp(a1 + .5*b1^2)+ (1-p_up)*exp(a2 + .5*b2^2)  -1;
+    jumpParams.lambda = lambda; jumpParams.kappa = kappa; jumpParams.a1 = a1; jumpParams.b1 = b1; jumpParams.a2 = a2; jumpParams.b2 = b2; jumpParams.p_up = p_up;
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%    Set the Stochastic Volatility Model Component
@@ -97,11 +88,11 @@ if model == 1
     %%%==============================
     %%% HESTON MODEL  Parameters
     %%%==============================
-    modparam.eta    = 3.99;
-    modparam.theta  = 0.014; 
-    modparam.rho    = -0.79;
-    modparam.Sigmav = 0.27;
-    modparam.v0     = (.0994)^2; 
+    modparam.eta    = 4;
+    modparam.theta  = 0.035; 
+    modparam.rho    = -0.75;
+    modparam.Sigmav = 0.15;
+    modparam.v0     = 0.04; 
     
 elseif model == 2
     %%%=============================================================
@@ -166,12 +157,11 @@ elseif model == 7
     modparam.av     = 0.03;
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% PRICE
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tic
-price = Barrier_StochVol_func(N,alph,call,down,S_0,W,H,M,r,T,m_0,psi_J,model, modparam, gridMethod, gamma, gridMultParam);
-toc
-fprintf('%.8f \n', price)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Spath = Simulate_StochVol_Jumps_func( N_sim, M, T, S_0, r, q, model, modparam, jumpModel, jumpParams);
+histogram(Spath(:,end))
+
+disc = exp(-r*T);
+[prices, stdErrs] = Price_European_Strikes_func(Spath, disc, call, Kvec )
 

@@ -1,12 +1,22 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Discrete Variance Swap / Option Pricer
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Descritpion: Script to Price Discrete Variance Swap / Options under stochastic volatility models (with jumps)
+% Author:      Justin Kirkby
+% References:  (1) A General Framework for discretely sampled realized
+%              variance derivatives in stocahstic volatility models with
+%              jumps, EJOR, 2017
+%              (2) Efficient Option Pricing By Frame Duality with The Fast
+%              Fourier Transform, SIAM J. Financial Math., 2015
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 [folder, name, ext] = fileparts(which( mfilename('fullpath')));
 cd(folder);
 
 addpath('../Helper_Functions')
 addpath('./Analytical_Swaps')
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Script to generate prices for variance swaps and options in SV models
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 contract = 1;     % Set contract = 1 for for variance swap, contract = 3 for variance call
 K        = .00;   %strike, only matters for options, but still required for swap function
@@ -28,7 +38,7 @@ gridMethod = 4;     % Determines the grid method... 4 is a good choice
 %%%========================
 %%%% Select Stochastic Volatility Model
 %%%========================
-model = 1;    % 1 = Heston (output compares with analytical)
+model = 2;    % 1 = Heston (output compares with analytical)
               % 2 = Stein-Stein
               % 3 = 3/2 Model
               % 4 = 4/2 Model
@@ -80,111 +90,80 @@ elseif jumpModel == 2 %%%% DE Jumps
     
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  Stochastic Volatility Model Parameters
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-if model ==1
-    %%%=============================================================
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%    Set the Stochastic Volatility Model Component
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if model == 1
+    %%%==============================
     %%% HESTON MODEL  Parameters
-    %%%=============================================================
-
-    %etaH =3.99; thetaH =0.014; rhoH = -0.79; SigmavH =0.27; v0H=(.0994)^2;
-    etaH =3.99; thetaH =0.014; rhoH = -0.79; SigmavH =0.27; v0H=(.0994)^2;
-%     etaH = 3;
-%     rhoH = 0;
-%     thetaH = 0.04;
-%     SigmavH = 0.1;
-%     v0H = 0.04;
+    %%%==============================
+    modparam.eta    = 3.99;
+    modparam.theta  = 0.014; 
+    modparam.rho    = -0.79;
+    modparam.Sigmav = 0.27;
+    modparam.v0     = (.0994)^2; 
     
-    % % % etaH =6.21; thetaH =0.019; rhoH = -0.70; SigmavH =0.31; v0H=(.1011)^2;
-    % % % etaH =3; thetaH =0.04; rhoH = -0.7; SigmavH =0.25; v0H=.03;  
-    % % % etaH =1; thetaH =0.02; rhoH = -0.9; SigmavH =0.15; v0H=.04;  
-    % % % etaH =0.5; thetaH =0.03; rhoH = -0.8; SigmavH =0.09; v0H=.04;  
-    % % % etaH = 6.52; thetaH =0.0352; rhoH = -0.771; SigmavH =0.4601; v0H=.03;  
-    % % % etaH =6.21; thetaH =0.019; rhoH = -0.7; SigmavH =0.31; v0H=(.1011)^2;     
-    % % % etaH =3; thetaH =0.04; rhoH = -0.1; SigmavH =0.25; v0H=0.03;  
-    % % % etaH = 3; thetaH =0.04; rhoH = -0.7; SigmavH =0.25; v0H=.04;
-    % % % etaH = 6.5; thetaH =0.035; rhoH = -0.7; SigmavH =0.45; v0H=.03;  
-    % % % etaH = 2.5; thetaH =0.03; rhoH = -0.7; SigmavH =0.20; v0H=.04; 
-    % % % etaH = 1.5; thetaH =0.035; rhoH = -0.8; SigmavH =0.25; v0H=.045;  
-    % % % etaH = 3; thetaH =0.045; rhoH = -0.6; SigmavH =0.3; v0H=.03;  
-
-    %%%%%%%%%%%%
-    modparam.eta = etaH; modparam.theta = thetaH; modparam.rho = rhoH; modparam.Sigmav = SigmavH; modparam.v0 = v0H;
-    %%%%%%%%%%%
-
 elseif model == 2
     %%%=============================================================
     %%% STEIN-STEIN MODEL  Parameters
     %%%=============================================================
-    %etaS = 3; thetaS = 0.18; SigmavS = 0.15; v0S = 0.15; rhoS = -0.6;  %%Test Set 1
-    etaS = 2; thetaS = 0.18; SigmavS = 0.18; v0S = 0.22; rhoS = -0.5; %%Test Set 2
-    %etaS = 5; thetaS = 0.18; SigmavS = 0.15; v0S = 0.15; rhoS = -0.7; %%Test Set 3
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%
-    modparam.eta = etaS; modparam.theta = thetaS; modparam.rho = rhoS; modparam.Sigmav = SigmavS; modparam.v0 = v0S;
-    %%%%%%%%%%%%%%%%%%%%%%%%%
+    modparam.eta    = 2; 
+    modparam.theta  = 0.18; 
+    modparam.Sigmav = 0.18; 
+    modparam.v0     = 0.22; 
+    modparam.rho    = -0.5; 
     
 elseif model == 3
     %%%=============================================================
     %%% 3/2 MODEL  Parameters
     %%%=============================================================
-    % Sigmav32 =0.15; eta32 = 4; rho32= -0.6; theta32 =0.03;  v032 =0.03 ;  
-    % Sigmav32 =0.12; eta32 = 2; rho32= -.3; theta32 =0.04;  v032 = 0.035; 
-    Sigmav32 =0.10; eta32 = 3; rho32= -0.7; theta32 =0.04;  v032 =0.04 ; 
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%
-    modparam.eta = eta32; modparam.theta = theta32; modparam.rho = rho32; modparam.Sigmav = Sigmav32; modparam.v0 = v032;
-    %%%%%%%%%%%%%%%%%%%%%%%%%
+    modparam.Sigmav = 0.10; 
+    modparam.eta    = 3; 
+    modparam.rho    = -0.7; 
+    modparam.theta  = 0.04; 
+    modparam.v0     = 0.04 ;
     
-elseif model == 4  
+elseif model == 4
     %%%=============================================================
     %%% 4/2 MODEL  Parameters
     %%%=============================================================
-    eta42 = 3; theta42 = 0.04; rho42= -0.7; Sigmav42=0.25; v042 = 0.04; aa = 0.5; bb = 0.5*v042;
-    %eta42 = 4; theta42 = 0.035; rho42=-0.7; Sigmav42=0.20; v042 = 0.04; aa =0.5; bb = 0.5*v042;  
-    %eta42 = 3; theta42 = 0.04; rho42=-0.1; Sigmav42=0.15; v042 = 0.045; aa =0.5; bb = 0.5*v042; 
-    %eta42 = 1.8; theta42 = 0.04; rho42=-0.7; Sigmav42=0.2; v042 = 0.04; aa =0.5; bb = 0.5*v042; 
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%
-    modparam.eta = eta42; modparam.theta = theta42; modparam.rho = rho42; modparam.Sigmav = Sigmav42; modparam.v0 = v042;
-    modparam.aa = aa; modparam.bb = bb;
-    %%%%%%%%%%%%%%%%%%%%%%%%%
+    modparam.eta    = 3;
+    modparam.theta  = 0.04; 
+    modparam.rho    = -0.7; 
+    modparam.Sigmav = 0.25; 
+    modparam.v0     = 0.04; 
+    modparam.aa     = 0.5; 
+    modparam.bb     = 0.5*modparam.v0; 
     
-elseif model == 5  
+elseif model == 5
     %%%=============================================================
     %%% HULL-WHITE MODEL  Parameters
     %%%=============================================================
-    %av = 0.05; rhoHW = -0.7; SigmavHW = 0.6; v0HW = 0.05; r = 0.03; %%Test Set 3
-    %av = 0.01; rhoHW = -0.6; SigmavHW = 0.25; v0HW = 0.03; r = 0.03; %%Test Set 4
-    %av = 0.001; rhoHW = -0.9; SigmavHW = 0.35; v0HW = 0.03; r = 0.03;
-    av = 0.09; rhoHW = -0.2; SigmavHW = 0.4; v0HW = 0.034; r = 0.05;
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%   %NOTE: we used "mu" and "av" interchangibly for Hull white
-    modparam.rho = rhoHW; modparam.Sigmav = SigmavHW; modparam.v0 = v0HW; modparam.av = av;
-    %%%%%%%%%%%%%%%%%%%%%%%%%
+    modparam.av     = 0.05; 
+    modparam.rho    = -0.6;
+    modparam.Sigmav = 0.6;
+    modparam.v0     = 0.03; 
     
-elseif model == 6  
+elseif model == 6
     %%%=============================================================
     %%% SCOTT MODEL  Parameters
     %%%============================================================= 
-    %etaSc = 3; thetaSc = log(0.15); SigmavSc = 0.15; v0Sc = log(0.15); rhoSc = -.6;  %%Test Set 1
-    etaSc = 2; thetaSc = log(0.16); SigmavSc = 0.20; v0Sc = log(0.18); rhoSc = -.9;  %%Test Set 2
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%
-    modparam.eta = etaSc; modparam.theta = thetaSc; modparam.rho = rhoSc; modparam.Sigmav = SigmavSc; modparam.v0 = v0Sc;
-    %%%%%%%%%%%%%%%%%%%%%%%%%
+    modparam.eta    = 2; 
+    modparam.theta  = log(0.16); 
+    modparam.Sigmav = 0.20; 
+    modparam.v0     = log(0.18);
+    modparam.rho    = -0.9;
 
-elseif model == 7 
+elseif model == 7
     %%%=============================================================
-    %%% ALPHA-HYPER MODEL  Parameters
+    %%% ALPHA-HYPERGEOMETRIC MODEL  Parameters
     %%%=============================================================
-    rhoAH = -.6; SigmavAH = .25; v0AH = log(0.19); etaAH = .01; thetaAH = .04; avAH = 0.03; %Test Set 1
-    %rhoAH = -.9; SigmavAH = .20; v0AH = log(0.17); etaAH = .05; thetaAH = .2; avAH = 0.03; % Test Set 2
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%
-    modparam.rho = rhoAH;  modparam.Sigmav = SigmavAH;  modparam.v0 = v0AH; modparam.eta = etaAH; modparam.av = avAH; modparam.theta = thetaAH;
-    %%%%%%%%%%%%%%%%%%%%%%%%%
+    modparam.rho    = -.9;
+    modparam.Sigmav = .20; 
+    modparam.v0     = log(0.17); 
+    modparam.eta    = .05; 
+    modparam.theta  = .2; 
+    modparam.av     = 0.03;
 end
 
 
@@ -197,12 +176,12 @@ fprintf('PROJ Price: %.8f \n', PROJ_Price)
 
 %%% In the special cases where analytic prices are known, also print the error
 if model == 1 && jumpModel == 0 && contract == 1
-   [ref, KcH] = hestonfairstrike(r, v0H, thetaH, etaH, SigmavH, T, rhoH, M);
+   [ref, KcH] = hestonfairstrike(r, modparam.v0, modparam.theta, modparam.eta, modparam.Sigmav, T, modparam.rho, M);
    fprintf('Analytical Price: %.8f \n', ref)
    fprintf('Error: %.3e \n', PROJ_Price - ref)
    
 elseif model == 5 && jumpModel == 0 && contract == 1
-   [ref, KcH] = hullwhitefairstrike(r, v0HW, SigmavHW, av, T, rhoHW, M);
+   [ref, KcH] = hullwhitefairstrike(r, modparam.v0, modparam.Sigmav, modparam.av, T, modparam.rho, M);
    Error1 = PROJ_Price - ref;
    fprintf('Analytical Price: %.8f \n', ref)
    fprintf('Error: %.3e \n', PROJ_Price - ref)

@@ -1,10 +1,3 @@
-[folder, name, ext] = fileparts(which( mfilename('fullpath')));
-cd(folder);
-
-
-addpath('../RN_CHF')
-addpath('../Helper_Functions')
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Bermudan OPTION PRICER
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -15,6 +8,14 @@ addpath('../Helper_Functions')
 %               J. Compuational Finance, 2018
 %              (2) Efficient Option Pricing By Frame Duality with The Fast
 %              Fourier Transform, SIAM J. Financial Math., 2015
+
+[folder, name, ext] = fileparts(which( mfilename('fullpath')));
+cd(folder);
+
+
+addpath('../RN_CHF')
+addpath('../Helper_Functions')
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  CONTRACT/GENERAL PARAMETERS
