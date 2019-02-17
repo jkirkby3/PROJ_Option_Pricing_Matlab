@@ -1,14 +1,31 @@
-function price = Cliquet_LEVY_PROJ( N,alph,M,r,q,T,rnCHF, contract,contractParams)
-% N = #basis points
-% alph = log-asset grid width param
-% M = # Monitoring dates (not including S_0)
-% r = interest rate
-% T = time to maturity
+function price = Cliquet_LEVY_PROJ(N, alph, M, r, q, T, rnCHF, contract, contractParams)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% About: Pricing Function for Cliquet-style options (Additive Cliquets) using PROJ method
+% Models Supported: Levy Processes, including jump diffusions and Black-Scholes model
+% Returns: price of contract
+% Author: Justin Lars Kirkby
+%
+% ----------------------
+% Contract/Model Params 
+% ----------------------
+% M = number of subintervals of [0,T] (total of M+1 monitoring points in time grid, including S_0)
+% r = interest rate (e.g. 0.05)
+% q = dividend yield (e.g. 0.05)
+% T = time to maturity (in years, e.g. T=1)
+% rnCHF = risk netural characteristic function (function handle with single argument)
 % contract: 1 = sum of local caps
 %           2 = sum of local caps & floors
 %           3 = cliquet: local & global caps & floors
 %           4 = cliquet: local floor & cap, global floor, NO GLOBAL CAP (e.g. like Wilmott)  
 %           5 = MPP: ie monthly point-to-point  or Monthly Cap Sum (Bernard, Li)
+% contractParams - container with the required params, such as cap and floor
+%
+% ----------------------
+% Numerical (PROJ) Params 
+% ----------------------
+% N = number of grid/basis points (power of 2, e.g. 2^12), resolution = 2*alph/(N-1)
+% alph = log-asset grid width param, grid with is 2*alph
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 dx   = 2*alph/(N-1); a  = 1/dx;
 dt   = T/M;
@@ -190,7 +207,7 @@ elseif contract == 4 || contract == 5  %NO GLOBAL CAP
 end
 
 
-%%% Test with FILTER
+%%% Filtering (optional)
 applyFilter = 0;  %HARDCODED - can switch on/off for testing
 if applyFilter == 1
     epsM = 1.2204e-16;   %matlabs machine epsilon
@@ -205,6 +222,7 @@ end
 
 beta = real(fft([1/A; hvec.*phi])); 
 
+% Final pricing step, depends on contract type
 if contract == 1 || contract == 2
     grid = ymin + dx*(0:N-1);
     price = grid(1:N)*beta(1:N);

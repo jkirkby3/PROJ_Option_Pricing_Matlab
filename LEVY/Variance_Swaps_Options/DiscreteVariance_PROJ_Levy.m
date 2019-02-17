@@ -1,10 +1,26 @@
-function price = DiscreteVariance_PROJ_Levy( N,alph,M,r,T,K,rnCHF,contract )
-% N = #basis points
-% alph = log-asset grid width param
-% M = # Monitoring dates (not including S_0)
-% r = interest rate
-% T = time to maturity
-% K = strike (only matters for an option, but is always required)
+function price = DiscreteVariance_PROJ_Levy( N, alph, M, r, T, K, rnCHF, contract)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% About: Pricing Function for Variance Swaps and Options using PROJ method
+% Models Supported: Levy Processes, including jump diffusions and Black-Scholes model
+% Returns: price of contract
+% Author: Justin Lars Kirkby
+%
+% ----------------------
+% Contract/Model Params 
+% ----------------------
+% K   = strike (only matters for an option, but is always required)
+% r   = interest rate (e.g. 0.05)
+% T   = time remaining until maturity (in years, e.g. T=1)
+% M   = number of subintervals of [0,T] (total of M+1 monitoring points in time grid, including S_0)
+% contract =  1 for for variance swap, 3 for variance call  (other contracts not yet coded)
+% rnCHF = risk netural characteristic function (function handle with single argument)
+%
+% ----------------------
+% Numerical (PROJ) Params 
+% ----------------------
+% alph  = grid with is 2*alph
+% N     = number of grid/basis points (power of 2, e.g. 2^12), resolution = 2*alph/(N-1)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 dx   = 2*alph/(N-1);
 a    = 1/dx;

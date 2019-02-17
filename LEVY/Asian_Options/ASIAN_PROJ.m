@@ -1,18 +1,29 @@
-function Val = ASIAN_PROJ( N, alph,S_0,M,W,call,T,r,q, phiR,ER)
-% Cubic Asian Proj where PSI is found using 5pt Gaussian quadrature
-%------------------------------------------------------------------
-% N:     number of grid points
-% alpha: half truncation width, density truncated to roughly [-alpha,alpha]    
-% S_0:   initial Underlying
-% M:     number of subintervals of [0,T] (total of M+1 points in time grid)
-% W:     strike  (used instead of K)
-% call:    call put flag, use call = 1 for call option; prices a put otherwise
-% T:     number of years (T = 2 is two years, T = .5 is half a year)
-% r:     interest rate
-% q:     dividend yield
-% phiR:  risk neutral density of log return over time step dt = 1/M
-% ER  :  expected value of risk netural log return over time step dt = 1/M
-
+function Val = ASIAN_PROJ(N, alph, S_0, M, W, call, T, r, q, phiR, ER)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% About: Pricing Function for Arithmetic Asian Options using PROJ method
+% Models Supported: Levy Processes, including jump diffusions and Black-Scholes model
+% Returns: price of contract
+% Author: Justin Lars Kirkby
+%
+% ----------------------
+% Contract/Model Params 
+% ----------------------
+% S_0 = initial stock price (e.g. 100)
+% W   = strike  (e.g. 100)
+% r   = interest rate (e.g. 0.05)
+% q   = dividend yield (e.g. 0.05)
+% T   = time remaining until maturity (in years, e.g. T=1)
+% M   = number of subintervals of [0,T] (total of M+1 monitoring points in time grid, including S_0)
+% call = 1 for call (else put)
+% phiR =  risk neutral density of log return over time step dt = 1/M (function handle with single argument)
+%
+% ----------------------
+% Numerical (PROJ) Params 
+% ----------------------
+% ER    = risk neutral expected return over increment dt=1/M (can set to zero if it is unknown)
+% alph  = grid with is 2*alph
+% N     = number of grid/basis points (power of 2, e.g. 2^12), resolution = 2*alph/(N-1)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 dt = T/M;
 dx = 2*alph/(N-1); a = 1/dx;
@@ -48,7 +59,6 @@ Neta5 = (NNM) + 3;
 g2    = sqrt(5-2*sqrt(10/7))/6;
 g3    = sqrt(5+2*sqrt(10/7))/6;
 v1    = .5*128/225; v2 = .5*(322+13*sqrt(70))/900;  v3 = .5*(322 - 13*sqrt(70))/900;
-
 
 
 thet                 = zeros(1,Neta);   %sample initialized

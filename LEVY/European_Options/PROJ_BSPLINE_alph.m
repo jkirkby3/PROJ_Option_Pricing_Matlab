@@ -1,17 +1,28 @@
 function price = PROJ_BSPLINE_alph(order, N, alph, r, q, T, S_0, W, call, rnCHF, c1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% order = 0,1,2,3  (Order of spline: Haar,Linear,Quadratic,Cubic
-% call = 1 for call (else put)
-% c1 = mean return, first cumulant (incorporates T.. can safefly set to zero for small maturities, say T<=2)
-% alph:  grid with is 2*alph
-% N  = budget: resolution = 2*alph/(N-1), where support is of length 2*alph
+% About: Pricing Function for European Options using PROJ method
+% Models Supported: Levy Processes, including jump diffusions and Black-Scholes model
+% Returns: price of contract
+% Author: Justin Lars Kirkby
 %
-% S_0 = initial stock price, 
-% W = strike, 
-% r=interest rate, 
-% q =dividend
-% T = time remaining until maturity
-% rnCHF = risk netural characteristic function
+% ----------------------
+% Contract/Model Params 
+% ----------------------
+% S_0 = initial stock price (e.g. 100)
+% W   = strike  (e.g. 100)
+% r   = interest rate (e.g. 0.05)
+% q   = dividend yield (e.g. 0.05)
+% T   = time remaining until maturity (in years, e.g. T=1)
+% call  = 1 for call (else put)
+% rnCHF = risk netural characteristic function (function handle with single argument)
+%
+% ----------------------
+% Numerical (PROJ) Params 
+% ----------------------
+% order = 0,1,2,3  (Order of spline: Haar,Linear,Quadratic,Cubic
+% c1    = mean return, first cumulant (incorporates T.. can safefly set to zero for small maturities, say T<=2)
+% alph  = grid with is 2*alph
+% N     = number of grid/basis points (power of 2, e.g. 2^12), resolution = 2*alph/(N-1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 dx = 2*alph/(N-1); a = 1/dx;

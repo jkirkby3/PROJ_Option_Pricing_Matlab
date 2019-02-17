@@ -1,6 +1,29 @@
-function price = PROJ_ForwardStarting(N,alph,r,q,T1,T2,S_0,call,rnCHF1,rnCHF2)
-% For now Order must = 3
-%   Detailed explanation goes here
+function price = PROJ_ForwardStarting(N, alph, r, q, T1, T2, S_0, call, rnCHF1, rnCHF2)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% About: Pricing Function for Forward Starting Options using PROJ method (uses cubic B-splines)
+% Models Supported: Levy Processes, including jump diffusions and Black-Scholes model
+% Returns: price of contract
+% Author: Justin Lars Kirkby
+%
+% ----------------------
+% Contract/Model Params 
+% ----------------------
+% S_0 = initial stock price (e.g. 100)
+% W   = strike  (e.g. 100)
+% r   = interest rate (e.g. 0.05)
+% q   = dividend yield (e.g. 0.05)
+% T1  =  time to maturity (in years), e.g. T1=1
+% T2  = T - T1, how much time remains in contract after the forward start date (choose 0 < T2 < T1)
+% call  = 1 for call (else put)
+% rnCHF1 = risk netural characteristic function of process up to T1 (function handle with single argument)
+% rnCHF2 = risk netural characteristic function of process with T2 = T - T1 remaining time to maturity after forward start date
+% ----------------------
+% Numerical (PROJ) Params 
+% ----------------------
+% alph  = grid with is 2*alph
+% N     = budget: resolution = 2*alph/(N-1), where support is of length 2*alph
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 T = T1 + T2;
 
 dx = 2*alph/(N-1); a = 1/dx;

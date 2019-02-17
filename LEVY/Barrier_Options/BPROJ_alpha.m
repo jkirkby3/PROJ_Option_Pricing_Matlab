@@ -1,17 +1,30 @@
 function price = BPROJ_alpha(N, alph, call, down, S_0, W, H, M, r, q, rnCHF, T, rebate)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% S_0 = Initial price
-% call = 1 for call (otherwise it's a put)
+% About: Pricing Function for Discrete Barrier Options using PROJ method
+% Models Supported: Levy Processes, including jump diffusions and Black-Scholes model
+% Returns: price of contract
+% Author: Justin Lars Kirkby
+%
+% ----------------------
+% Contract/Model Params 
+% ----------------------
+% S_0 = initial stock price (e.g. 100)
+% W   = strike  (e.g. 100)
+% r   = interest rate (e.g. 0.05)
+% q   = dividend yield (e.g. 0.05)
+% T   = time remaining until maturity (in years, e.g. T=1)
+% M   = number of subintervals of [0,T] (total of M+1 monitoring points in time grid, including S_0)
+% call = 1 for call (else put)
 % down = 1 for down and out (otherwise it's up and out)
-% N = number of basis elements (power of 2, e.g. 2^12)
-% alph = size of valuation grid (width of projected density support is ~2*alph) .. fix based on density(T), rather than density(dt)
 % H    = barrier
 % rebate = rebate paid immediately upon passing the barrier (knocking-out)
-% r = Interest rate
-% q = dividend yield
-% T = Time (in years)
-% M = number of discrete monitoring points
-% rnCHF = risk netural characteristic function
+% rnCHF = risk netural characteristic function (function handle with single argument)
+%
+% ----------------------
+% Numerical (PROJ) Params 
+% ----------------------
+% alph  = grid with is 2*alph
+% N     = number of grid/basis points (power of 2, e.g. 2^12), resolution = 2*alph/(N-1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %*****************************

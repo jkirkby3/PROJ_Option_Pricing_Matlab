@@ -1,10 +1,25 @@
-function price = MultiplicativeCliquet_PROJ( N,alph,M,r,T,rnCHF, contract,contractParams)
-% N = #basis points
-% alph = log-asset grid width param
-% M = # Monitoring dates (not including S_0)
-% r = interest rate
-% T = time to maturity
-% contract: 6 = Hieber Style Cliquet
+function price = MultiplicativeCliquet_PROJ(N, alph, M, r, T, rnCHF, contract, contractParams)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% About: Pricing Function for Cliquet-style options (Multiplicative Cliquets) using PROJ method
+% Returns: price of contract
+% Models Supported: Levy Processes, including jump diffusions and Black-Scholes model
+% Author: Justin Lars Kirkby
+%
+% ----------------------
+% Contract/Model Params 
+% ----------------------
+% M = number of subintervals of [0,T] (total of M+1 monitoring points in time grid, including S_0)
+% r = interest rate (e.g. 0.05)
+% T = time to maturity (in years, e.g. T=1)
+% rnCHF = risk netural characteristic function (function handle with single argument)
+% contract: 6 = Multiplicative Style Cliquet (e.g see Hieber)
+% contractParams = container with the required params, such as cap and floor
+%
+% ----------------------
+% Numerical (PROJ) Params 
+% ----------------------
+% N    = number of grid/basis points (power of 2, e.g. 2^12), resolution = 2*alph/(N-1)
+% alph = log-asset grid width param, grid with is 2*alph
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 dx   = 2*alph/(N-1); a  = 1/dx;
 

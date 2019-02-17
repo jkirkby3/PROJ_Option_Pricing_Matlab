@@ -1,10 +1,28 @@
 function price = Bermudan_PUT_func_alpha(M, S_0, W, r, T, rnCHF, N, alph)
-%UNTITLED8 Summary of this function goes here
-%   Note: q enters through rnCHF, but is not otherwise needed
-% NOTE: uses no augmentation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% About: Pricing Function for Bermudan Put Options using PROJ method
+% Models Supported: Levy Processes, including jump diffusions and Black-Scholes model
+% Returns: price of contract
+% Author: Justin Lars Kirkby
+%
+% ----------------------
+% Contract/Model Params 
+% ----------------------
+% S_0 = initial stock price, 
+% W   = strike, 
+% r   = interest rate, 
+% T   = time remaining until maturity
+% M   = number of subintervals of [0,T] (total of M+1 monitoring points in time grid, including S_0)
+% rnCHF = risk netural characteristic function (function handle with single argument)
+%
+% ----------------------
+% Numerical (PROJ) Params 
+% ----------------------
+% alph =  grid with is 2*alph
+% N  = number of grid points (power of 2, e.g. 2^12), resolution = 2*alph/(N-1)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 dt   = T/M;
-
 K = N/2;
 
 dx = 2*alph/(N-1); a = 1/dx;
@@ -14,11 +32,9 @@ Cons3 = 1/48;
 Cons4 = 1/12;   
 
 lws = log(W/S_0); % Center value grid on [lws - 2^(Pbar-1),lws + 2^(Pbar-1)]
-% Will perturb so that log(S_0/S_0)=0 is a member
-% note: xnbar = lws
+% Will perturb so that log(S_0/S_0)=0 is a member ... note: xnbar = lws
 
 
-%%% TRY NEW GRID APPROACH 12/29/2015
 nnot = K/2;
 dxtil = 1/a; %for now... change to dxtil = 2*alpha/(N-1)
 nbar = floor(lws*a +K/2);
@@ -31,6 +47,8 @@ elseif lws>0
     dx = lws/(nbar-K/2);
 
 end
+
+%%%% Populate Beta coefficients for orthogonal projection
 a = 1/dx;
 xmin = (1-K/2)*dx;
 
@@ -47,12 +65,12 @@ beta  = Cons2*real(fft([1/(24*a2) grand]));   %%%%  NOTE: all toep matrices inco
 toepM = [beta(K:-1:1)'; 0 ; beta(2*K-1:-1:K +1)'];
 toepM = fft(toepM);
 
-%%%%%%%
+%%%% Initial terminal payoff coefficients (recursion proceeds backwards in time)
 Gs  = zeros(K,1);
 Gs(1:nbar) = exp(xmin + dx*(0:nbar-1))*S_0;
 
 
-%%%%%%  Gaussian Quad Constants
+%%%%%%  Gaussian Quadudrature Constants
 q_plus = (1 + sqrt(3/5))/2;  q_minus = (1 - sqrt(3/5))/2;
 b3  = sqrt(15); b4 = b3/10;
 
@@ -65,7 +83,7 @@ ThetM(nbar)     = W*(.5 - varthet_m10);
 ThetM(1:nbar-1) = W - varthet_star*Gs(1:nbar-1);
 Gs(1:nbar) = W - Gs(1:nbar);
 
-% %%%% Compute Augmentation
+% %%%% Compute Augmentation (Not used in this version, but left here for reference, see below where it would be used)
 % toepL = [zeros(K,1); 0 ; beta(K-1:-1:1)'];
 % toepL = fft(toepL);
 % Thetbar2 = W - S_0*varthet_star*exp(xmin - dx*(K:-1:1))';
