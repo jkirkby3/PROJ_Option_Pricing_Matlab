@@ -1,4 +1,4 @@
-function price = PROJ_BSPLINE_alph(order, N, alph, r, q, T, S_0, W, call, rnCHF, c1)
+function price = PROJ_European(order, N, alph, r, q, T, S_0, W, call, rnCHF, c1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % About: Pricing Function for European Options using PROJ method
 % Models Supported: Levy Processes, including jump diffusions and Black-Scholes model

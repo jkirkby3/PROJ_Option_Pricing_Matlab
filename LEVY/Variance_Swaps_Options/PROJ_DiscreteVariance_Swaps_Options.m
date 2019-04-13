@@ -1,4 +1,4 @@
-function price = DiscreteVariance_PROJ_Levy( N, alph, M, r, T, K, rnCHF, contract)
+function price = PROJ_DiscreteVariance_Swaps_Options( N, alph, M, r, T, K, rnCHF, contract)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % About: Pricing Function for Variance Swaps and Options using PROJ method
 % Models Supported: Levy Processes, including jump diffusions and Black-Scholes model

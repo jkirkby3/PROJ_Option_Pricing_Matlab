@@ -1,4 +1,4 @@
-function price = MultiplicativeCliquet_PROJ(N, alph, M, r, T, rnCHF, contract, contractParams)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function price = PROJ_MultiplicativeCliquet(N, alph, M, r, T, rnCHF, contract, contractParams)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % About: Pricing Function for Cliquet-style options (Multiplicative Cliquets) using PROJ method
 % Returns: price of contract
 % Models Supported: Levy Processes, including jump diffusions and Black-Scholes model

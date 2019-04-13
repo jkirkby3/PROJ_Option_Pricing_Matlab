@@ -1,12 +1,5 @@
-[folder, name, ext] = fileparts(which( mfilename('fullpath')));
-cd(folder);
-
-
-addpath('../RN_CHF')
-addpath('../Helper_Functions')
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% FORWARD STARTING OPTION PRICER
+%%% FORWARD STARTING OPTION PRICER (RUN SCRIPT)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Descritpion: Script to Price Forward Starting options in Levy/Heston Models
 %              using the PROJ method
@@ -15,10 +8,15 @@ addpath('../Helper_Functions')
 %              Fourier Transform, SIAM J. Financial Math., 2015
 %              (2) Robust Option Pricing with Characteristic Functions and
 %              the B-Spline Order of density Projection, JCF, 2017
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+[folder, name, ext] = fileparts(which( mfilename('fullpath')));
+cd(folder);
+addpath('../RN_CHF')
+addpath('../Helper_Functions')
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%  CONTRACT/GENERAL PARAMETERS
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Step 1) CHOOSE CONTRACT/GENERAL PARAMETERS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 call = 1;    %For call use 1 (else, its a put)
 S_0  = 100;  %Initial price
 r    = .05;  %Interest rate
@@ -26,35 +24,10 @@ q    = .00;  %dividend yield
 T    = 1;    % Expriation Time (in years)
 T1  = 0.25;  % Forward Start time (t_star)
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Step 2) CHOOSE MODEL PARAMETERS (Levy Models)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 model = 1;   %See Models Below (e.g. model 1 is Black Scholes), and choose specific params
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%  CHOOSE PROJ PARAMETERS
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-order = 3;  %Choose spline order from { 0,1,2,3} => {Haar, Linear, Quadratic, Cubic}
-UseCumulant = 1;  %Set to 1 to use the cumulant base rule (Approach 1) to determine gridwidth, else used fixed witdth (Approach 2)
-
-%---------------------
-% APPROACH 1: Cumulant Based approach for grid width
-% (see "Robust Option Pricing with Characteritics Functions and the BSpline Order of Density Projection")
-%---------------------
-if UseCumulant ==1  %With cumulant based rule, choose N and Alpha (N = 2^(P+Pbar) based on second approach)
-    logN  = 14;   %Uses N = 2^logN  gridpoint 
-    L1 = 12;  % determines grid witdth (usually set L1 = 8 to 15 for Levy, or 18 for Heston)
-%---------------------
-% APPROACH 2: Manual GridWidth approach 
-%--------------------- 
-else %Manually specify resolution and Pbar
-    P     = 7;  % resolution is 2^P
-    Pbar  = 3;  % Determines density truncation grid with, 2^Pbar 
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%  CHOOSE MODEL PARAMETERS 
-%%%  Note: rnCHF is the risk netural CHF, c1,c2,c4 are the cumulants
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 params = {};
 
 if model == 1 %BSM (Black Scholes Merton)
@@ -85,13 +58,33 @@ elseif model == 5 %Kou Double Expo
     params.eta2  = 10;
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Step 3) CHOOSE PROJ PARAMETERS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+UseCumulant = 1;  %Set to 1 to use the cumulant base rule (Approach 1) to determine gridwidth, else used fixed witdth (Approach 2)
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%---------------------
+% APPROACH 1: Cumulant Based approach for grid width
+% (see "Robust Option Pricing with Characteritics Functions and the BSpline Order of Density Projection")
+%---------------------
+if UseCumulant ==1  %With cumulant based rule, choose N and Alpha (N = 2^(P+Pbar) based on second approach)
+    logN  = 14;   %Uses N = 2^logN  gridpoint 
+    L1 = 12;  % determines grid witdth (usually set L1 = 8 to 15 for Levy, or 18 for Heston)
+%---------------------
+% APPROACH 2: Manual GridWidth approach 
+%--------------------- 
+else %Manually specify resolution and Pbar
+    P     = 7;  % resolution is 2^P
+    Pbar  = 3;  % Determines density truncation grid with, 2^Pbar 
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% PRICE
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 T2  = T - T1;  %tau_star
 
+%%%  Note: rnCHF is the risk netural CHF, c1,c2,c4 are the cumulants
 modelInput1 = getModelInput(model, T1, r, q, params);
 modelInput2 = getModelInput(model, T2, r, q, params);
 

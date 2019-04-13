@@ -1,4 +1,4 @@
-function price = BPROJ_alpha(N, alph, call, down, S_0, W, H, M, r, q, rnCHF, T, rebate)
+function price = PROJ_Barrier(N, alph, call, down, S_0, W, H, M, r, q, rnCHF, T, rebate)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % About: Pricing Function for Discrete Barrier Options using PROJ method
 % Models Supported: Levy Processes, including jump diffusions and Black-Scholes model

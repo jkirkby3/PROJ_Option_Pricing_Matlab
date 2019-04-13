@@ -1,12 +1,5 @@
-[folder, name, ext] = fileparts(which( mfilename('fullpath')));
-cd(folder);
-
-
-addpath('../RN_CHF')
-addpath('../Helper_Functions')
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% EUROPEAN OPTION PRICER
+%%% EUROPEAN OPTION PRICER (RUN SCRIPT)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Descritpion: Script to Price European options in Levy/Heston Models
 %              using the PROJ method
@@ -15,10 +8,17 @@ addpath('../Helper_Functions')
 %              Fourier Transform, SIAM J. Financial Math., 2015
 %              (2) Robust Option Pricing with Characteristic Functions and
 %              the B-Spline Order of density Projection, JCF, 2017
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%  CONTRACT/GENERAL PARAMETERS
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+[folder, name, ext] = fileparts(which( mfilename('fullpath')));
+cd(folder);
+addpath('../RN_CHF')
+addpath('../Helper_Functions')
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Step 1) CHOOSE CONTRACT/GENERAL PARAMETERS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 call = 1;    %For call use 1 (else, its a put)
 S_0  = 100;  %Initial price
 W    = 100;  %Strike            %NOTE: no error handling in place for extreme values of W (increase grid if strike falls outside)
@@ -26,39 +26,10 @@ r    = .05;  %Interest rate
 q    = .00;  %dividend yield
 T    = 1;    %Time (in years)
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Step 2) CHOOSE MODEL PARAMETERS  (Levy Models)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 model = 1;   %See Models Below (e.g. model 1 is Black Scholes), and choose specific params
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%  CHOOSE PROJ PARAMETERS
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-order = 3;  %Choose spline order from { 0,1,2,3} => {Haar, Linear, Quadratic, Cubic}
-UseCumulant = 1;  %Set to 1 to use the cumulant base rule (Approach 1) to determine gridwidth, else used fixed witdth (Approach 2)
-
-%---------------------
-% APPROACH 1: Cumulant Based approach for grid width
-% (see "Robust Option Pricing with Characteritics Functions and the BSpline Order of Density Projection")
-%---------------------
-if UseCumulant ==1  %With cumulant based rule, choose N and Alpha (N = 2^(P+Pbar) based on second approach)
-    logN  = 14;   %Uses N = 2^logN  gridpoint 
-    if model == 6  % Heston
-        L1 = 18;
-    else
-        L1 = 12;  % determines grid witdth (usually set L1 = 8 to 15 for Levy, or 18 for Heston)
-    end
-%---------------------
-% APPROACH 2: Manual GridWidth approach 
-%--------------------- 
-else %Manually specify resolution and Pbar
-    P     = 7;  % resolution is 2^P
-    Pbar  = 3;  % Determines density truncation grid with, 2^Pbar 
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%  CHOOSE MODEL PARAMETERS 
-%%%  Note: rnCHF is the risk netural CHF, c1,c2,c4 are the cumulants
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 params = {};
 
 if model == 1 %BSM (Black Scholes Merton)
@@ -96,9 +67,35 @@ elseif model == 6 % Heston Model
     params.rho = -0.5711;   % correlation between Brownian motions
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Step 3) CHOOSE PROJ PARAMETERS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+order = 3;  %Choose spline order from { 0,1,2,3} => {Haar, Linear, Quadratic, Cubic}
+UseCumulant = 1;  %Set to 1 to use the cumulant base rule (Approach 1) to determine gridwidth, else used fixed witdth (Approach 2)
+
+%---------------------
+% APPROACH 1: Cumulant Based approach for grid width
+% (see "Robust Option Pricing with Characteritics Functions and the BSpline Order of Density Projection")
+%---------------------
+if UseCumulant ==1  %With cumulant based rule, choose N and Alpha (N = 2^(P+Pbar) based on second approach)
+    logN  = 14;   %Uses N = 2^logN  gridpoint 
+    if model == 6  % Heston
+        L1 = 18;
+    else
+        L1 = 12;  % determines grid witdth (usually set L1 = 8 to 15 for Levy, or 18 for Heston)
+    end
+%---------------------
+% APPROACH 2: Manual GridWidth approach 
+%--------------------- 
+else %Manually specify resolution and Pbar
+    P     = 7;  % resolution is 2^P
+    Pbar  = 3;  % Determines density truncation grid with, 2^Pbar 
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% PRICE
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Note: rnCHF is the risk netural CHF, c1,c2,c4 are the cumulants
 modelInput = getModelInput(model, T, r, q, params);
 
 if UseCumulant ==1  % Choose density truncation width based on cumulants
@@ -110,7 +107,7 @@ end
 N = 2^logN;    % grid roughly centered on [c1 - alph, c1 + alph]
 
 tic
-price = PROJ_BSPLINE_alph( order,N,alpha,r,q,T,S_0,W ,call, modelInput.rnCHF, modelInput.c1*T);
+price = PROJ_European( order,N,alpha,r,q,T,S_0,W ,call, modelInput.rnCHF, modelInput.c1*T);
 toc
 
 

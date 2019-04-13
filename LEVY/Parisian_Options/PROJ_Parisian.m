@@ -1,4 +1,4 @@
-function price = ParisianPROJ_alpha(N, call, down, S_0, W, H, M, r, rnCHF, T, Gamm, resetting, alph)
+function price = PROJ_Parisian(N, call, down, S_0, W, H, M, r, rnCHF, T, Gamm, resetting, alph)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % About: Pricing Function for Parisian-style barrier options using PROJ method
 % Models Supported: Levy Processes, including jump diffusions and Black-Scholes model

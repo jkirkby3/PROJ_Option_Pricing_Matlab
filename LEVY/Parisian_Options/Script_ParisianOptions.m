@@ -1,10 +1,3 @@
-[folder, name, ext] = fileparts(which( mfilename('fullpath')));
-cd(folder);
-
-
-addpath('../RN_CHF')
-addpath('../Helper_Functions')
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% PARISIAN OPTION PRICER
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -16,10 +9,16 @@ addpath('../Helper_Functions')
 %              Exponential Levy Dynamics, App. Math. Finance, 2017
 %              (2) Efficient Option Pricing By Frame Duality with The Fast
 %              Fourier Transform, SIAM J. Financial Math., 2015
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+[folder, name, ext] = fileparts(which( mfilename('fullpath')));
+cd(folder);
+addpath('../RN_CHF')
+addpath('../Helper_Functions')
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%  CONTRACT/GENERAL PARAMETERS
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Step 1): CONTRACT/GENERAL PARAMETERS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 S_0  = 100;  %Initial price
 W    = 100;  %Strike            %NOTE: no error handling in place for extreme values of W (increase grid if strike falls outside)
 r    = .05;  %Interest rate
@@ -31,37 +30,15 @@ M    = 52;  %number of discrete monitoring points
 
 % NOTE: currently only Up and Out Calls, and Down and Out Puts have been coded
 
-Gamm = 5;
-resetting = 1;
+Gamm = 5;   %  maximum number of discretely monitored excursions into the knockout region allowed (more than this results in knockout)
+resetting = 1;  % resetting = 1 if a reseting type parisian option (otherwise its cumulative, ie never resets)
+                % Note: resetting options reset once underlying reenters the "continuation region"
+                % Cumulative Parisian options (resetting = 0) never forget how many times, and are less forgiving (hence cheaper)
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Step 2): CHOOSE MODEL PARAMETERS (Levy Models)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 model = 1;   %See Models Below (e.g. model 1 is Black Scholes), and choose specific params
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%  CHOOSE PROJ PARAMETERS
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-UseCumulant = 1;  %Set to 1 to use the cumulant base rule (Approach 1) to determine gridwidth, else used fixed witdth (Approach 2)
-
-%---------------------
-% APPROACH 1: Cumulant Based approach for grid width
-% (see "Robust Option Pricing with Characteritics Functions and the BSpline Order of Density Projection")
-%---------------------
-if UseCumulant ==1  %With cumulant based rule, choose N and Alpha (N = 2^(P+Pbar) based on second approach)
-    logN  = 12;   %Uses N = 2^logN  gridpoint 
-    L1 = 12;  % determines grid witdth (usually set L1 = 8 to 15 for Levy, or 18 for Heston)
-%---------------------
-% APPROACH 2: Manual GridWidth approach 
-%--------------------- 
-else %Manually specify resolution and Pbar
-    P     = 8;  % resolution is 2^P
-    Pbar  = 3;  % Determines density truncation grid with, 2^Pbar 
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%  CHOOSE MODEL PARAMETERS 
-%%%  Note: rnCHF is the risk netural CHF, c1,c2,c4 are the cumulants
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 params = {};
 
 if model == 1 %BSM (Black Scholes Merton)
@@ -90,12 +67,32 @@ elseif model == 5 %Kou Double Expo
     params.p_up  = 0.2;
     params.eta1  = 25;
     params.eta2  = 10;
-    
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Step 3) CHOOSE PROJ PARAMETERS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+UseCumulant = 1;  %Set to 1 to use the cumulant base rule (Approach 1) to determine gridwidth, else used fixed witdth (Approach 2)
+
+%---------------------
+% APPROACH 1: Cumulant Based approach for grid width
+% (see "Robust Option Pricing with Characteritics Functions and the BSpline Order of Density Projection")
+%---------------------
+if UseCumulant ==1  %With cumulant based rule, choose N and Alpha (N = 2^(P+Pbar) based on second approach)
+    logN  = 12;   %Uses N = 2^logN  gridpoint 
+    L1 = 12;  % determines grid witdth (usually set L1 = 8 to 15 for Levy, or 18 for Heston)
+%---------------------
+% APPROACH 2: Manual GridWidth approach 
+%--------------------- 
+else %Manually specify resolution and Pbar
+    P     = 8;  % resolution is 2^P
+    Pbar  = 3;  % Determines density truncation grid with, 2^Pbar 
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% PRICE
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Note: rnCHF is the risk netural CHF, c1,c2,c4 are the cumulants
 modelInput = getModelInput(model, T/M, r, 0, params);
 
 if UseCumulant ==1  % Choose density truncation width based on cumulants
@@ -106,11 +103,9 @@ else    % Manually supply density truncation width above
 end
 N = 2^logN;    % grid roughly centered on [c1 - alph, c1 + alph]
 
-
-%price = BPROJ_alpha(N, alpha, call, down, S_0, W, H, M, r, q, modelInput.rnCHF, T, rebate); 
 if (down == 1 && call ~= 1) || (down ~=1 && call == 1)
     tic
-    price = ParisianPROJ_alpha(N, call, down, S_0, W, H, M, r, modelInput.rnCHF, T, Gamm, resetting, alpha);
+    price = PROJ_Parisian(N, call, down, S_0, W, H, M, r, modelInput.rnCHF, T, Gamm, resetting, alpha);
     fprintf('%.8f \n', price)
     toc
 else

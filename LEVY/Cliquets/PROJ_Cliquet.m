@@ -1,4 +1,4 @@
-function price = Cliquet_LEVY_PROJ(N, alph, M, r, q, T, rnCHF, contract, contractParams)
+function price = PROJ_Cliquet(N, alph, M, r, q, T, rnCHF, contract, contractParams)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % About: Pricing Function for Cliquet-style options (Additive Cliquets) using PROJ method
 % Models Supported: Levy Processes, including jump diffusions and Black-Scholes model
