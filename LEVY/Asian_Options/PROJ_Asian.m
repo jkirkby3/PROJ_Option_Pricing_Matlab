@@ -1,4 +1,4 @@
-function Val = ASIAN_PROJ(N, alph, S_0, M, W, call, T, r, q, phiR, ER)
+function Val = PROJ_Asian(N, alph, S_0, M, W, call, T, r, q, phiR, ER)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % About: Pricing Function for Arithmetic Asian Options using PROJ method
 % Models Supported: Levy Processes, including jump diffusions and Black-Scholes model

@@ -98,7 +98,7 @@ end
 N = 2^logN;    % grid roughly centered on [c1 - alph, c1 + alph]
 
 tic
-price = ASIAN_PROJ( N,alpha,S_0,M,W,call,T,r,q, modelInput.rnCHF, modelInput.RNmu*dt);
+price = PROJ_Asian( N,alpha,S_0,M,W,call,T,r,q, modelInput.rnCHF, modelInput.RNmu*dt);
 toc
 
 

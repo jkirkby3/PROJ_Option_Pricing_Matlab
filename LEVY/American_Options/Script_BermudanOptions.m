@@ -100,7 +100,7 @@ end
 N = 2^logN;    % grid roughly centered on [c1 - alph, c1 + alph]
 
 tic
-price = Bermudan_PUT_func_alpha(M, S_0, W, r, T, modelInput.rnCHF, N, alpha); 
+price = PROJ_Bermudan_Put(M, S_0, W, r, T, modelInput.rnCHF, N, alpha); 
 toc
 
 

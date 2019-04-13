@@ -1,4 +1,4 @@
-function price = Bermudan_PUT_func_alpha(M, S_0, W, r, T, rnCHF, N, alph)
+function price = PROJ_Bermudan_Put(M, S_0, W, r, T, rnCHF, N, alph)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % About: Pricing Function for Bermudan Put Options using PROJ method
 % Models Supported: Levy Processes, including jump diffusions and Black-Scholes model
