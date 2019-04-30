@@ -1,8 +1,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% MONTE CARLO EUROPEAN OPTION PRICER for Jump Diffusions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Descritpion: Script to Price European options in Levy/Heston Models
-%              using the PROJ method
+% Descritpion: Script to Price European options in Difusion/Jump Diffusion Models
+%              using the Monte Carlo Simulation
 % Author:      Justin Kirkby
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

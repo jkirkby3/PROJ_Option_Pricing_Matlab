@@ -1,11 +1,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% MONTE CARLO BARRIER OPTION PRICER for Diffusions AND Jump Diffusions
+%%% MONTE CARLO ASIAN OPTION PRICER for Diffusions + Jump Diffusions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Descritpion: Script to Price Barrier options in Diffusion and Jump Diffusion Models
+% Descritpion: Script to Price Asian options in Diffusions + Jump Diffusions
 %              using the Monte Carlo Simulation
 % Author:      Justin Kirkby
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 [folder, name, ext] = fileparts(which( mfilename('fullpath')));
 cd(folder);
 
@@ -14,28 +13,24 @@ addpath('../')
 % ---------------------
 %  Contract/Market Params
 % ---------------------
-call   = 1;    % For call use 1 (else, its a put)
-down   = 1;    % down = 1 for down and out, else up and out
-S_0    = 100;  % Initial price
-H      = 0.85 * S_0;   % Barrier 
-M      = 252;  % number of monitoring points, e.g. 252 for "daily" monitoring
-r      = 0.05;  % Interest rate
-q      = 0.00;  % dividend yield
-T      = 1;    % Time (in years)
-rebate = 0;  % rebate which is paid upon barrier breach
-Kvec   = S_0*[.85 .90 .95 1 1.05 1.10 1.15 1.20 1.25 1.30 1.35 1.5 1.6];   % strikes to price
-
+call = 1;    %For call use 1 (else, its a put)
+S_0  = 100;  %Initial price
+r    = .05;  %Interest rate
+q    = .00;  %dividend yield
+T    = 1;    %Time (in years)
+M    = 252;  % number of monitoring points, e.g. 252 for "daily" monitoring
+Kvec = S_0*[.85 .90 .95 1 1.05 1.10 1.15 1.20 1.25 1.30 1.35 1.5 1.6];   % strikes to price
 
 % ---------------------
 % Model Params
 % ---------------------
 sigma = 0.2;  % diffusion parameter
-jumpModel = 0;  % determines jump model, select params below (set to 0 for no jumps)
+jumpModel = 0;  % determines jump model, select params below
 
 % ---------------------
 % Sim Params
 % ---------------------
-N_sim = 2*10^5;  % number of simulated paths
+N_sim = 10^4;  % number of simulated paths
 mult = 2; % multiplier for simulation (see below) to reduce bias
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -69,13 +64,15 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-M_mult = M*mult;  %time partitioning to reduce bias
+M_mult = M*mult;  %time stepping to reduce bias
 Spath = Simulate_Jump_Diffusion_func( N_sim, M_mult + 1, T, S_0, r, q, sigma, jumpModel, jumpParams);
 
-[prices, stdErrs] = Price_MC_Barrier_Strikes_func(Spath, call, down, H, Kvec, M, mult, rebate, r, T)
+disc = exp(-r*T);
+[prices, stdErrs] = Price_MC_Asian_Strikes_func(Spath, call, disc, Kvec, M, mult)
 
 % Plot
 plot(Kvec, prices)
 ylabel('price')
 xlabel('strike')
 grid on;
+
