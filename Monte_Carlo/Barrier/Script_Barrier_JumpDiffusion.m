@@ -1,8 +1,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% MONTE CARLO EUROPEAN OPTION PRICER for Jump Diffusions
+%%% MONTE CARLO BARRIER OPTION PRICER for Diffusions AND Jump Diffusions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Descritpion: Script to Price European options in Levy/Heston Models
-%              using the PROJ method
+% Descritpion: Script to Price Barrier options in Diffusion and Jump Diffusion Models
+%              using the Monte Carlo Simulation
 % Author:      Justin Kirkby
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -14,24 +14,29 @@ addpath('../')
 % ---------------------
 %  Contract/Market Params
 % ---------------------
-call = 1;    %For call use 1 (else, its a put)
-S_0  = 100;  %Initial price
-r    = .05;  %Interest rate
-q    = .00;  %dividend yield
-T    = 1;    %Time (in years)
-Kvec = S_0*[.85 .90 .95 1 1.05 1.10 1.15 1.20 1.25 1.30 1.35 1.5 1.6];   % strikes to price
+call   = 1;    % For call use 1 (else, its a put)
+down   = 1;    % down = 1 for down and out, else up and out
+S_0    = 100;  % Initial price
+H      = 0.85 * S_0;   % Barrier 
+M      = 252;  % number of monitoring points, e.g. 252 for "daily" monitoring
+r      = 0.05;  % Interest rate
+q      = 0.00;  % dividend yield
+T      = 1;    % Time (in years)
+rebate = 0;  % rebate which is paid upon barrier breach
+Kvec   = S_0*[.85 .90 .95 1 1.05 1.10 1.15 1.20 1.25 1.30 1.35 1.5 1.6];   % strikes to price
+
 
 % ---------------------
 % Model Params
 % ---------------------
 sigma = 0.2;  % diffusion parameter
-jumpModel = 0;  % determines jump model, select params below
+jumpModel = 0;  % determines jump model, select params below (set to 0 for no jumps)
 
 % ---------------------
 % Sim Params
 % ---------------------
-N_sim = 10^4;
-M = 500;
+N_sim = 2*10^5;  % number of simulated paths
+mult = 2; % multiplier for simulation (see below) to reduce bias
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 jumpParams = {};
@@ -64,15 +69,13 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Spath = Simulate_Jump_Diffusion_func( N_sim, M, T, S_0, r, q, sigma, jumpModel, jumpParams);
-histogram(Spath(:,end))
+M_mult = M*mult;  %time partitioning to reduce bias
+Spath = Simulate_Jump_Diffusion_func( N_sim, M_mult + 1, T, S_0, r, q, sigma, jumpModel, jumpParams);
 
-disc = exp(-r*T);
-[prices, stdErrs] = Price_MC_European_Strikes_func(Spath, disc, call, Kvec )
+[prices, stdErrs] = Price_MC_Barrier_Strikes_func(Spath, call, down, H, Kvec, M, mult, rebate, r, T)
 
-% Plot
+
 plot(Kvec, prices)
 ylabel('price')
 xlabel('strike')
 grid on;
-

@@ -22,7 +22,7 @@ S_0  = 100;  %Initial price
 r    = .05;  %Interest rate
 q    = .00;  %dividend yield
 T    = 1;    %Time (in years)
-Kvec = [95 100 105];
+Kvec = S_0*[.85 .90 .95 1 1.05 1.10 1.15 1.20 1.25 1.30 1.35 1.5 1.6];   % strikes to price
 
 %%%========================
 %%%% Select Stochastic Volatility Model
@@ -163,5 +163,11 @@ Spath = Simulate_StochVol_Jumps_func( N_sim, M, T, S_0, r, q, model, modparam, j
 histogram(Spath(:,end))
 
 disc = exp(-r*T);
-[prices, stdErrs] = Price_European_Strikes_func(Spath, disc, call, Kvec )
+[prices, stdErrs] = Price_MC_European_Strikes_func(Spath, disc, call, Kvec )
+
+plot(Kvec, prices)
+ylabel('price')
+xlabel('strike')
+grid on;
+
 

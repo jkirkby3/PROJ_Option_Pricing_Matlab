@@ -171,7 +171,7 @@ end
 %   PRICE CONTACT
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 alph = GetAlph_DisreteVariance( c2Jump, c4Jump, model, modparam, T, L1 );
-PROJ_Price = DiscreteVariance_StochasticVol_PROJ( N,alph,M,r,T,K,m_0,psi_J, model, modparam, gridMethod, gamma, varGridMult, contract );
+PROJ_Price = PROJ_DiscreteVariance_StochVol( N,alph,M,r,T,K,m_0,psi_J, model, modparam, gridMethod, gamma, varGridMult, contract );
 fprintf('PROJ Price: %.8f \n', PROJ_Price)
 
 %%% In the special cases where analytic prices are known, also print the error

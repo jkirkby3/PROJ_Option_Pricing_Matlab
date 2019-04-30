@@ -1,4 +1,4 @@
-function price = DiscreteVariance_StochasticVol_PROJ( N,alph,M,r,T,K,m_0,psi_J,model, modparam, gridMethod, gamma, varGridMult, contract )
+function price = PROJ_DiscreteVariance_StochVol( N,alph,M,r,T,K,m_0,psi_J,model, modparam, gridMethod, gamma, varGridMult, contract )
 % N = #basis points
 % alph = log-asset grid width param
 % M = # Monitoring dates (not including S_0)
