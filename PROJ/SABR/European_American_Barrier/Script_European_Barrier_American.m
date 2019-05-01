@@ -12,7 +12,9 @@
 
 [folder, name, ext] = fileparts(which( mfilename('fullpath')));
 cd(folder);
-addpath('../../STOCHASTIC_VOL/Helper_Functions')
+%addpath('../../STOCHASTIC_VOL/Helper_Functions')
+addpath('../Helper_Functions')
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

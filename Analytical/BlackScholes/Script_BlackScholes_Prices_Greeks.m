@@ -27,7 +27,7 @@ sigma = 0.2;   % volatility
 G = 0;   
 % ---------------------
          
-values = BSM_Greeks(G, S_0, sigma, r, q, T, Kvec, call)
+values = BSM_Greeks(G, S_0, sigma, r, q, T, Kvec, call);
 
 
 % Plot
