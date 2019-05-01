@@ -6,8 +6,8 @@ function Spath = Simulate_Heston_Euler_Schemes( N_sim, M, T, S_0, r, q, scheme, 
 % Note: returns paths of dimension (N_sim,M+1), since they include S_0
 %
 % scheme:     
-%        1 = Absorbption:      
-%        2 =  Reflection
+%        1 = Absorbption
+%        2 = Reflection
 %        3 = Higham and Mao
 %        4 = Partial Truncation
 %        5 = Full Truncation
