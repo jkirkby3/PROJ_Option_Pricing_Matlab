@@ -1,17 +1,16 @@
-function [prices, stdErrs] = Price_MC_Hindsight_Strikes_func(Spath, call, strikes, M, mult, disc)
+function [price, stdErr] = Price_MC_Lookback_func(Spath, call, M, mult, disc)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% About: Calculates Hindsight option prices for vector of strikes, given the simulatd paths 
+% About: Calculates Looback option price, given the simulatd paths 
 % Author: Justin Lars Kirkby
 %
 % -----------------
 % Params
 % -----------------
 % Contract Types
-% Fixed Strike (Hindsight) Put: (W - min{S_m: 0<=m<=M})^+
-% Fixed Strike (Hindsight) Call: (max{S_m: 0<=m<=M} - W)^+
+% Floating Strike (Lookback) Put:  max{S_m: 0<=m<=M} - S_T
+% Floating Strike (Lookback) Call: S_T - min{S_m: 0<=m<=M}
 %
 % call = 1 for call (else put)
-% Kvec = strike vector
 % M = number of monitoring points, e.g. 252 for "daily" monitoring
 % mult = time partitioning multiplier to reduce bias (e.g. mult = 2 or 5)
 % S_0 = initial price
@@ -23,10 +22,8 @@ N_sim = size(Spath,1);  % number of paths
 
 M_mult = M*mult;  %time partitioning to reduce bias
 
-prices = zeros(length(strikes),1);
-stdErrs = zeros(length(strikes),1); %TODO: add code to return std errros
 
-if call == 1
+if call ~= 1
     curr_max = zeros(N_sim, 1);
     for n = 1:N_sim
         curr_max(n) = max(Spath(n, 1:mult:M_mult+1));
@@ -38,18 +35,15 @@ else  % find_min
     end
 end
 
-for k = 1:length(strikes)
-    K = strikes(k);
-    if call ==1  % Fixed Strike (Hindsight) Call: (max{S_m: 0<=m<=M} - W)^+
-       payoffs  = max(0, curr_max - K);
 
-    else  % Fixed Strike (Hindsight) Put: (W - min{S_m: 0<=m<=M})^+
-        payoffs  = max(0, K - curr_min);
-    end
-    prices(k) = disc*mean(payoffs);
-    stdErrs(k) = disc*std(payoffs) / sqrt(N_sim);
-    
+if call ==1  % Floating Strike (Lookback) Call: S_T - min{S_m: 0<=m<=M}
+   payoffs  = Spath(:, M_mult+1) - curr_min;
+
+else  % Floating Strike (Lookback) Put:  max{S_m: 0<=m<=M} - S_T
+    payoffs  = curr_max - Spath(:,M_mult+1);
 end
+price = disc*mean(payoffs);
+stdErr = disc*std(payoffs) / sqrt(N_sim);
 
 end
 
