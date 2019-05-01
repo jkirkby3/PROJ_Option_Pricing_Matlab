@@ -1,6 +1,12 @@
 # Option Pricing PROJ Method (Exotic/Vanilla Options)
 Option pricing (exotic/vanilla derivatives) based on an efficient and general Fourier transform pricing framework - the PROJ method (short for Frame Projection). The modules are organized by Pricing Method, then by Model, and then by Contract Type. Each contract has a run script, which starts with "Script_", e.g. "Script_BarrierOptions.m". Monte Carlo and other pricing libraries are also provided to support R&D.
-
+<b>Pricing methods (currently) supported:</b>
+<ul>
+  <li> Monte Carlo </li>
+  <li> PROJ (General Purpose Fourier Method) </li>
+  <li> Analytical </li>
+</ul>  
+  
 <b>Contract types supported:</b>
 <ul>
   <li> European Options </li>
