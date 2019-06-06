@@ -9,7 +9,7 @@ if model == 1 %HESTON  (eta, theta, Rho, Sigmav, v0)
     eta = modparam.eta; theta = modparam.theta; Sigmav = modparam.Sigmav; v0 = modparam.v0; 
 
     mu_H = exp(-eta*t)*v0 + theta*(1-exp(-eta*t));
-    sig2_H = Sigmav^2/eta*v0*(exp(-eta*t)-exp(-2*eta*t)) +theta*Sigmav^2/(2*eta)*(1-exp(-eta*t)+exp(-2*eta*t));
+    sig2_H = Sigmav^2/eta*v0*(exp(-eta*t)-exp(-2*eta*t)) +theta*Sigmav^2/(2*eta)*(1-2*exp(-eta*t)+exp(-2*eta*t));
     
 elseif model == 2 || model == 6 %STEIN STEIN / SCOTT (eta, theta, Rho, Sigmav, v0)
     eta = modparam.eta; theta = modparam.theta; Sigmav = modparam.Sigmav; v0 = modparam.v0;

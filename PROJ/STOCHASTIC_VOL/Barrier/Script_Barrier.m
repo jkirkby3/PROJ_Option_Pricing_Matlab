@@ -37,7 +37,7 @@ gridMultParam = 0.2;
 %%%========================
 %%%% Select Stochastic Volatility Model
 %%%========================
-model = 3;    % 1 = Heston (output compares with analytical)
+model = 1;    % 1 = Heston (output compares with analytical)
               % 2 = Stein-Stein
               % 3 = 3/2 Model
               % 4 = 4/2 Model
@@ -97,11 +97,11 @@ if model == 1
     %%%==============================
     %%% HESTON MODEL  Parameters
     %%%==============================
-    modparam.eta    = 3.99;
-    modparam.theta  = 0.014; 
-    modparam.rho    = -0.79;
-    modparam.Sigmav = 0.27;
-    modparam.v0     = (.0994)^2; 
+    modparam.eta    = 4;
+    modparam.theta  = 0.035; 
+    modparam.rho    = -0.75;
+    modparam.Sigmav = 0.15;
+    modparam.v0     = 0.04; 
     
 elseif model == 2
     %%%=============================================================

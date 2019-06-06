@@ -1,34 +1,35 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% American/Bermudan Option Pricier
+%%% Barrier Option Pricier
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Descritpion: Script to Price Bermudan Options in Stochastic volatility models (with jumps)
+% Descritpion: Script to Price European Options in Stochastic volatility models (with jumps)
 %              using the PROJ method
 % Author:      Justin Kirkby
 % References:  (1) A unified approach to Bermudan and Barrier options under stochastic
 %               volatility models with jumps. J. Economic Dynamics and Control, 2017
-%              (2) American and Exotic option pricing with Jump Diffusions and Other Levy Processes.
-%               J. Computational Finance, 2018
+%              (2) Robust barrier option pricing by Frame Projection under
+%               exponential Levy Dynamics. Applied Mathematical Finance, 2018.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 [folder, name, ext] = fileparts(which( mfilename('fullpath')));
 cd(folder);
 addpath('../Helper_Functions')
+addpath('../Barrier')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+S_0  = 100;
+W    = 100;  %strike
+r    = 0.05; q = 0;
+T    = .25;
+M    = 80;
+call = 1;
 
-S_0 = 100;
-W   = 100;  %strike
-r   = 0.05; 
-T   = 0.5;
-M   = 50;
 
 %%%----------------------------
 N    = 2^10;    %number of points in density expansion... Value grid size is K:=N/2
 alph = 6;  %density projection grid on [-alpha,alpha]
 %%%----------------------------
-m_0           = 50;
-gamma         = 3.3;
+m_0           = 25;  % number of CTMC grid points
+gamma         = 5;  % CTMC grid width param
 gridMethod    = 4;
 gridMultParam = 0.2;
 
@@ -115,11 +116,11 @@ elseif model == 3
     %%%=============================================================
     %%% 3/2 MODEL  Parameters
     %%%=============================================================
-    modparam.Sigmav = 0.15; 
-    modparam.eta    = 4; 
-    modparam.rho    = -0.6; 
-    modparam.theta  = 0.03; 
-    modparam.v0     = 0.03;
+    modparam.Sigmav = 0.10; 
+    modparam.eta    = 3; 
+    modparam.rho    = -0.7; 
+    modparam.theta  = 0.04; 
+    modparam.v0     = 0.04 ;
     
 elseif model == 4
     %%%=============================================================
@@ -167,9 +168,32 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% PRICE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% NOTE: this prices using Barrier algo, in future, this will call its own function
+if call == 1
+    down = 1; H = S_0 / 8;   % TODO: this needs to account for the variance of the underlying.
+else
+    down = 0; H = S_0 * 8;
+end
+
 tic
-price = American_StochasticVol_func( N,alph,M,r,T,S_0,W,m_0,psi_J,model, modparam, gridMethod, gamma, gridMultParam);
+price = Barrier_StochasticVol_func(N,alph,call,down,S_0,W,H,M,r,T,m_0,psi_J,model, modparam, gridMethod, gamma, gridMultParam);
 toc
 fprintf('%.8f \n', price)
+
+if model == 1  % Compare with reference price when model is HESTON
+    addpath('../../LEVY/European_Options')
+    addpath('../../LEVY/Helper_Functions')
+    
+    params.v_0 = modparam.v0; params.theta = modparam.theta; params.kappa =modparam.eta;
+    params.sigma_v = modparam.Sigmav;  params.rho = modparam.rho;   
+
+    modelInput = getModelInput(6, T, r, q, params);
+    L1 = 14;  alpha = getTruncationAlpha(T, L1, modelInput, 6); N = 2^14; order = 3;
+
+    ref = PROJ_European( order,N,alpha,r,q,T,S_0,W,call,modelInput.rnCHF,modelInput.c1*T);
+    fprintf('Relative Error: %.3e\n', (price - ref) / price)
+
+end
 
 
