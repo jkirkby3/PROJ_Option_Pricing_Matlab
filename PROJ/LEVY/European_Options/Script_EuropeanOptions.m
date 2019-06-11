@@ -106,9 +106,52 @@ else    % Manually supply density truncation width above
 end
 N = 2^logN;    % grid roughly centered on [c1 - alph, c1 + alph]
 
+
 tic
 price = PROJ_European( order,N,alpha,r,q,T,S_0,W ,call, modelInput.rnCHF, modelInput.c1*T);
 toc
 
-
 fprintf('%.8f \n', price)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Plots
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+plot_convergence = 1;
+plot_smile = 1;
+
+if plot_convergence
+    figure();
+    Nvec = 2.^[3 4 5 6 7 8 9 10];
+    errs = zeros(1, length(Nvec));
+   
+    ref = PROJ_European( order,2^12,alpha,r,q,T,S_0,W ,call, modelInput.rnCHF, modelInput.c1*T); % Reference Price
+    for i=1:length(errs)
+       val = PROJ_European( order,Nvec(i),alpha,r,q,T,S_0,W ,call, modelInput.rnCHF, modelInput.c1*T);
+       errs(i) = log10(abs(val-ref));
+    end
+    
+    % Plot
+    plot(log2(Nvec), errs, 'r-+')
+    ylabel('$log_{10}(|err|)$', 'interpreter', 'latex')
+    xlabel('$log_{2}(N)$', 'interpreter', 'latex')
+    grid on;
+end
+
+if plot_smile
+    figure();
+    Kvec = S_0 * [0.2:.01:1.8];   % strikes to price
+    
+    % NOTE: there is a much more efficient version of this code for pricing many strikes
+    % This script is just to provide and example of the smile
+    values = zeros(1, length(Kvec));
+    for i=1:length(values)
+        values(i) = PROJ_European( order,N,alpha,r,q,T,S_0, Kvec(i) ,call, modelInput.rnCHF, modelInput.c1*T);
+    end
+    
+    % Plot
+    plot(Kvec, values)
+    ylabel('price')
+    xlabel('strike')
+    grid on;
+end
+
