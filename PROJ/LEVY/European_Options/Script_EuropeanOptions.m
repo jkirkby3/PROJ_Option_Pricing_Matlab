@@ -134,6 +134,7 @@ if plot_convergence
     plot(log2(Nvec), errs, 'r-+')
     ylabel('$log_{10}(|err|)$', 'interpreter', 'latex')
     xlabel('$log_{2}(N)$', 'interpreter', 'latex')
+    title('Convergence')
     grid on;
 end
 
@@ -148,8 +149,15 @@ if plot_smile
         values(i) = PROJ_European( order,N,alpha,r,q,T,S_0, Kvec(i) ,call, modelInput.rnCHF, modelInput.c1*T);
     end
     
+    if call == 1
+        intrinsic = max(S_0 - Kvec, 0);
+    else
+        intrinsic = max(Kvec - S_0, 0);
+    end
     % Plot
     plot(Kvec, values)
+    hold on;
+    plot(Kvec, intrinsic, 'r--')
     ylabel('price')
     xlabel('strike')
     grid on;

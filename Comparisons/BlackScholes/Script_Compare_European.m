@@ -26,6 +26,29 @@ model = 1; params = {}; params.sigmaBSM = sigma; q = 0;
 modelInput = getModelInput(model, T, r, q, params);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Analytical Pricer
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+addpath('../../Analytical/BlackScholes/')
+price_True = BSM_Greeks(0, S_0, sigma, r, q, T, W, call);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Binomial Lattice Pricer
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+addpath('../../Lattice/BlackScholes/')
+M = 2000;  % number of binomial time steps
+tic
+price_binom = BinomialLattice_BlackScholes_func(S_0, W, r, T, sigma, M, call, 0);
+time_binom = toc;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Trinomial Lattice Pricer
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+M = 2000;  % number of binomial time steps
+tic
+price_trinom = TrinomialLattice_BlackScholes_func(S_0, W, r, T, sigma, M, call, 0);
+time_trinom = toc;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  PROJ Method
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 addpath('../../PROJ/LEVY/European_Options')
@@ -38,23 +61,8 @@ N = 2^logN;    % grid roughly centered on [c1 - alph, c1 + alph]
 alpha = getTruncationAlpha(T, L1, modelInput, model);
 
 tic
-price_PROJ = PROJ_European( order,N,alpha,r,q,T,S_0,W,call, modelInput.rnCHF, modelInput.c1*T);
+price_PROJ = PROJ_European(order,N,alpha,r,q,T,S_0,W,call, modelInput.rnCHF, modelInput.c1*T);
 time_PROJ = toc;
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%  Analytical Pricer
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-addpath('../../Analytical/BlackScholes/')
-price_True = BSM_Greeks( 0, S_0, sigma, r, q, T, W, call);
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%  Lattice Pricer
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-addpath('../../Lattice/BlackScholes/')
-M = 2000;  % number of binomial time steps
-tic
-price_binom = BinomialLattice_BlackScholes_func( S_0, W, r, T, sigma, M, call, 0);
-time_binom = toc;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Monte Carlo Pricer (Euler)
@@ -93,7 +101,8 @@ fprintf('Method   |    Price    |    Err   |  CPU \n')
 fprintf('---------------------------------------------\n')
 fprintf('Exact    | %.8f  |          |       \n', price_True)
 fprintf('PROJ     | %.8f  | %.2e | %.4f \n', price_PROJ, abs(price_True-price_PROJ), time_PROJ)
-fprintf('Lattice  | %.8f  | %.2e | %.4f \n', price_binom, abs(price_True-price_binom), time_binom)
+fprintf('Binomial | %.8f  | %.2e | %.4f \n', price_binom, abs(price_True-price_binom), time_binom)
+fprintf('Trinomial| %.8f  | %.2e | %.4f \n', price_trinom, abs(price_True-price_trinom), time_trinom)
 fprintf('MC-Euler |[%.3f,%.3f]| %.2e | %.4f \n', price_MC_L, price_MC_U, abs(price_True-price_MC), time_MC)
 fprintf('MC-Exact |[%.3f,%.3f]| %.2e | %.4f \n', price_EMC_L, price_EMC_U, abs(price_True-price_EMC), time_EMC)
 

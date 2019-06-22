@@ -15,7 +15,8 @@ M     = 252;    % Number of time steps
 call  = 0;      % call (set to 1) else put
 american = 1;   % American (set to 1) else European
 
-price = BinomialLattice_BlackScholes_func( S_0,K,r,T,sigma,M, call, american)
+price_binomial = BinomialLattice_BlackScholes_func( S_0,K,r,T,sigma,M, call, american)
+price_trinomial = TrinomialLattice_BlackScholes_func( S_0,K,r,T,sigma,M, call, american)
 
     
     
