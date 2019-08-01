@@ -51,7 +51,7 @@ elseif model == 3 %NIG
     temp = sqrt(asq-bsq);
     
     modelInputs.RNmu = r - q + delta*(sqrt(asq - (beta+1)^2)-temp);
-    modelInputs.c1 = modelInputs.RNmu + delta*beta/sqrt(temp);
+    modelInputs.c1 = modelInputs.RNmu + delta*beta/temp;
     modelInputs.c2 = delta*asq*(asq - bsq)^(-1.5);
     modelInputs.c4 = 3*delta*asq*(asq + 4*bsq)*(asq - bsq)^(-3.5);
     modelInputs.rnCHF = @(u) cf_RN_NIG( u,r-q,dt,alpha,beta,delta);
