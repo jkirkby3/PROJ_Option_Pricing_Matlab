@@ -8,7 +8,7 @@
 % ---------------------
 call = 1;    %For call use 1 (else, its a put)
 K    = 100;  %Initial price
-r    = .00;  %Interest rate
+r    = .10;  %Interest rate
 q    = .00;  %dividend yield
 T    = 1;    %Time (in years)
 

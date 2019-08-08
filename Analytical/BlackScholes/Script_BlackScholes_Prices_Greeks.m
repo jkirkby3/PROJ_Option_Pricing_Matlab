@@ -8,7 +8,7 @@
 % ---------------------
 call = 1;    %For call use 1 (else, its a put)
 S_0  = 100;  %Initial price
-r    = .05;  %Interest rate
+r    = .00;  %Interest rate
 q    = .00;  %dividend yield
 T    = 1;    %Time (in years)
 Kvec = S_0 * [0.2:.01:1.8];   % strikes to price

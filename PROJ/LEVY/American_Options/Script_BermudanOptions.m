@@ -20,11 +20,11 @@ addpath('../Helper_Functions')
 %%%  Step 1) CONTRACT/GENERAL PARAMETERS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 S_0  = 100;  %Initial price
-W    = 100;  %Strike            %NOTE: no error handling in place for extreme values of W (increase grid if strike falls outside)
+W    = 105;  %Strike            %NOTE: no error handling in place for extreme values of W (increase grid if strike falls outside)
 r    = .05;  %Interest rate
 q    = .00;  %dividend yield
 T    = 1;    %Time (in years)
-M    = 12;  %number of discrete monitoring points
+M    = 500;  %number of discrete monitoring points
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Step 2) CHOOSE MODEL PARAMETERS  (Levy Models)

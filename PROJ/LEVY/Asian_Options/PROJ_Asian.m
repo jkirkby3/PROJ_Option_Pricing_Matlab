@@ -43,6 +43,7 @@ Nm   = floor(a*(x1-ER));
 x1   = ER + (1-N/2)*dx + Nm*dx;
 NNM  = N + Nm(M-1);   %Number of columns of PSI
 
+
 dxi   = 2*pi*a/N;
 xi    = dxi*(1:(N-1))';
 PhiR = [1; phiR(xi)];
@@ -58,7 +59,9 @@ Neta  = 5*(NNM) + 15;   %sample size
 Neta5 = (NNM) + 3;
 g2    = sqrt(5-2*sqrt(10/7))/6;
 g3    = sqrt(5+2*sqrt(10/7))/6;
-v1    = .5*128/225; v2 = .5*(322+13*sqrt(70))/900;  v3 = .5*(322 - 13*sqrt(70))/900;
+v1    = .5*128/225; 
+v2    = .5*(322+13*sqrt(70))/900; 
+v3    = .5*(322 - 13*sqrt(70))/900;
 
 
 thet                 = zeros(1,Neta);   %sample initialized
@@ -74,7 +77,9 @@ sig      = [-1.5-g3, -1.5-g2, -1.5, -1.5+g2, -1.5+g3, -.5-g3, -.5-g2, -.5, -.5+g
 sig(1:5) = (sig(1:5) + 2).^3/6;
 sig(6:10) = 2/3 - .5*(sig(6:10)).^3 - (sig(6:10)).^2;
 
-sig([1 5 6 10]) = v3*sig([1 5 6 10]); sig([2 4 7 9]) = v2*sig([2 4 7 9]); sig([3 8]) = v1*sig([3 8]);
+sig([1 5 6 10]) = v3*sig([1 5 6 10]); 
+sig([2 4 7 9]) = v2*sig([2 4 7 9]); 
+sig([3 8]) = v1*sig([3 8]);
 
 %%%% Fill Matrix
 zz  = exp(1i*dxi*log(1+exp(thet)));
@@ -105,7 +110,6 @@ AA = 1/A;
 beta  = [AA; zeta.*PhiR(2:N).*exp(-1i*x1(1)*xi)];   %grand(end)=.5*grand(end);
 beta  = real(fft(beta));
 
-
 PhiR  = C_aN*PhiR;
 beta  = PSI(:,1:N)*beta.*PhiR;  %Nm(1)=0
 
@@ -113,6 +117,9 @@ beta  = PSI(:,1:N)*beta.*PhiR;  %Nm(1)=0
 for m=3:M
     beta(2:N) = zeta.*beta(2:N).*exp(-1i*x1(m-1)*xi); beta(1) = AA;
     beta      = real(fft(beta));
+    
+    %C_aN*beta(125:132)
+    
     beta      = PSI(:,Nm(m-1)+1:Nm(m-1)+N)*beta.*PhiR;
 end
 
