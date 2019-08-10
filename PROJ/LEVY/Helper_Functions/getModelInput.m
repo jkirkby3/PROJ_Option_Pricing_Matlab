@@ -1,4 +1,4 @@
-function modelInputs = getModelInput(model, dt, r, q, modelParams)
+function modelInputs = getModelInput(model, dt, r, q, modelParams, T)
 % model: Levy models (BSM, CGMY, NIG, MJD, Kou)
 %        Affine models (Heston)
 % r: interest rate
@@ -9,6 +9,10 @@ function modelInputs = getModelInput(model, dt, r, q, modelParams)
 % NOTE: the returned cumulants, c1, c2, c4, contain only contain dt in the
 % case of Heston, but not the Levy models (this is so we can use this
 % function in Exotic contexts)
+
+if nargin < 6
+   T = dt;  % Optional param allowing us to obtain an rnCHF(dt) and rnCHF(T), useful in some cases 
+end
 
 modelInputs = {};
 if model == 1 %BSM (Black Scholes Merton)
@@ -21,7 +25,8 @@ if model == 1 %BSM (Black Scholes Merton)
     modelInputs.c1 = modelInputs.RNmu;       % DEF: first cumulant
     modelInputs.c2 = sigmaBSM^2;             % DEF: second cumulant
     modelInputs.c4 = 0;                         % DEF: fourth cumulant
-    modelInputs.rnCHF = @(u) cf_RN_BSM( u, r-q, dt, sigmaBSM );  % DEF: risk-neutral characteristic function
+    modelInputs.rnCHF = @(u) cf_RN_BSM( u, r-q, dt, sigmaBSM );  % DEF: risk-neutral characteristic function at dt
+    modelInputs.rnCHF_T = @(u) cf_RN_BSM( u, r-q, T, sigmaBSM );  % DEF: risk-neutral characteristic function at T
     modelInputs.rnSYMB = @(u) SYMB_RN_BSM(u, r-q, sigmaBSM  );  % DEF: risk neutral Levy symbol
     
 elseif model == 2 %CGMY
@@ -37,7 +42,8 @@ elseif model == 2 %CGMY
     modelInputs.c1 = modelInputs.RNmu + C*gamma(1-Y)*(MM^(Y-1)-G^(Y-1));   % DEF: first cumulant
     modelInputs.c2 = C *gamma(2-Y)*(MM^(Y-2)+G^(Y-2));   % DEF: second cumulant
     modelInputs.c4 = C *gamma(4-Y)*(MM^(Y-4)+G^(Y-4));   % DEF: fourth cumulant
-    modelInputs.rnCHF = @(u)cf_RN_CGMY(u,dt,r-q,C,G,MM,Y);  % DEF: risk-neutral characteristic function
+    modelInputs.rnCHF = @(u)cf_RN_CGMY(u,dt,r-q,C,G,MM,Y);  % DEF: risk-neutral characteristic function at dt
+    modelInputs.rnCHF_T = @(u)cf_RN_CGMY(u,T,r-q,C,G,MM,Y);  % DEF: risk-neutral characteristic function at T
     modelInputs.rnSYMB = @(u) SYMB_RN_CGMY(u,r-q,C,G,MM,Y);  % DEF: risk neutral Levy symbol
     
 elseif model == 3 %NIG
@@ -55,6 +61,7 @@ elseif model == 3 %NIG
     modelInputs.c2 = delta*asq*(asq - bsq)^(-1.5);
     modelInputs.c4 = 3*delta*asq*(asq + 4*bsq)*(asq - bsq)^(-3.5);
     modelInputs.rnCHF = @(u) cf_RN_NIG( u,r-q,dt,alpha,beta,delta);
+    modelInputs.rnCHF_T = @(u) cf_RN_NIG( u,r-q,T,alpha,beta,delta);
     modelInputs.rnSYMB = @(u) SYMB_RN_NIG(u,r-q,alpha,beta,delta);  % DEF: risk neutral Levy symbol
     
 elseif model == 4 %MJD (Merton Jump Diffusion)
@@ -70,6 +77,7 @@ elseif model == 4 %MJD (Merton Jump Diffusion)
     modelInputs.c2 = lam*(sigma^2/lam + muj^2 +sigmaj^2);
     modelInputs.c4 = lam*(muj^4 + 6*sigmaj^2*muj^2+3*sigmaj^4);
     modelInputs.rnCHF = @(u) cf_RN_MJD( u, r-q, dt, sigma, muj, sigmaj , lam);
+    modelInputs.rnCHF_T = @(u) cf_RN_MJD( u, r-q, T, sigma, muj, sigmaj , lam);
     modelInputs.rnSYMB = @(u) SYMB_RN_MJD(u,r-q,sigma, muj, sigmaj , lam);  % DEF: risk neutral Levy symbol
     
 elseif model == 5 %Kou Double Expo
@@ -86,6 +94,7 @@ elseif model == 5 %Kou Double Expo
     modelInputs.c2 = sigma^2 + 2*lam*p_up/(eta1^2) + 2*lam*(1-p_up)/(eta2^2);
     modelInputs.c4 = 24*lam*(p_up/eta1^4 + (1-p_up)/eta2^4);
     modelInputs.rnCHF = @(u)cf_RN_KOU(u,dt,r-q,sigma,lam,p_up,eta1,eta2);
+    modelInputs.rnCHF_T = @(u)cf_RN_KOU(u,T,r-q,sigma,lam,p_up,eta1,eta2);
     modelInputs.rnSYMB = @(u) SYMB_RN_Kou( u, r-q, sigma,lam,p_up,eta1,eta2);  % DEF: risk neutral Levy symbol
     
 elseif model == 6  % Heston's model
@@ -105,6 +114,7 @@ elseif model == 6  % Heston's model
         + 8*kappa^2*(v_0-theta)*(1-exp(-kappa*dt)));
     modelInputs.c4 = 0;
     modelInputs.rnCHF = @(u)cf_RN_Heston(u,dt,r-q,v_0,theta,kappa,sigma_v,rho);
+    modelInputs.rnCHF_T = @(u)cf_RN_Heston(u,T,r-q,v_0,theta,kappa,sigma_v,rho);
     % NOTE: no rnSYMB for this model, as we have no current use for it
 end
 

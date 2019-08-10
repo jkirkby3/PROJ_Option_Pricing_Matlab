@@ -70,7 +70,7 @@ UseCumulant = 1;  %Set to 1 to use the cumulant base rule (Approach 1) to determ
 %---------------------
 if UseCumulant ==1  %With cumulant based rule, choose N and Alpha (N = 2^(P+Pbar) based on second approach)
     logN  = 8;   %Uses N = 2^logN  gridpoint 
-    L1 = 16;  % determines grid witdth (usually set L1 = 8 to 15 for Levy)
+    L1 = 10;  % determines grid witdth (usually set L1 = 8 to 15 for Levy)
 %---------------------
 % APPROACH 2: Manual GridWidth approach 
 %--------------------- 

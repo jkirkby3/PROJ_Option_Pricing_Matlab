@@ -7,7 +7,7 @@ function [prices, stdErrs] = Price_MC_American_Strikes_func(Spath, disc, call, K
 % -----------------
 % Params
 % -----------------
-% disc = discount factor, e.g. exp(-r*T)
+% disc = discount factor for each time step, e.g. exp(-r*dt), where dt is time step, and r is interest rate
 % call = 1 for call (else put)
 % Kvec = strike vector
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -41,16 +41,17 @@ function [price, stdErr] = Price_MC_American_func(Spath, disc, call, K )
             EV = max(K - Spath(:,m), 0); %exercise value at tn
         end
         
-        index = find(EV>0);
+        index = find(EV>0);  % just regress on in the money positions, otw there is cluster at zero due to payoff
 
-        regression = polyfit(Spath(index,m), payoff(index), 4);
-        EHV = polyval(regression, Spath(index,m));
+        regression = polyfit(Spath(index, m), payoff(index), 4);
+        EHV = polyval(regression, Spath(index, m));
 
         si = size(index);
 
         for j=1:si(1)
-            if EHV(j) < EV(index(j)) 
-                payoff(index(j)) = EV(index(j));
+            index_j = index(j);
+            if EHV(j) < EV(index_j) 
+                payoff(index_j) = EV(index_j);
             end
         end
     end
