@@ -78,6 +78,7 @@ time_crankNicFD = toc;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Carr-Madan Fourier Method
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+addpath('../../Fourier/CarrMadan/')
 N = 2^14;
 tic
 price_CM = CarrMadan_European_Price_Strikes(S_0, W, modelInput.rnCHF, N, T, r, q, call);
