@@ -1,11 +1,15 @@
 # Option Pricing PROJ Method (Exotic/Vanilla Options)
-Option pricing (exotic/vanilla derivatives) based on an efficient and general Fourier transform pricing framework - the PROJ method (short for Frame Projection). The modules are organized by Pricing Method, then by Model, and then by Contract Type. Each contract has a run script, which starts with "Script_", e.g. "Script_BarrierOptions.m". Monte Carlo and other pricing libraries are also provided to support R&D.
+Option pricing (exotic/vanilla derivatives) based on an efficient and general Fourier transform pricing framework - the PROJ method (short for Frame Projection). The modules are organized by Pricing Method, then by Model, and then by Contract Type. Each contract has a run script, which starts with "Script_", e.g. "Script_BarrierOptions.m". 
+Monte Carlo and other pricing libraries are also provided to support R&D.
 
-<b>Pricing methods (currently) supported:</b>
+<b>Pricing methods supported:</b>
 <ul>
-  <li> Monte Carlo </li>
   <li> PROJ (General Purpose Fourier Method) </li>
+  <li> Monte Carlo </li>
   <li> Analytical </li>
+  <li> Fourier (Carr-Madan, PROJ) </li>
+  <li> PDE/Finite Difference </li>
+  <li> Lattice/Tree </li>
 </ul>  
   
 <b>Contract types supported:</b>
@@ -18,7 +22,8 @@ Option pricing (exotic/vanilla derivatives) based on an efficient and general Fo
   <li> Parisian Options (Cumulative and resetting Parisian barrier options) </li>
   <li> Cliquets/Equity Indexed Annuities (Additive/Multiplicative)</li>
   <li> Forward Starting Options </li>
-  <li> Step/Fader Options (To be added) </li>
+  <li> Step (Soft Barrier) Options </li>
+  <li> Fader Options (To be added) </li>
   <li> Swing Options (To be added) </li>
   <li> Lookback/Hindsight Options (To be added) </li>
   <li> Credit default swaps (To be added) </li>
@@ -39,7 +44,7 @@ Option pricing (exotic/vanilla derivatives) based on an efficient and general Fo
 <b>Acknowledgement:</b>
 These pricing libraries have been built in collaboration with:
 <ul>
-  <li> <a href="https://www.researchgate.net/profile/Justin_Kirkby"> Justin Lars Kirkby </a> </li>
+  <li><a href="https://www.researchgate.net/profile/Justin_Kirkby"> Justin Lars Kirkby </a> </li>
   <li><a href="https://www.researchgate.net/profile/Duy_Nguyen125">Duy Nguyen </a> </li>
   <li><a href="https://www.researchgate.net/profile/Zhenyu_Cui"> Zhenyu Cui </a> </li>
   <li><a href="https://www2.isye.gatech.edu/people/faculty/Shijie_Deng/"> Shijie Deng </a> </li>

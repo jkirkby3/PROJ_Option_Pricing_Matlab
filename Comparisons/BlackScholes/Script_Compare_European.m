@@ -7,6 +7,7 @@
 %                   Lattices (Binomial / Trinomial)
 %                   PROJ
 %                   Finite Difference (Explicit / Implicit)
+%                   Fourier (Carr-Madan)
 %
 % Author:      Justin Kirkby
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -41,7 +42,7 @@ price_True = BSM_Greeks(0, S_0, sigma, r, q, T, W, call);
 %%%  Binomial / Trinomial Lattice Pricer
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 addpath('../../Lattice/BlackScholes/')
-M = 2000;  % number of binomial time steps
+M = 1500;  % number of binomial time steps
 tic
 price_binom = BinomialLattice_BlackScholes_func(S_0, W, r, T, sigma, M, call, 0);
 time_binom = toc;
@@ -64,15 +65,23 @@ time_explicitFD = toc;
 
 % Fully Implicit
 tic
-dS = 0.5; dt = 1/250;
+dS = 0.5; dt = 1/200;
 price_implicitFD = ImplicitFD_BlackScholes_func(S_0, W, r, T, sigma, call, dS, dt, Smax, Smin);
 time_implicitFD = toc;
 
 % Crank Nicolson (Implicit/Explicit)
 tic
-dS = 0.5; dt = 1/250;
+dS = 0.5; dt = 1/200;
 price_crankNicFD = CrankNicolsonFD_BlackScholes_func(S_0, W, r, T, sigma, call, dS, dt, Smax, Smin);
 time_crankNicFD = toc;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Carr-Madan Fourier Method
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+N = 2^14;
+tic
+price_CM = CarrMadan_European_Price_Strikes(S_0, W, modelInput.rnCHF, N, T, r, q, call);
+time_CM = toc;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  PROJ Method
@@ -89,6 +98,7 @@ alpha = getTruncationAlpha(T, L1, modelInput, model);
 tic
 price_PROJ = PROJ_European(order, N, alpha, r, q, T, S_0, W, call, modelInput.rnCHF, modelInput.c1*T);
 time_PROJ = toc;
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Monte Carlo Pricer (Euler)
@@ -130,6 +140,7 @@ fprintf('---------------------------------------------\n')
 fprintf('Exact       | %.8f  |          |       \n', price_True)
 fprintf('---------------------------------------------\n')
 fprintf('PROJ        | %.8f  | %.2e | %.4f \n', price_PROJ, abs(price_True-price_PROJ), time_PROJ)
+fprintf('Carr-Madan  | %.8f  | %.2e | %.4f \n', price_CM, abs(price_True-price_CM), time_CM)
 fprintf('---------------------------------------------\n')
 fprintf('Binomial    | %.8f  | %.2e | %.4f \n', price_binom, abs(price_True-price_binom), time_binom)
 fprintf('Trinomial   | %.8f  | %.2e | %.4f \n', price_trinom, abs(price_True-price_trinom), time_trinom)
