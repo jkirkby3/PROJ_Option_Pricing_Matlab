@@ -7,7 +7,7 @@
 %                   Lattices (Binomial / Trinomial)
 %                   PROJ
 %                   Finite Difference (Explicit / Implicit)
-%                   Fourier (Carr-Madan)
+%                   Fourier (Carr-Madan, CONV)
 %
 % Author:      Justin Kirkby
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -100,6 +100,15 @@ tic
 price_PROJ = PROJ_European(order, N, alpha, r, q, T, S_0, W, call, modelInput.rnCHF, modelInput.c1*T);
 time_PROJ = toc;
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  CONV Fourier Method
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+addpath('../../Fourier/CONV/')
+N = 2^16;
+tic
+price_CONV = CONV_European_Price(S_0, W, modelInput.rnCHF, T, r, call, N, alpha);
+time_CONV = toc;
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Monte Carlo Pricer (Euler)
@@ -130,8 +139,6 @@ Spath = S_0*exp((r - q - .5*sigma^2)*T +  sigma*sqrt(T)*W1);   % Exact simulatio
 price_EMC_L = price_EMC - 2*stdErr; price_EMC_U = price_EMC + 2*stdErr;
 time_EMC = toc;
 
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% COMPARE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -141,6 +148,7 @@ fprintf('---------------------------------------------\n')
 fprintf('Exact       | %.8f  |          |       \n', price_True)
 fprintf('---------------------------------------------\n')
 fprintf('PROJ        | %.8f  | %.2e | %.4f \n', price_PROJ, abs(price_True-price_PROJ), time_PROJ)
+fprintf('CONV        | %.8f  | %.2e | %.4f \n', price_CONV, abs(price_True-price_CONV), time_CONV)
 fprintf('Carr-Madan  | %.8f  | %.2e | %.4f \n', price_CM, abs(price_True-price_CM), time_CM)
 fprintf('---------------------------------------------\n')
 fprintf('Binomial    | %.8f  | %.2e | %.4f \n', price_binom, abs(price_True-price_binom), time_binom)

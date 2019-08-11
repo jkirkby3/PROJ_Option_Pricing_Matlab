@@ -2,9 +2,10 @@
 %%% EUROPEAN OPTION PRICE COMPARISON (RUN SCRIPT)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Descritpion: Script to Compare Methods For European Options Under Levy Models
-%              This script compares accuracy/CPU of the following methods,
-%                   PROJ
-%                   Fourier (Carr-Madan)
+%              This script compares accuracy/CPU of the following methods:
+%                   PROJ (Fourier)
+%                   Carr-Madan (Fourier)
+%                   CONV (Fourier)
 %
 % Author:      Justin Kirkby
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -21,7 +22,7 @@ call = 1;    %For call use 1 (else, its a put)
 S_0  = 100;  %Initial price
 W    = 100;  %Strike            %NOTE: no error handling in place for extreme values of W (increase grid if strike falls outside)
 r    = .05;  %Interest rate
-q    = .0;   %Dividend yield
+q    = .00;  %Dividend yield
 T    = 1;    %Time (in years)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -93,11 +94,20 @@ price_PROJ = PROJ_European(order, N, alpha, r, q, T, S_0, W, call, modelInput.rn
 time_PROJ = toc;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  CONV Fourier Method
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+addpath('../../Fourier/CONV/')
+N = 2^16;
+tic
+price_CONV = CONV_European_Price(S_0, W, modelInput.rnCHF, T, r, call, N, alpha);
+time_CONV = toc;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Reference Price (Using PROJ)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Nref = 2^16; L1Ref = 20;   % Params to obtain reference price
 alphaRef = getTruncationAlpha(T, L1Ref, modelInput, model);
-price_True = PROJ_European(order, Nref, alphaRef, r, q, T, S_0, W, call, modelInput.rnCHF, modelInput.c1*T);
+price_Ref = PROJ_European(order, Nref, alphaRef, r, q, T, S_0, W, call, modelInput.rnCHF, modelInput.c1*T);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% COMPARE
@@ -105,9 +115,10 @@ price_True = PROJ_European(order, Nref, alphaRef, r, q, T, S_0, W, call, modelIn
 fprintf('\n---------------------------------------------\n')
 fprintf('Method      |    Price    |    Err   |  CPU \n')
 fprintf('---------------------------------------------\n')
-fprintf('Exact       | %.8f  |          |       \n', price_True)
+fprintf('Reference   | %.8f  |          |       \n', price_Ref)
 fprintf('---------------------------------------------\n')
-fprintf('PROJ        | %.8f  | %.2e | %.4f \n', price_PROJ, abs(price_True-price_PROJ), time_PROJ)
-fprintf('Carr-Madan  | %.8f  | %.2e | %.4f \n', price_CM, abs(price_True-price_CM), time_CM)
+fprintf('PROJ        | %.8f  | %.2e | %.4f \n', price_PROJ, abs(price_Ref-price_PROJ), time_PROJ)
+fprintf('CONV        | %.8f  | %.2e | %.4f \n', price_CONV, abs(price_Ref-price_CONV), time_CONV)
+fprintf('Carr-Madan  | %.8f  | %.2e | %.4f \n', price_CM, abs(price_Ref-price_CM), time_CM)
 fprintf('---------------------------------------------\n')
 
