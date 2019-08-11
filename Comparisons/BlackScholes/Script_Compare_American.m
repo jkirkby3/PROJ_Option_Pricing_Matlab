@@ -4,6 +4,7 @@
 % Descritpion: Script to Compare Methods For American (Bermudan) Options Under Black Scholes Model
 %              This script compares accuracy/CPU of the following methods,
 %                   Lattices (Binomial / Trinomial)
+%                   Monte Carlo (Longstaff-Schwartz)
 %                   PROJ
 %
 % Author:      Justin Kirkby

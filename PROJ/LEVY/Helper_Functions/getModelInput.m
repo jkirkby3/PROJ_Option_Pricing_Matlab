@@ -116,6 +116,27 @@ elseif model == 6  % Heston's model
     modelInputs.rnCHF = @(u)cf_RN_Heston(u,dt,r-q,v_0,theta,kappa,sigma_v,rho);
     modelInputs.rnCHF_T = @(u)cf_RN_Heston(u,T,r-q,v_0,theta,kappa,sigma_v,rho);
     % NOTE: no rnSYMB for this model, as we have no current use for it
+elseif model == 7 %KoBoL Model  
+    %----------------------------------------------
+    % Unpack the model parameters
+    c = modelParams.c; 
+    lam_p = modelParams.lam_p; 
+    lam_m = modelParams.lam_m; 
+    nu = modelParams.nu; 
+    %----------------------------------------------
+    
+    % NOTE: params have been
+    % written in correspondence with CGMY, which is a subclass of KoBoL
+    C = c; MM = lam_p; G = -lam_m; Y = nu;
+    
+    % Set the return object
+    modelInputs.RNmu = r - q - C*gamma(-Y)*((MM-1)^Y - MM^Y + (G+1)^Y - G^Y);    % DEF: Risk Neutral drift
+    modelInputs.c1 = modelInputs.RNmu + C*gamma(1-Y)*(MM^(Y-1)-G^(Y-1));   % DEF: first cumulant
+    modelInputs.c2 = C *gamma(2-Y)*(MM^(Y-2)+G^(Y-2));   % DEF: second cumulant
+    modelInputs.c4 = C *gamma(4-Y)*(MM^(Y-4)+G^(Y-4));   % DEF: fourth cumulant
+    modelInputs.rnCHF = @(u)cf_RN_KoBoL(u,dt,r-q,c,lam_p,lam_m,nu);  % DEF: risk-neutral characteristic function at dt
+    modelInputs.rnCHF_T = @(u)cf_RN_KoBoL(u,T,r-q,c,lam_p,lam_m,nu);  % DEF: risk-neutral characteristic function at T
+    modelInputs.rnSYMB = @(u) SYMB_RN_KoBoL(u,r-q,c,lam_p,lam_m,nu);  % DEF: risk neutral Levy symbol
 end
 
 

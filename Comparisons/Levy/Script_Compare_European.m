@@ -28,7 +28,7 @@ T    = 1;    %Time (in years)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Step 2) CHOOSE MODEL PARAMETERS  (Levy Models)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-model = 3;   %See Models Below (e.g. model 1 is Black Scholes), and choose specific params
+model = 1;   %See Models Below (e.g. model 1 is Black Scholes), and choose specific params
 
 params = {};
 if model == 1 %BSM (Black Scholes Merton)
@@ -64,6 +64,12 @@ elseif model == 6 % Heston Model
     params.kappa =1.5768;   % rate of variance mean reversion
     params.sigma_v = 0.5751;   % volatility of variance
     params.rho = -0.5711;   % correlation between Brownian motions
+    
+elseif model == 7 %KoBoL
+    params.c  = 0.02; 
+    params.lam_p  = 15; 
+    params.lam_m = -5; 
+    params.nu  = 1.2;
 end
 
 modelInput = getModelInput(model, T, r, q, params);
