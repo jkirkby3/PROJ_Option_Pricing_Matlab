@@ -25,6 +25,9 @@ function Spath = Simulate_Jump_Diffusion_func( N_sim, M, T, S_0, r, q, sigma, ju
 %            : if jumpModel > 0, jumpParams must contain lambda, kappa, and any other model specific params (see below)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if nargin < 8   % Then default is standard diffusion, NO JUMPS
+    jumpModel = 0;  jumpParams = {};
+end
 
 dt = T/M;
 

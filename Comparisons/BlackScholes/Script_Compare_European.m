@@ -3,10 +3,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Descritpion: Script to Compare Methods For European Options Under Black Scholes Model
 %              This script compares accuracy/CPU of the following methods,
-%                   Monte Carlo (Exact / Euler)
-%                   Lattices (Binomial / Trinomial)
+%                   Monte Carlo (Euler, Exact Sim)
+%                   Lattices (Binomial, Trinomial)
 %                   PROJ
-%                   Finite Difference (Explicit / Implicit)
+%                   Finite Difference (Explicit, Implicit, Crank-Nicholson)
 %                   Fourier (Carr-Madan, CONV)
 %
 % Author:      Justin Kirkby
@@ -79,7 +79,7 @@ time_crankNicFD = toc;
 %%%  Carr-Madan Fourier Method
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 addpath('../../Fourier/CarrMadan/')
-N = 2^14;
+N = 2^15;
 tic
 price_CM = CarrMadan_European_Price_Strikes(S_0, W, modelInput.rnCHF, N, T, r, q, call);
 time_CM = toc;
@@ -116,12 +116,11 @@ time_CONV = toc;
 % NOTE: Variance reduction techniques should be used in practice
 addpath('../../Monte_Carlo/')
 addpath('../../Monte_Carlo/European')
-jumpModel = 0; jumpParams = {};
 N_sim = 10^5;  % number of paths
 M = 500; % number of time steps for euler
 disc = exp(-r*T);  % dicount factor
 tic
-Spath = Simulate_Jump_Diffusion_func( N_sim, M, T, S_0, r, q, sigma, jumpModel, jumpParams);
+Spath = Simulate_Jump_Diffusion_func( N_sim, M, T, S_0, r, q, sigma);
 [price_MC, stdErr] = Price_MC_European_Strikes_func(Spath, disc, call, W );
 price_MC_L = price_MC - 2*stdErr; price_MC_U = price_MC + 2*stdErr;
 time_MC = toc;

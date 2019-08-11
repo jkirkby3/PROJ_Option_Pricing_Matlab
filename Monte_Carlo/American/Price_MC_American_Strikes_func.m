@@ -1,4 +1,4 @@
-function [prices, stdErrs] = Price_MC_American_Strikes_func(Spath, disc, call, Kvec )
+function [prices, stdErrs] = Price_MC_American_Strikes_func(Spath, disc, call, Kvec, polyOrder)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % About: Longstaff-Schwartz Algo: Calculates American option prices for vector of strikes, given the simulatd paths 
 % Returns: prices and standard errors for each of the supplied strikes
@@ -11,18 +11,21 @@ function [prices, stdErrs] = Price_MC_American_Strikes_func(Spath, disc, call, K
 % call = 1 for call (else put)
 % Kvec = strike vector
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if nargin < 5
+    polyOrder = 3;  % Cubic polynomial by default
+end
 
 prices = zeros(length(Kvec), 1);
 stdErrs = zeros(length(Kvec), 1);
 
 for k = 1:length(Kvec)
     K = Kvec(k);
-    [prices(k), stdErrs(k)]  = Price_MC_American_func(Spath, disc, call, K);
+    [prices(k), stdErrs(k)]  = Price_MC_American_func(Spath, disc, call, K, polyOrder);
 end
 
 end
 
-function [price, stdErr] = Price_MC_American_func(Spath, disc, call, K )
+function [price, stdErr] = Price_MC_American_func(Spath, disc, call, K, polyOrder)
     M = size(Spath, 2) - 1;  % number of time steps 
     N_sim = size(Spath, 1);   % number of paths
     
@@ -43,7 +46,7 @@ function [price, stdErr] = Price_MC_American_func(Spath, disc, call, K )
         
         index = find(EV>0);  % just regress on in the money positions, otw there is cluster at zero due to payoff
 
-        regression = polyfit(Spath(index, m), payoff(index), 4);
+        regression = polyfit(Spath(index, m), payoff(index), polyOrder);
         EHV = polyval(regression, Spath(index, m));
 
         si = size(index);

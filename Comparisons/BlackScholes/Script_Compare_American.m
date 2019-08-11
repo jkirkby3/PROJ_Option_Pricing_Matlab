@@ -8,7 +8,6 @@
 %
 % Author:      Justin Kirkby
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 [folder, name, ext] = fileparts(which( mfilename('fullpath')));
 cd(folder);
 addpath('../../PROJ/LEVY/RN_CHF')
@@ -62,6 +61,20 @@ tic
 price_trinom = TrinomialLattice_BlackScholes_func(S_0, W, r, T, sigma, M_steps, call, 1);
 time_trinom = toc;
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Monte Carlo - Lonstaff Schwartz (MC-LS)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+addpath('../../Monte_Carlo/')
+addpath('../../Monte_Carlo/American')
+N_sim = 10^4;
+Spath = Simulate_Jump_Diffusion_func( N_sim, M, T, S_0, r, q, sigma);
+
+dt = T/M; disc = exp(-r*dt);
+[price_MC, stdErr] = Price_MC_American_Strikes_func(Spath, disc, call, W );
+
+price_MC_L = price_MC - 2*stdErr; price_MC_U = price_MC + 2*stdErr;
+time_MC = toc;
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% COMPARE
@@ -74,4 +87,6 @@ fprintf('---------------------------------------------\n')
 fprintf('PROJ        | %.8f  | %.2e | %.4f \n', price_PROJ, abs(ref-price_PROJ), time_PROJ)
 fprintf('Binomial    | %.8f  | %.2e | %.4f \n', price_binom, abs(ref-price_binom), time_binom)
 fprintf('Trinomial   | %.8f  | %.2e | %.4f \n', price_trinom, abs(ref-price_trinom), time_trinom)
+fprintf('---------------------------------------------\n')
+fprintf('MC-LS       |[%.3f,%.3f]| %.2e | %.4f \n', price_MC_L, price_MC_U, abs(ref-price_MC), time_MC)
 fprintf('---------------------------------------------\n')

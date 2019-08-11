@@ -5,10 +5,8 @@
 %              using the Monte Carlo Simulation (Longstaff-Schwartz)
 % Author:      Justin Kirkby
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 [folder, name, ext] = fileparts(which( mfilename('fullpath')));
 cd(folder);
-
 addpath('../')
 
 % ---------------------
