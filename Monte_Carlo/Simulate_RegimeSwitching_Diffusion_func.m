@@ -15,13 +15,6 @@ function Spath = Simulate_RegimeSwitching_Diffusion_func( N_sim, M, T, S_0, drif
 % S_0 = initial underlying value (e.g. S_0=100)
 % drift_vec = vector of drift coefficient by regime state, e.g. r_i - q_i, where r is interest rate in state i, and q is div yield
 % sigma_vec = diffusion coefficients in each state
-%
-%===================================
-% jumpModel: 0 = NoJumps, 1 = NormalJumps, 2 = DEJumps, 3 = MixedNormalJumps
-%===================================
-% jumpParams = paramters container containing all necessary params for models,
-%            : if jumpModel = 0, no jump params are needed
-%            : if jumpModel > 0, jumpParams must contain lambda, kappa, and any other model specific params (see below)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 dt = T/M;
