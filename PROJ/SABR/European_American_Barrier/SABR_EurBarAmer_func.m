@@ -1,6 +1,6 @@
 function  prices = SABR_EurBarAmer_func(call, M, T, S0, Kvec, r, CTMCParams, ModParams, contract_type, L)
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
+% Pricer
+% 
 
 m_0        = CTMCParams.m_0;
 N          = CTMCParams.N;
@@ -25,11 +25,7 @@ else
     ls = 0.001*S0;
 end
 
-us = 4.5*S0;  %upper bound in asset Grid (S_t) space
-us = max(us, S0+10*(v0*(S0)^beta)*sqrt(T));
-%%%%%%%%%%%%%%%%%%%%%%
-
-
+us = max(4.5*S0, S0 + 10*(v0*(S0)^beta)*sqrt(T));  %upper bound in asset Grid (S_t) space
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%   Step 1: Variance Grid / Generators
@@ -46,8 +42,8 @@ lx = max(0.0001,mu_H - gamma*sqrt(sig2_H));
 ux = mu_H + gamma*sqrt(sig2_H);  
 
 %%%% BOUND THE GRID BOUNDS %%%%
-lx = max(lx, 0.001*v0);
-ux = min(ux, 4*v0);
+% lx = max(lx, 0.001*v0);
+% ux = min(ux, 5*v0);
 % ux = min(ux, 1.5);  %ie hardcoded upper bound on vol of 150%
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
