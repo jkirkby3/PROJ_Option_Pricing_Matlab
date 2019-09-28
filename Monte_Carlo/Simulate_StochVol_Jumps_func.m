@@ -1,5 +1,6 @@
 function Spath = Simulate_StochVol_Jumps_func( N_sim, M, T, S_0, r, q, SVModel, SVModelParams, jumpModel, jumpParams)
 % Simulates Paths of Stochastic Volatility Models (basic Euler Scheme for most cases) with jumps
+% By default, if no jumpModel or jumpParams are passed, it defaults to stochastic vol without jumps
 % N_sim = # paths
 % M = #time steps on [0,T], ie dt =T/M   
 % Note: returns paths of dimension (N_sim,M+1), since they include S_0
@@ -24,6 +25,10 @@ function Spath = Simulate_StochVol_Jumps_func( N_sim, M, T, S_0, r, q, SVModel, 
 Sigmav = SVModelParams.Sigmav;
 v0     = SVModelParams.v0;
 rho    = SVModelParams.rho;
+
+if nargin < 10  % Defaults to the case of No Jumps
+    jumpModel = 0; jumpParams={};
+end
 
 if SVModel == 1 || SVModel == 2 || SVModel == 3 || SVModel == 4 || SVModel == 6 || SVModel == 7 || SVModel == 8 || SVModel == 9
     theta = SVModelParams.theta;
@@ -85,22 +90,21 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
 if SVModel == 1 %HESTON MODEL
+    % NOTE: Uses Full Truncation Scheme studied in Lord et. al. (2010)
        
-    expEta = exp(-eta*dt);
-    driftv = theta*(1 - expEta);  %analytical drift for variance process
     vOld   = v0*ones(N_sim,1); %used to store variance process
     sqvOld = sqrt(v0)*ones(N_sim,1);
+    edt = eta*dt;
     
     if jumpModel == 0
         for m = 1:M
             W1 = randn(N_sim,1); W2 = randn(N_sim,1);  %Generate two Brownian motions
-            Spath(:,m+1) = Spath(:,m).*exp((Zeta - .5*vOld)*dt + sqdt*sqvOld.*W1);  %log scheme
-            %Spath(:,m+1) = Spath(:,m)*( (1+r)*dt + sqrt(vOld)*(sqrho1*W1 + sqrho2*W2));  %level scheme
-            vNew = driftv + vOld*expEta + Sigmav*sqvOld.*(sqdtrho1*W1 + sqdtrho2*W2);
-            %vNew = (sqvOld +.5*Sigmav*(sqdtrho1*W1 + sqdtrho2*W2)).^2 + eta*(theta - vOld)*dt -.25*Sigmav*dt; %Milstein
-            vOld = abs(vNew); %Always stays positive, the "reflection" scheme
-            %vOld = max(0,vNew); %least biased scheme
-            sqvOld = sqrt(vOld);
+            Spath(:,m+1) = Spath(:,m).*exp((Zeta - .5*sqvOld.^2)*dt + sqdt*sqvOld.*W1);  %log scheme
+
+            vNew =  vOld  - edt*(max(0, vOld) - theta)  + Sigmav*sqvOld.*(sqdtrho1*W1 + sqdtrho2*W2);
+            vOld = vNew;
+            sqvOld =  sqrt(max(0, vOld)); 
+            
         end
     else
         for m = 1:M
@@ -111,13 +115,13 @@ if SVModel == 1 %HESTON MODEL
                     sumJumpsVec(n) = JumpFunc(Poi(n));  %JumpFunc(Poi(n)) sums up Poi(n) many jumps from the jump distribution
                 end
             end
-            
+
             W1 = randn(N_sim,1); W2 = randn(N_sim,1);  %Generate two Brownian motions
-            Spath(:,m+1) = Spath(:,m).*exp((Zeta - .5*vOld)*dt + sumJumpsVec + sqdt*sqvOld.*W1);  %log scheme
-            vNew = driftv + vOld*expEta + Sigmav*sqvOld.*(sqdtrho1*W1 + sqdtrho2*W2);
-            %vOld = abs(vNew); %Always stays positive, the "reflection" scheme
-            vOld = max(0,vNew); %least biased scheme
-            sqvOld = sqrt(vOld);
+            Spath(:,m+1) = Spath(:,m).*exp((Zeta - .5*sqvOld.^2)*dt + sumJumpsVec + sqdt*sqvOld.*W1);  %log scheme
+
+            vNew =  vOld  - edt*(max(0, vOld) - theta)  + Sigmav*sqvOld.*(sqdtrho1*W1 + sqdtrho2*W2);
+            vOld = vNew;
+            sqvOld =  sqrt(max(0, vOld)); 
         end
     end
 

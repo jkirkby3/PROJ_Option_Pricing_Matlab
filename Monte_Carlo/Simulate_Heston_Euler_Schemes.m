@@ -1,4 +1,4 @@
-function Spath = Simulate_Heston_Euler_Schemes( N_sim, M, T, S_0, r, q, scheme, SVModelParams)
+function Spath = Simulate_Heston_Euler_Schemes( N_sim, M, T, S_0, r, q, SVModelParams, scheme)
 % Simulates Paths of Heston Model under various Euler Schemes
 % See Lord et al (2010) for details
 % N_sim = # paths
@@ -10,11 +10,16 @@ function Spath = Simulate_Heston_Euler_Schemes( N_sim, M, T, S_0, r, q, scheme, 
 %        2 = Reflection
 %        3 = Higham and Mao
 %        4 = Partial Truncation
-%        5 = Full Truncation
+%        5 = Full Truncation  (Least Bias)
 
 %==============================
 % Initialize Params/Vectors
 %==============================
+
+if nargin < 8
+    scheme = 5;
+end
+
 Sigmav = SVModelParams.Sigmav;
 v0     = SVModelParams.v0;
 rho    = SVModelParams.rho;

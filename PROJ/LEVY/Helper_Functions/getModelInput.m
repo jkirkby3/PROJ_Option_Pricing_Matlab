@@ -97,13 +97,29 @@ elseif model == 5 %Kou Double Expo
     modelInputs.rnCHF_T = @(u)cf_RN_KOU(u,T,r-q,sigma,lam,p_up,eta1,eta2);
     modelInputs.rnSYMB = @(u) SYMB_RN_Kou( u, r-q, sigma,lam,p_up,eta1,eta2);  % DEF: risk neutral Levy symbol
     
-elseif model == 6  % Heston's model
+elseif model == 6  % Heston's model (Note: there are two supported parameter conventions here)
     %----------------------------------------------
-    v_0 = modelParams.v_0; 
     theta = modelParams.theta;
-    kappa = modelParams.kappa; 
-    sigma_v = modelParams.sigma_v;
     rho = modelParams.rho; 
+    
+    if isfield(modelParams,'kappa')
+        kappa = modelParams.kappa; 
+    else
+        kappa = modelParams.eta;
+    end
+    
+    if isfield(modelParams,'v_0')
+        v_0 = modelParams.v_0; 
+    else
+        v_0 = modelParams.v0;
+    end
+    
+    if isfield(modelParams,'sigma_v')
+        sigma_v = modelParams.sigma_v; 
+    else
+        sigma_v = modelParams.Sigmav;
+    end
+
     %----------------------------------------------
     modelInputs.RNmu = r-q -.5*theta;
     modelInputs.c1 = modelInputs.RNmu*dt + (1-exp(-kappa*dt))*(theta - v_0)/(2*kappa);

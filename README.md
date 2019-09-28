@@ -7,7 +7,7 @@ Monte Carlo and other pricing libraries are also provided to support R&D.
   <li> PROJ (General Purpose Fourier Method) </li>
   <li> Monte Carlo </li>
   <li> Analytical </li>
-  <li> Fourier (Carr-Madan, PROJ) </li>
+  <li> Fourier (Carr-Madan, CONV, PROJ) </li>
   <li> PDE/Finite Difference </li>
   <li> Lattice/Tree </li>
 </ul>  
