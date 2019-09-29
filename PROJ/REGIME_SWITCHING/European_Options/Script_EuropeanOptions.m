@@ -41,14 +41,14 @@ initial_state = 1;
 %%%  Step 3) CHOOSE PROJ PARAMETERS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 order = 3;  %Choose spline order from { 0,1,2,3} => {Haar, Linear, Quadratic, Cubic}, Haar is least accurate
-logN  = 9;   %Uses N = 2^logN  gridpoint 
-L1 = 12;  % determines grid witdth (usually set L1 = 8 to 15 for Levy)
+logN  = 8;   %Uses N = 2^logN  gridpoint 
+L1 = 8;  % determines grid witdth (usually set L1 = 8 to 15 for Levy)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% PRICE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 alpha = L1*sqrt(T)*max(sigma_vec);   % Choose grid width based on the largest volatility
-N = 2^logN;    % grid roughly centered on [c1 - alph, c1 + alph]
+N = 2^logN;    % grid roughly centered on [- alph, alph]
 
 tic
 price = PROJ_RegimeSwitching_European(order, N, alpha, r, q, T, S_0, W, call, Q, sigma_vec, initial_state);
