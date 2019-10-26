@@ -159,12 +159,16 @@ G(1:nbar-2) = D       - Cc4*E(1:nbar-2);
 %%-------------------------------------------------------------------------
 
 if call==1  %Call Option
-    Val = C_aN*exp(-r*T)*sum(beta(1:nbar+1).*G) + C*exp(-r*T)*(exp((r-q)*T*(1+1/M))-1)/(exp((r-q)*dt)-1) - W*exp(-r*T);
+    if r - q == 0
+        mult = M + 1;
+    else
+        mult = (exp((r-q)*T*(1+1/M))-1)/(exp((r-q)*dt)-1);
+    end
+    Val = C_aN*exp(-r*T)*sum(beta(1:nbar+1).*G) + C*exp(-r*T)*mult - W*exp(-r*T);
+    
 else  %Put option
     Val =C_aN*exp(-r*T)*sum(beta(1:nbar+1).*G);
 end
-
-
 
 
 end
