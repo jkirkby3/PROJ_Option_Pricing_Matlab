@@ -42,9 +42,14 @@ CTMCParams.gamma = 6;  %Grid width param for variance grid
 % Model Params
 % -----------------
 ModParams.beta   = .6;
-ModParams.alpha  = 0.3;
-ModParams.v0     = 0.25;
-ModParams.rho    = -0.5;
+ModParams.alpha  = 0.08;
+ModParams.v0     = 0.2;
+ModParams.rho    = 0;
+
+% ModParams.beta   = .6;
+% ModParams.alpha  = 0.3;
+% ModParams.v0     = 0.25;
+% ModParams.rho    = -0.5;
 
 % ModParams.beta   = .7;
 % ModParams.alpha  = 0.08;
