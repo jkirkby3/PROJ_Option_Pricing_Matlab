@@ -4,9 +4,10 @@
 % Descritpion: Script to Compare Methods For European Options Under Hestons Model
 % Author:      Justin Kirkby
 % 
-% Methods: 1) Kahl-Jackel-Lord Approach
+% Methods: 1) Kahl-Jackel-Lord Approach (Fourier)
 %          2) PROJ
-%          3) Monte Carlo, Using Lord et al (2010) Schemes
+%          3) Monte Carlo, Using Lord et al (2010) Low-Bias Schemes
+%               ... More to come
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 [folder, name, ext] = fileparts(which( mfilename('fullpath')));
@@ -39,7 +40,7 @@ params.rho = -0.5711;   % correlation between Brownian motions
 modelInput = getModelInput(6, T, r, q, params);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%  Kahl-Jackel-Lord Approach
+%%%  Kahl-Jackel-Lord (KJL) Approach
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 addpath('../../Fourier/Heston/')
 tic
@@ -49,7 +50,6 @@ time_KJL = toc;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% PROJ
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-order = 3;  %Choose spline order from { 0,1,2,3} => {Haar, Linear, Quadratic, Cubic}
 logN  = 12;   %Uses N = 2^logN  gridpoint 
 L1 = 18;
 
@@ -58,7 +58,7 @@ N = 2^logN;    % grid roughly centered on [c1 - alph, c1 + alph]
 alpha = getTruncationAlpha(T, L1, modelInput, 6);
 
 tic
-price_PROJ = PROJ_European(order, N, alpha, r, q, T, S_0, W, call, modelInput.rnCHF, modelInput.c1*T);
+price_PROJ = PROJ_European(3, N, alpha, r, q, T, S_0, W, call, modelInput.rnCHF, modelInput.c1*T);
 time_PROJ = toc;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

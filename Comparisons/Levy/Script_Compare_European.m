@@ -3,10 +3,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Descritpion: Script to Compare Methods For European Options Under Levy Models
 %              This script compares accuracy/CPU of the following methods:
-%                   PROJ (Fourier)
-%                   Carr-Madan (Fourier)
-%                   CONV (Fourier)
-%
+%                   1) PROJ (Fourier)
+%                   2) Carr-Madan (Fourier)
+%                   3) CONV (Fourier)
+%                       ... More to come
+%   
 % Author:      Justin Kirkby
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -87,7 +88,6 @@ time_CM = toc;
 %%%  PROJ Method
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 addpath('../../PROJ/LEVY/European_Options')
-order = 3;  %Choose spline order from { 0,1,2,3} => {Haar, Linear, Quadratic, Cubic}
 logN  = 11;   %Uses N = 2^logN  gridpoint 
 L1 = 16;
 
@@ -96,7 +96,7 @@ N = 2^logN;    % grid roughly centered on [c1 - alph, c1 + alph]
 alpha = getTruncationAlpha(T, L1, modelInput, model);
 
 tic
-price_PROJ = PROJ_European(order, N, alpha, r, q, T, S_0, W, call, modelInput.rnCHF, modelInput.c1*T);
+price_PROJ = PROJ_European(3, N, alpha, r, q, T, S_0, W, call, modelInput.rnCHF, modelInput.c1*T);
 time_PROJ = toc;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -113,7 +113,7 @@ time_CONV = toc;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Nref = 2^16; L1Ref = 20;   % Params to obtain reference price
 alphaRef = getTruncationAlpha(T, L1Ref, modelInput, model);
-price_Ref = PROJ_European(order, Nref, alphaRef, r, q, T, S_0, W, call, modelInput.rnCHF, modelInput.c1*T);
+price_Ref = PROJ_European(3, Nref, alphaRef, r, q, T, S_0, W, call, modelInput.rnCHF, modelInput.c1*T);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% COMPARE
