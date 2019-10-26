@@ -1,7 +1,24 @@
 function price = Price_Asian_VorstApprox_BlackScholes(S_0, sigma, M, W, call, T, r, q, enforce_convention)
-%UNTITLED8 Summary of this function goes here
-%   Detailed explanation goes here
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% About: Pricing Function for Arithmetic Asian Options using Vorst Approximation Method
+% Models Supported: Black-Scholes
+% Returns: price of contract
+% Author: Justin Lars Kirkby
+%
+% ----------------------
+% Contract/Model Params 
+% ----------------------
+% S_0   = initial stock price (e.g. 100)
+% sigma = volatility of diffusion (e.g. 0.2)
+% W     = strike  (e.g. 100)
+% r     = interest rate (e.g. 0.05)
+% q     = dividend yield (e.g. 0.05)
+% T     = time remaining until maturity (in years, e.g. T=1)
+% M     = number of subintervals of [0,T] (total of M+1 monitoring points in time grid, including S_0)
+% call  = 1 for call (else put)
+% enforce_convention  =  true by default, enforces convention that S_0 is included in the average, else averaging starts at S_1
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NOTE: we do an adjustment so that the formula is in terms of Avg(S_0,S_1,...,S_M) instead of Avg(S_1,...,S_M)
 
 dt = T/M;
