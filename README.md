@@ -24,9 +24,9 @@ Monte Carlo and other pricing libraries are also provided to support R&D.
   <li> Forward Starting Options </li>
   <li> Step (Soft Barrier) Options </li>
   <li> Lookback/Hindsight Options </li>
+  <li> Credit default swaps / default probabilities </li>
   <li> Fader Options (To be added) </li>
   <li> Swing Options (To be added) </li>
-  <li> Credit default swaps (To be added) </li>
  </ul>
   
 <b>Models supported:</b>
