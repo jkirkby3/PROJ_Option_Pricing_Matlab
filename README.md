@@ -23,9 +23,9 @@ Monte Carlo and other pricing libraries are also provided to support R&D.
   <li> Cliquets/Equity Indexed Annuities (Additive/Multiplicative)</li>
   <li> Forward Starting Options </li>
   <li> Step (Soft Barrier) Options </li>
+  <li> Lookback/Hindsight Options </li>
   <li> Fader Options (To be added) </li>
   <li> Swing Options (To be added) </li>
-  <li> Lookback/Hindsight Options (To be added) </li>
   <li> Credit default swaps (To be added) </li>
  </ul>
   
@@ -54,7 +54,7 @@ These pricing libraries have been built in collaboration with:
 <ul>
   <li> 
     <a href="https://www.researchgate.net/publication/271529024_Efficient_Option_Pricing_by_Frame_Duality_with_the_Fast_Fourier_Transform"> Efficient Option Pricing by Frame Duality with the Fast Fourier Transform. SIAM J. Financial Math (2015)</a>
-    </li>
+  </li>
   <li> <a href="https://www.researchgate.net/publication/290607662_An_Efficient_Transform_Method_for_Asian_Option_Pricing">An Efficient Transform Method for Asian Option Pricing. SIAM J. Financial Math (2016) </a> 
   </li>
   <li> <a href="https://www.researchgate.net/publication/315888055_A_general_framework_for_discretely_sampled_realized_variance_derivatives_in_stochastic_volatility_models_with_jumps">A general framework for discretely sampled realized variance derivatives in stochastic volatility models with jumps. European J. Operational Research (2017) </a> 
@@ -73,9 +73,13 @@ These pricing libraries have been built in collaboration with:
   </li>
   <li> <a href="https://www.researchgate.net/publication/327411363_A_General_Framework_for_Time-Changed_Markov_Processes_and_Applications"> A General Framework for Time-Changed Markov Processes and Applications. European J. Operational Research (2018) </a> 
   </li>
+  <li> <a href="https://www.researchgate.net/publication/334716223_Full-fledged_SABR_Through_Markov_Chains?_sg=wav6ifhPa8HmCsvRzHVqYYPU2VHZKMTyP-1ZX_eeuqYZz5cpfKqZ0OCTODC9Ci1aY8j99amKGjbwZnaf1q1k2cTmLdIfxamtOAx_pXs8.W0biWEvGq-ILKu2DgzAI35-BBXMZp3bN1jBLDKKfSg_FgFd9ci8xXqXQIKbA5UoPE6sUA9GrpH8ByrP8-Xx1aA"> Full-Fledged SABR Through Markov Chains, Wilmott(2019) </a> 
+  </li>
   <li> <a href="https://www.researchgate.net/publication/324731726_A_General_Valuation_Framework_for_SABR_and_Stochastic_Local_Volatility_Models"> A General Valuation Framework for SABR and Stochastic Local Volatility Models. SIAM J. Financial Mathematics (2018) </a> 
   </li>
   <li> <a href="https://www.researchgate.net/publication/330401656_Continuous-Time_Markov_Chain_and_Regime_Switching_Approximations_with_Applications_to_Options_Pricing"> Continuous-Time Markov Chain and Regime Switching Approximations with Applications to Options Pricing. IMA Volumes on Mathematics (2019)</a> 
+  </li>
+  <li> <a href="https://www.researchgate.net/publication/336281657_Swing_Option_Pricing_by_Dynamic_Programming_with_B-Spline_Density_Projection"> Swing Option Pricing By Dynamic Programming with B-Spline Density Projection, IJTAF, Forthcoming (2020)</a> 
   </li>
   <li>
     <a href="https://smartech.gatech.edu/bitstream/handle/1853/59138/KIRKBY-DISSERTATION-2016.pdf"> Frame and Fourier Methods for Exotic Option Pricing and Hedging. Georgia Institute of Technology (2016). </a>
