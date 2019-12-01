@@ -47,6 +47,7 @@ These pricing libraries have been built in collaboration with:
   <li><a href="https://www.researchgate.net/profile/Justin_Kirkby"> Justin Lars Kirkby </a> </li>
   <li><a href="https://www.researchgate.net/profile/Duy_Nguyen125">Duy Nguyen </a> </li>
   <li><a href="https://www.researchgate.net/profile/Zhenyu_Cui"> Zhenyu Cui </a> </li>
+  <li><a href="https://www.researchgate.net/profile/Zhimin_Zhang3"> Zhimin Zhang </a> </li>
   <li><a href="https://www2.isye.gatech.edu/people/faculty/Shijie_Deng/"> Shijie Deng </a> </li>
  </ul>
 
@@ -82,6 +83,9 @@ These pricing libraries have been built in collaboration with:
   <li> <a href="https://www.researchgate.net/publication/336281657_Swing_Option_Pricing_by_Dynamic_Programming_with_B-Spline_Density_Projection"> Swing Option Pricing By Dynamic Programming with B-Spline Density Projection, IJTAF, Forthcoming (2020)</a> 
   </li>
   <li>
+    <a href="https://www.researchgate.net/publication/334822473_Valuing_equity-linked_death_benefits_in_general_exponential_Levy_models"> Valuing Equity-Linked Death Benefits in General Exponential Levy Models. J. Comput. and Appl. Math. (2019). </a>
+  </li>
+    <li>
     <a href="https://smartech.gatech.edu/bitstream/handle/1853/59138/KIRKBY-DISSERTATION-2016.pdf"> Frame and Fourier Methods for Exotic Option Pricing and Hedging. Georgia Institute of Technology (2016). </a>
   </li>
 </ul>
