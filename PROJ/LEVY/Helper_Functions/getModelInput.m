@@ -153,6 +153,10 @@ elseif model == 7 %KoBoL Model
     modelInputs.rnCHF = @(u)cf_RN_KoBoL(u,dt,r-q,c,lam_p,lam_m,nu);  % DEF: risk-neutral characteristic function at dt
     modelInputs.rnCHF_T = @(u)cf_RN_KoBoL(u,T,r-q,c,lam_p,lam_m,nu);  % DEF: risk-neutral characteristic function at T
     modelInputs.rnSYMB = @(u) SYMB_RN_KoBoL(u,r-q,c,lam_p,lam_m,nu);  % DEF: risk neutral Levy symbol
+elseif model == 8 %Variance Gamma
+    % NOTE: this is just a placeholder for now, code remains to be implemented
+    % sigma, nu, theta
+    % sigma = Brownian component add on
 end
 
 
