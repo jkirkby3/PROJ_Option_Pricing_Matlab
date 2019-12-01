@@ -88,17 +88,17 @@ These pricing libraries have been built in collaboration with:
   </li>
     <li> <a href="https://www.researchgate.net/publication/330401656_Continuous-Time_Markov_Chain_and_Regime_Switching_Approximations_with_Applications_to_Options_Pricing"> Continuous-Time Markov Chain and Regime Switching Approximations with Applications to Options Pricing. IMA Volumes on Mathematics (2019)</a> 
   </li>
-    <li> <a href="https://www.researchgate.net/publication/334716223_Full-fledged_SABR_Through_Markov_Chains?_sg=wav6ifhPa8HmCsvRzHVqYYPU2VHZKMTyP-1ZX_eeuqYZz5cpfKqZ0OCTODC9Ci1aY8j99amKGjbwZnaf1q1k2cTmLdIfxamtOAx_pXs8.W0biWEvGq-ILKu2DgzAI35-BBXMZp3bN1jBLDKKfSg_FgFd9ci8xXqXQIKbA5UoPE6sUA9GrpH8ByrP8-Xx1aA"> Full-Fledged SABR Through Markov Chains, Wilmott(2019) </a> 
+    <li> <a href="https://www.researchgate.net/publication/334716223_Full-fledged_SABR_Through_Markov_Chains?_sg=wav6ifhPa8HmCsvRzHVqYYPU2VHZKMTyP-1ZX_eeuqYZz5cpfKqZ0OCTODC9Ci1aY8j99amKGjbwZnaf1q1k2cTmLdIfxamtOAx_pXs8.W0biWEvGq-ILKu2DgzAI35-BBXMZp3bN1jBLDKKfSg_FgFd9ci8xXqXQIKbA5UoPE6sUA9GrpH8ByrP8-Xx1aA"> Full-Fledged SABR Through Markov Chains, Wilmott (2019) </a> 
   </li>
 </ul>
 
-<b> II) Stochastic Local Volatility (SABR, Quadratic SLV, etc) </b>
+<b> III) Stochastic Local Volatility (SABR, Quadratic SLV, etc) </b>
 <ul>
   <li> <a href="https://www.researchgate.net/publication/324731726_A_General_Valuation_Framework_for_SABR_and_Stochastic_Local_Volatility_Models"> A General Valuation Framework for SABR and Stochastic Local Volatility Models. SIAM J. Financial Mathematics (2018) </a> 
   </li>
 </ul>
 
-<b> III) Time-Changed Processes</b>
+<b> IV) Time-Changed Processes</b>
 <ul>
     <li> <a href="https://www.researchgate.net/publication/327411363_A_General_Framework_for_Time-Changed_Markov_Processes_and_Applications"> A General Framework for Time-Changed Markov Processes and Applications. European J. Operational Research (2018) </a> 
   </li>
