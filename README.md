@@ -52,6 +52,7 @@ These pricing libraries have been built in collaboration with:
  </ul>
 
 <b> Supporting Research Articles: </b>
+
 <b> I) Levy Models, Jump Diffusions, Black Scholes </b>
 <ul>
   <li> 
@@ -92,6 +93,7 @@ These pricing libraries have been built in collaboration with:
 </ul>
 
 <b> II) Stochastic Local Volatility (SABR, Quadratic SLV, etc) </b>
+<ul>
   <li> <a href="https://www.researchgate.net/publication/324731726_A_General_Valuation_Framework_for_SABR_and_Stochastic_Local_Volatility_Models"> A General Valuation Framework for SABR and Stochastic Local Volatility Models. SIAM J. Financial Mathematics (2018) </a> 
   </li>
 </ul>
