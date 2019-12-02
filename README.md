@@ -26,7 +26,7 @@ Monte Carlo and other pricing libraries are also provided to support R&D.
   <li> Step (Soft Barrier) Options </li>
   <li> Lookback/Hindsight Options </li>
   <li> Credit default swaps / default probabilities </li>
-  <li> Swing Options </li>
+  <li> Swing Options (Fixed Rights, Linear Recovery & Constant Recovery) </li>
   <li> Fader Options (To be added) </li>
  </ul>
   
