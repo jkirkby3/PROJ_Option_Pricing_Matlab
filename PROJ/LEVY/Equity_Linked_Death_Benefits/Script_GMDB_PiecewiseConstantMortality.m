@@ -1,8 +1,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% GMWB PRICER (RUN SCRIPT)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Descritpion: Script to Price Guaranteed Minimum Withdraw Benefits (GMWB)
-%              using the PROJ method, under combination of exponential mortaily model
+% Descritpion: Script to Price Guaranteed Minimum Death Benefits (GMDB)
+%              using the PROJ method . This version assume Piecewise constant mortality forces
 %
 % Author:      Zhimin Zhang  (Original Code)
 %              Justin Lars Kirkby (Convert into common framework)
@@ -20,16 +20,15 @@ addpath('../Helper_Functions')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Step 1) CHOOSE CONTRACT/GENERAL PARAMETERS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-call = 0;    %For call use 1 (else, its a put)
+% NOTE: this script is written for put options only
 S_0  = 100;  %Initial price
-W    = 120;  %Strike            %NOTE: no error handling in place for extreme values of W (increase grid if strike falls outside)
+W    = 100;  %Strike            %NOTE: no error handling in place for extreme values of W (increase grid if strike falls outside)
 r    = .05;  %Interest rate
-T    = 20;    %Time (in years), set to -1 to price a perpetual (ie no time to expiry)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Step 2) CHOOSE MODEL PARAMETERS  (Levy Models)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-model = 1;   %See Models Below (e.g. model 1 is Black Scholes), and choose specific params
+model = 3;   %See Models Below (e.g. model 1 is Black Scholes), and choose specific params
 
 params = {};
 params.model = model;
@@ -64,17 +63,18 @@ elseif model == 8 % Variance Gamma
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%  Step 3) CHOOSE Time-Until-Death PARAMETERS (Combination of expos)
+%%%  Step 3) CHOOSE Time-Until-Death PARAMETERS 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 params_death = {};
-params_death.A = [3 -2];  % coefficients of combination of expos
-params_death.lambda = [0.08 0.12];  % expo rates
+params_death.qx = load('lifetable_qx.txt');   %%life table 2014
+params_death.x = 30;  % current age
+params_death.max_age = 110;  % max age in lifetable
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Step 4) CHOOSE PROJ PARAMETERS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-order = 1;  %Spline order (for now just linear)
-P = 8;
+order = 1;  %Choose spline order (right now only order 1(linear) is supported)
+P = 5;
 Pbar = P+2;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -82,7 +82,7 @@ Pbar = P+2;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if order == 1
     tic
-    price = PROJ_GMWB_ComboExpos_Linear(P, Pbar, S_0, W, call, r, params, params_death, T);
+    price = PROJ_GMDB_PiecewiseConstantMortality_Linear( P, Pbar, S_0, W, 0, r, params, params_death);
     toc
     fprintf('%.8f \n', price)
 else

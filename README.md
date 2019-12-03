@@ -21,7 +21,7 @@ Monte Carlo and other pricing libraries are also provided to support R&D.
   <li> Bermudan/American early-exercise Options </li>
   <li> Parisian Options (Cumulative and resetting Parisian barrier options) </li>
   <li> Cliquets/Equity Indexed Annuities (Additive/Multiplicative)</li>
-  <li> Equity Linked Death Benefits / Guaranteed Minimum Withdraw Benefits</li>
+  <li> Equity Linked Death Benefits / Guaranteed Minimum Death Benefits (GMDB) </li>
   <li> Forward Starting Options </li>
   <li> Step (Soft Barrier) Options </li>
   <li> Lookback/Hindsight Options </li>

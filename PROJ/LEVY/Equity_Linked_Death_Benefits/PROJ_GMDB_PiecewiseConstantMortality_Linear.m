@@ -1,6 +1,6 @@
-function price = PROJ_GMWB_PiecewiseConstantMortality_Linear( P, Pbar, S_0, W, call, r, params_levy, params_mort)
+function price = PROJ_GMDB_PiecewiseConstantMortality_Linear( P, Pbar, S_0, W, call, r, params_levy, params_mort)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% About: Pricing Function for Gauranteed Minimum Withdraw Benefit Options using PROJ method
+% About: Pricing Function for Gauranteed Minimum Death Benefit Options using PROJ method
 %        This version assumes a piecewise constant model of mortality (see first reference below)
 % Models Supported: Levy Processes, including jump diffusions and Black-Scholes model
 % Returns: price of contract
