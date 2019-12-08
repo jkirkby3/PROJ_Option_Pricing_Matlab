@@ -5,6 +5,11 @@ function price = PROJ_European(order, N, alph, r, q, T, S_0, W, call, rnCHF, c1)
 % Returns: price of contract
 % Author: Justin Lars Kirkby
 %
+% References:  1) Efficient Option Pricing by Frame Duality with the Fast Fourier Transform. 
+%                 SIAM J. Financial Math (2015), Kirkby, J.L
+%              2) Robust option pricing with characteristic functions and the B-spline order of density projection,
+%                 J. Compuational Finance (2017), Kirkby, J.L
+%
 % ----------------------
 % Contract/Model Params 
 % ----------------------

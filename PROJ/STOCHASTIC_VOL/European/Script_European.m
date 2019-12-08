@@ -20,15 +20,15 @@ S_0  = 100;
 W    = 100;  %strike
 r    = 0.05; q = 0;
 T    = .25;
-M    = 80;
+M    = 1;
 call = 1;
 
 
 %%%----------------------------
 N    = 2^10;    %number of points in density expansion... Value grid size is K:=N/2
-alph = 6;  %density projection grid on [-alpha,alpha]
+alph = 5;  %density projection grid on [-alpha,alpha]
 %%%----------------------------
-m_0           = 25;  % number of CTMC grid points
+m_0           = 20;  % number of CTMC grid points
 gamma         = 5;  % CTMC grid width param
 gridMethod    = 4;
 gridMultParam = 0.2;
@@ -184,14 +184,13 @@ fprintf('%.8f \n', price)
 if model == 1  % Compare with reference price when model is HESTON
     addpath('../../LEVY/European_Options')
     addpath('../../LEVY/Helper_Functions')
+    addpath('../../LEVY/RN_CHF')
     
-    params.v_0 = modparam.v0; params.theta = modparam.theta; params.kappa =modparam.eta;
-    params.sigma_v = modparam.Sigmav;  params.rho = modparam.rho;   
 
-    modelInput = getModelInput(6, T, r, q, params);
+    modelInput = getModelInput(6, T, r, q, modparam);
     L1 = 14;  alpha = getTruncationAlpha(T, L1, modelInput, 6); N = 2^14; order = 3;
 
-    ref = PROJ_European( order,N,alpha,r,q,T,S_0,W,call,modelInput.rnCHF,modelInput.c1*T);
+    ref = PROJ_European( order,N,alpha,r,q,T,S_0,W,call, modelInput.rnCHF, modelInput.c1*T);
     fprintf('Relative Error: %.3e\n', (price - ref) / price)
 
 end
