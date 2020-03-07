@@ -59,7 +59,7 @@ time_PROJ = toc;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%  Monte Carlo - Lonstaff Schwartz (MC-LS)
+%%%  Monte Carlo (Euler)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 addpath('../../Monte_Carlo/')
 addpath('../../Monte_Carlo/Asian')

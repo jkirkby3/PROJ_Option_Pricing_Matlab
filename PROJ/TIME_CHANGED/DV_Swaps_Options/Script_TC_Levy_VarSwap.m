@@ -4,7 +4,7 @@
 % Descritpion: Script to Price Discrete Variance Swap under Hestons Model
 % Author:      Justin Kirkby
 % References:  (1) A General Framework for tim changed Markov Processes and Applications
-%              European J. Operational research, 2018
+%              European J. Operational research, 2019
 %              (2) Efficient Option Pricing By Frame Duality with The Fast
 %              Fourier Transform, SIAM J. Financial Math., 2015
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -36,7 +36,7 @@ eta = 3;
 theta = 0.04;
 Sigmav = 0.1;
 v0 = 0.04;
-rho = 0;  % NOTE: rho must be zero, time-changed approach here requires zero correlation (otw its approximation)
+rho = 0.0;  % NOTE: rho must be zero, time-changed approach here requires zero correlation (otw its approximation)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

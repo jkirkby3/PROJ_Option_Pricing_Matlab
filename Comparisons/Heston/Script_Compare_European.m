@@ -94,6 +94,7 @@ time_TCMC = toc;
 %%% SV-PROJ
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 addpath('../../PROJ/STOCHASTIC_VOL/European/')
+addpath('../../PROJ/STOCHASTIC_VOL/Barrier/')
 addpath('../../PROJ/STOCHASTIC_VOL/Helper_Functions/')
 % This version uses the Stoch Vol pricer for Barrier options to price European (More of a multiple purpose method)
 if call == 1
