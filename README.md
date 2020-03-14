@@ -15,7 +15,7 @@ Monte Carlo and other pricing libraries are also provided to support R&D.
 <b>Contract types supported:</b>
 <ul>
   <li> European Options </li>
-  <li> Barrier Options (Single/Double barrier, with early excercise, and rebates) </li>
+  <li> Barrier Options (Single/Double barrier, and rebates) </li>
   <li> Asian Options (Discrete/Continuous)</li>
   <li> Discrete Variance Swaps, Variance/Volatility Options </li>
   <li> Bermudan/American early-exercise Options </li>
@@ -27,7 +27,7 @@ Monte Carlo and other pricing libraries are also provided to support R&D.
   <li> Lookback/Hindsight Options </li>
   <li> Credit default swaps / default probabilities </li>
   <li> Swing Options (Fixed Rights, Linear Recovery & Constant Recovery) </li>
-  <li> Fader Options (To be added) </li>
+  <li> Fader/Range-Accrual Options  </li>
  </ul>
   
 <b>Models supported:</b>
