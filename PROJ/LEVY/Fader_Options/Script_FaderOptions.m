@@ -1,12 +1,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% STEP OPTION PRICER
+%%% FADER OPTION PRICER
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Descritpion: Script to Price Step (Soft) Barrier options in Levy Models
-%              using the PROJ method
-% Payoff is exp(-stepRho*R)*(S_T - W)^+ for a call, where R is the proportion of time spent in knock-out region
-%
-%   NOTE: Similar contract is Fader option, (1 - R)*(S_T - W)^+ ... see Fader Option Script
-%
+% Descritpion: Script to Price Fader (Soft) Barrier options in Levy Models
+%              using the PROJ method. 
+% Fade-In Payoff is (1 - R)*(S_T - W)^+ for a call, where R is the proportion of time spent in knock-out region
+%   (Note: Fade out can be priced by parity, (Fade-in + Fade-out = Vanilla), so Price(Fade-out) = Price(Vanilla) - Price(Fade-in)
 % Author:      Justin Kirkby
 % References:   
 %              (1) Robust Barrier Option Pricing by Frame Projection under
@@ -19,7 +17,7 @@
 cd(folder);
 addpath('../RN_CHF')
 addpath('../Helper_Functions')
-
+addpath('../Step_Options')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Step 1): CONTRACT/GENERAL PARAMETERS
@@ -34,7 +32,6 @@ down = 1;    %down-out or up-out (down=1 => down-and-out)
 H    = 90;   %barrier
 M    = 52;  %number of discrete monitoring points 
 
-stepRho = 20;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Step 2): CHOOSE MODEL PARAMETERS (Levy Models)
@@ -93,7 +90,7 @@ c1 = modelInput.c1; c2 = modelInput.c2; c4 = modelInput.c4; rnCHF = modelInput.r
 
 if (down == 1 && call ~= 1) || (down ~=1 && call == 1)
     tic
-    price = PROJ_StepOption_AutoParam(N,stepRho,call,down, S_0,W,H,M,r,q,rnCHF,T,L1,c2,c4, alphMult,TOLProb,TOLMean,rnCHF_T);
+    price = PROJ_StepOption_AutoParam(N,-1,call,down, S_0,W,H,M,r,q,rnCHF,T,L1,c2,c4, alphMult,TOLProb,TOLMean,rnCHF_T);
     fprintf('PRICE: %.8f \n', price)
     toc
 else

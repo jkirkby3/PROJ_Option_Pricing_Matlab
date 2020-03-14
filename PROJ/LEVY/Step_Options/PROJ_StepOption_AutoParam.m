@@ -1,7 +1,9 @@
 function price = PROJ_StepOption_AutoParam(N,stepRho, call,down, S_0,W,H,M,r,q,rnCHF,T,L1,c2,c4, alphMult,TOLProb,TOLMean,rnCHFT)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% About: Pricing Function for Step-style barrier options using PROJ method
-%     Payoff is exp(-stepRho*tau_M) * (S_T - W)^+  for a call, where tau_M is the amount of time spent in knock-out region
+% About: Pricing Function for STEP-style barrier options and FADER options using PROJ method 
+%     Step Payoff: exp(-stepRho*R) * (S_T - W)^+  for a call, where R is the proportion of time spent in knock-out region
+%     Fader (Fade-in) Payoff: (1 - R) * (S_T - W)^+ for a call, where R is the proportion of time spent in knock-out region
+%           (Fade-out) Can be priced by parity (Fade-in + Fade-out = Vanilla), so Price(Fade-out) = Price(Vanilla) - Price(Fade-in)
 % Models Supported: Levy Processes, including jump diffusions and Black-Scholes model
 % Returns: price of contract
 % Author: Justin Lars Kirkby
@@ -13,6 +15,8 @@ function price = PROJ_StepOption_AutoParam(N,stepRho, call,down, S_0,W,H,M,r,q,r
 % ----------------------
 % Contract/Model Params 
 % ----------------------
+% stepRho: if >= 0, then Step-Option: "softener" h(R) = exp(-stepRho * R)
+%          if = -1, then Fader-Option: "softener" h(R) = 1 - R 
 % S_0 = initial stock price (e.g. 100)
 % W   = strike  (e.g. 100)
 % r   = interest rate (e.g. 0.05)
@@ -39,8 +43,16 @@ function price = PROJ_StepOption_AutoParam(N,stepRho, call,down, S_0,W,H,M,r,q,r
 
 Gamm = M+1;  % max number of time points (so max number that could possibly be spent in knockout region)
 tauM = 1 / (M+1);
-stepSoftener = @(u) exp(-stepRho*tauM*u);
-%stepSoftener = @(u) 1*(u<=Gamm);
+
+if stepRho >= 0 % Step Option  % NOTE: stepRho == 0 corresponds to vanilla option
+    stepSoftener = @(u) exp(-stepRho*tauM*u);
+    
+elseif stepRho == -1  % Fader Option  (Fade-in)
+    stepSoftener = @(u) 1 - u / (M + 1) ;
+    
+elseif stepRho == -2   % Ordinary Barrier option (no excursion forgiveness)
+    stepSoftener = @(u) 1*(u==0);
+end
 
 gamm0 = 1; %HARDCODED: this param would allow us to specify an inital consumed budget
 
