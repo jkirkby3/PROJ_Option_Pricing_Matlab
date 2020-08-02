@@ -5,6 +5,7 @@ Monte Carlo and other pricing libraries are also provided to support R&D.
 <b>Pricing methods supported:</b>
 <ul>
   <li> PROJ (General Purpose Fourier Method) </li>
+  <li> CTMC Approximation </li>
   <li> Monte Carlo </li>
   <li> Analytical </li>
   <li> Fourier (Carr-Madan, CONV, PROJ) </li>
@@ -35,11 +36,11 @@ Monte Carlo and other pricing libraries are also provided to support R&D.
 <b>Models supported:</b>
 <ul>
   <li> Diffusions (Black-Scholes-Merton) </li>
-  <li> Multi-Dimensional Diffusions
+  <li> Multi-Dimensional Diffusions (Black-Scholes Multi-Asset) </li>
   <li> Jump Diffusions (Merton Jump, Kou double exponential, Mixed-Normal)  </li>
   <li> General Levy processes (CGMY/KoBoL, Normal-Inverse-Gaussian (NIG), Variance Gamma, Meixner) </li>
   <li> SABR </li>
-  <li> Stochastic Local Volatility </li>
+  <li> Stochastic Local Volatility (SLV) </li>
   <li> Regime switching jump diffusions </li>
   <li> Time-changed processes </li>
   <li> Stochastic Volatility (Heston/Bates, Hull-White, 4/2, 3/2, alpha-hypergeometric, Jacobi, Schobel-Zhu, Stein-Stein, Scott, tau/2)   </li>
@@ -110,7 +111,7 @@ These pricing libraries have been built in collaboration with:
 
 <b> V) Multi-Dimensional Diffusions </b>
 <ul>
-  <li>  <a href="https://www.researchgate.net/publication/342174203_A_general_continuous_time_Markov_chain_approximation_for_multi-asset_option_pricing_with_systems_of_correlated_diffusions"> A general continuous time Markov chain approximation for multi-asset option pricing with systems of correlated diffusions </a> 
+  <li>  <a href="https://www.researchgate.net/publication/342174203_A_general_continuous_time_Markov_chain_approximation_for_multi-asset_option_pricing_with_systems_of_correlated_diffusions"> A general continuous time Markov chain approximation for multi-asset option pricing with systems of correlated diffusions (2020) </a> 
   </li>
 </ul>
 
