@@ -28,11 +28,14 @@ Monte Carlo and other pricing libraries are also provided to support R&D.
   <li> Credit default swaps / default probabilities </li>
   <li> Swing Options (Fixed Rights, Linear Recovery & Constant Recovery) </li>
   <li> Fader/Range-Accrual Options  </li>
+  <li> Multi-Dimensional Payoffs, European/Bermudan/Barrier (Spread, Exchange, Best/Worst-of, Basket) </li>
+  <li> Risk Measures suchs as Expected Shortfall and VaR computations </li>
  </ul>
   
 <b>Models supported:</b>
 <ul>
   <li> Diffusions (Black-Scholes-Merton) </li>
+  <li> Multi-Dimensional Diffusions
   <li> Jump Diffusions (Merton Jump, Kou double exponential, Mixed-Normal)  </li>
   <li> General Levy processes (CGMY/KoBoL, Normal-Inverse-Gaussian (NIG), Variance Gamma, Meixner) </li>
   <li> SABR </li>
@@ -102,6 +105,12 @@ These pricing libraries have been built in collaboration with:
 <b> IV) Time-Changed Processes</b>
 <ul>
     <li> <a href="https://www.researchgate.net/publication/327411363_A_General_Framework_for_Time-Changed_Markov_Processes_and_Applications"> A General Framework for Time-Changed Markov Processes and Applications. European J. Operational Research (2018) </a> 
+  </li>
+</ul>
+
+<b> V) Multi-Dimensional Diffusions </b>
+<ul>
+  <li>  <a href="https://www.researchgate.net/publication/342174203_A_general_continuous_time_Markov_chain_approximation_for_multi-asset_option_pricing_with_systems_of_correlated_diffusions"> A general continuous time Markov chain approximation for multi-asset option pricing with systems of correlated diffusions </a> 
   </li>
 </ul>
 
