@@ -2,10 +2,11 @@
 %%% EUROPEAN OPTION PRICE COMPARISON (RUN SCRIPT)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Descritpion: Script to Compare Methods For European Options Under Levy Models
-%              This script compares accuracy/CPU of the following methods:
-%                   1) PROJ (Fourier)
-%                   2) Carr-Madan (Fourier)
-%                   3) CONV (Fourier)
+%              This script compares accuracy/CPU of the following Fourier methods:
+%                   1) PROJ (2015)
+%                   2) Carr-Madan (2000)
+%                   3) CONV (2008)
+%                   4) Lewis (2001) / Lipton (2002)
 %                       ... More to come
 %   
 % Author:      Justin Kirkby
@@ -21,9 +22,9 @@ addpath('../../PROJ/LEVY/Helper_Functions')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 call = 1;    %For call use 1 (else, its a put)
 S_0  = 100;  %Initial price
-W    = 100;  %Strike            %NOTE: no error handling in place for extreme values of W (increase grid if strike falls outside)
+W    = 105;  %Strike            %NOTE: no error handling in place for extreme values of W (increase grid if strike falls outside)
 r    = .05;  %Interest rate
-q    = .00;  %Dividend yield
+q    = .02;  %Dividend yield
 T    = 1;    %Time (in years)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -71,6 +72,11 @@ elseif model == 7 %KoBoL
     params.lam_p  = 15; 
     params.lam_m = -5; 
     params.nu  = 1.2;
+    
+elseif model == 8 % Variance Gamma 
+    params.sigma = 0.2; 
+    params.nu = 0.85;  
+    params.theta = 0;    
 end
 
 modelInput = getModelInput(model, T, r, q, params);
@@ -109,6 +115,14 @@ price_CONV = CONV_European_Price(S_0, W, modelInput.rnCHF, T, r, call, N, alpha)
 time_CONV = toc;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Lewis (2001) Fourier Method  (see also Lipton (2002))
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+addpath('../../Fourier/Lewis/')
+tic
+price_Lewis = Lewis_European_Price(S_0, W, modelInput.rnCHF, T, r, q, call, 500);
+time_Lewis = toc;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Reference Price (Using PROJ)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Nref = 2^16; L1Ref = 20;   % Params to obtain reference price
@@ -126,5 +140,6 @@ fprintf('---------------------------------------------\n')
 fprintf('PROJ        | %.8f  | %.2e | %.4f \n', price_PROJ, abs(price_Ref-price_PROJ), time_PROJ)
 fprintf('CONV        | %.8f  | %.2e | %.4f \n', price_CONV, abs(price_Ref-price_CONV), time_CONV)
 fprintf('Carr-Madan  | %.8f  | %.2e | %.4f \n', price_CM, abs(price_Ref-price_CM), time_CM)
+fprintf('Lewis(2001) | %.8f  | %.2e | %.4f \n', price_Lewis, abs(price_Ref-price_Lewis), time_Lewis)
 fprintf('---------------------------------------------\n')
 
