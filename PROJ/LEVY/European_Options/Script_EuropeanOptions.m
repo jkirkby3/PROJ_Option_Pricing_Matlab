@@ -65,6 +65,11 @@ elseif model == 6 % Heston Model
     params.kappa =1.5768;   % rate of variance mean reversion
     params.sigma_v = 0.5751;   % volatility of variance
     params.rho = -0.5711;   % correlation between Brownian motions
+    
+elseif model == 8 % Variance Gamma 
+    params.sigma = 0.2; 
+    params.nu = 0.85;  
+    params.theta = 0;    
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
