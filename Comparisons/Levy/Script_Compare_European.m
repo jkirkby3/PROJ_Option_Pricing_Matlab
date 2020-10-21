@@ -123,6 +123,19 @@ price_Lewis = Lewis_European_Price(S_0, W, modelInput.rnCHF, T, r, q, call, 500)
 time_Lewis = toc;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Mellin Transform (J-P Aguilar, 2020)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+addpath('../../Fourier/MellinTransform/')
+has_mellin = 0;
+if model == 8 && params.theta == 0  % Symmetric Variance Gamma
+    tic
+    N_terms = 12;
+    price_Mellin = Mellin_SymmetricVG_European_Price( S_0, W, T, r, q, call, params.sigma, params.nu, N_terms);
+    time_Mellin = toc;
+    has_mellin = 1;
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Reference Price (Using PROJ)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Nref = 2^16; L1Ref = 20;   % Params to obtain reference price
@@ -133,7 +146,7 @@ price_Ref = PROJ_European(3, Nref, alphaRef, r, q, T, S_0, W, call, modelInput.r
 %%% COMPARE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 fprintf('\n---------------------------------------------\n')
-fprintf('Method      |    Price    |    Err   |  CPU \n')
+fprintf('Method      |    Price      |    Err   |  CPU \n')
 fprintf('---------------------------------------------\n')
 fprintf('Reference   | %.8f  |          |       \n', price_Ref)
 fprintf('---------------------------------------------\n')
@@ -141,5 +154,8 @@ fprintf('PROJ        | %.8f  | %.2e | %.4f \n', price_PROJ, abs(price_Ref-price_
 fprintf('CONV        | %.8f  | %.2e | %.4f \n', price_CONV, abs(price_Ref-price_CONV), time_CONV)
 fprintf('Carr-Madan  | %.8f  | %.2e | %.4f \n', price_CM, abs(price_Ref-price_CM), time_CM)
 fprintf('Lewis(2001) | %.8f  | %.2e | %.4f \n', price_Lewis, abs(price_Ref-price_Lewis), time_Lewis)
+if has_mellin == 1
+   fprintf('Mellin      | %.8f  | %.2e | %.4f \n', price_Mellin, abs(price_Ref-price_Mellin), time_Mellin) 
+end
 fprintf('---------------------------------------------\n')
 
