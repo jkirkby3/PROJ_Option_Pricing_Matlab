@@ -7,6 +7,7 @@
 %                   2) Carr-Madan (2000)
 %                   3) CONV (2008)
 %                   4) Lewis (2001) / Lipton (2002)
+%                   5) Mellin Transform
 %                       ... More to come
 %   
 % Author:      Justin Kirkby
@@ -95,7 +96,14 @@ time_CM = toc;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 addpath('../../PROJ/LEVY/European_Options')
 logN  = 11;   %Uses N = 2^logN  gridpoint 
-L1 = 16;
+if model == 6
+    L1 = 24;
+elseif model == 1
+    L1 = 18;
+else
+    L1 = 16;
+end
+
 
 % ----------------------
 N = 2^logN;    % grid roughly centered on [c1 - alph, c1 + alph]
