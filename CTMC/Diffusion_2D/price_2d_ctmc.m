@@ -7,7 +7,7 @@ function [vals, c_index_1, c_index_2, y_1, y_2] = price_2d_ctmc( S_0s, T, r, rho
 %
 % References:  (1) A General Continuous Time Markov Chain Approximation for
 %               Multi-Asset option pricing with systems of correlated diffusions,
-%               Applied Math. and Comput., 2020 (with Duy Nguyen and Dang Nguyen)
+%               Applied Math. and Comput., 2020 (JL Kirkby, Duy Nguyen, Dang Nguyen)
 %
 % ----------------------
 % Model Params 
