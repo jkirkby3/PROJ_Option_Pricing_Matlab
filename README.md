@@ -8,12 +8,25 @@ Monte Carlo and other pricing libraries are also provided to support R&D.
   <li> CTMC Approximation </li>
   <li> Monte Carlo </li>
   <li> Analytical </li>
-  <li> Fourier (Carr-Madan, Lewis, CONV, PROJ) </li>
+  <li> Fourier (PROJ, Carr-Madan, CONV, Lewis, COS, Mellin Transform) </li>
   <li> PDE/Finite Difference </li>
   <li> Lattice/Tree </li>
 </ul>  
   
-<b>Contract types supported:</b>
+<b>Models supported:</b>
+<ul>
+  <li> Diffusions (Black-Scholes-Merton) </li>
+  <li> Multi-Dimensional Diffusions (Black-Scholes Multi-Asset) </li>
+  <li> Jump Diffusions (Merton Jump, Kou double exponential, Mixed-Normal)  </li>
+  <li> General Levy processes (CGMY/KoBoL, Normal-Inverse-Gaussian (NIG), Variance Gamma, Meixner) </li>
+  <li> SABR </li>
+  <li> Stochastic Local Volatility (SLV) </li>
+  <li> Regime switching jump diffusions </li>
+  <li> Time-changed processes </li>
+  <li> Stochastic Volatility (Heston/Bates, Hull-White, 4/2, 3/2, alpha-hypergeometric, Jacobi, Schobel-Zhu, Stein-Stein, Scott, tau/2)   </li>
+</ul>
+
+<b>Contract types supported (single underlying):</b>
 <ul>
   <li> European Options </li>
   <li> Barrier Options (Single/Double barrier, and rebates) </li>
@@ -32,18 +45,11 @@ Monte Carlo and other pricing libraries are also provided to support R&D.
   <li> Multi-Dimensional Payoffs, European/Bermudan/Barrier (Spread, Exchange, Best/Worst-of, Basket) </li>
   <li> Risk Measures suchs as Expected Shortfall and VaR computations </li>
  </ul>
-  
-<b>Models supported:</b>
+
+<b>Contract types supported (multi underlying):</b>
 <ul>
-  <li> Diffusions (Black-Scholes-Merton) </li>
-  <li> Multi-Dimensional Diffusions (Black-Scholes Multi-Asset) </li>
-  <li> Jump Diffusions (Merton Jump, Kou double exponential, Mixed-Normal)  </li>
-  <li> General Levy processes (CGMY/KoBoL, Normal-Inverse-Gaussian (NIG), Variance Gamma, Meixner) </li>
-  <li> SABR </li>
-  <li> Stochastic Local Volatility (SLV) </li>
-  <li> Regime switching jump diffusions </li>
-  <li> Time-changed processes </li>
-  <li> Stochastic Volatility (Heston/Bates, Hull-White, 4/2, 3/2, alpha-hypergeometric, Jacobi, Schobel-Zhu, Stein-Stein, Scott, tau/2)   </li>
+  <li> European / Barrier / Bermudan Options </li>
+  <li> Spread, Exchange, Best-of, Worst-of, Basket (Geometric/Arthmetic) </li>
 </ul>
 
 <b>Acknowledgement:</b>
@@ -53,8 +59,9 @@ These pricing libraries have been built in collaboration with:
   <li><a href="https://www.researchgate.net/profile/Duy_Nguyen125">Duy Nguyen </a> </li>
   <li><a href="https://www.researchgate.net/profile/Zhenyu_Cui"> Zhenyu Cui </a> </li>
   <li><a href="https://www.researchgate.net/profile/Zhimin_Zhang3"> Zhimin Zhang </a> </li>
-  <li><a href="https://www2.isye.gatech.edu/people/faculty/Shijie_Deng/"> Shijie Deng </a> </li>
- </ul>
+  <li><a href="https://www.researchgate.net/profile/Shi-jie_Deng"> Shijie Deng </a> </li>
+  <li><a href="https://www.researchgate.net/profile/Jean_Philippe_Aguilar"> Jean-Philippe Aguilar </a> </li>
+</ul>
 
 <b> Supporting Research Articles: </b>
 
