@@ -5,7 +5,8 @@ function [ price ] = Mellin_SymmetricVG_European_Price( S_0, W, T, r, q, call, s
 % Returns: price of contract
 % Author: Justin Lars Kirkby
 %
-% Reference: "Some pricing tools for the Variance Gamma model", J-P Aguilar, 2020
+% Reference: 1) "Some pricing tools for the Variance Gamma model", J-P Aguilar, 2020
+%            2) "Pricing, risk and volatility in subordinated marketmodels", Aguilar, Kirkby, Korbel, 2020
 %
 % ----------------------
 % Contract/Model Params 

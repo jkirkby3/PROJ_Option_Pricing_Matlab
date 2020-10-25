@@ -95,9 +95,9 @@ time_CM = toc;
 %%%  PROJ Method
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 addpath('../../PROJ/LEVY/European_Options')
-logN  = 11;   %Uses N = 2^logN  gridpoint 
+logN  = 12;   %Uses N = 2^logN  gridpoint 
 if model == 6
-    L1 = 24;
+    L1 = 28;
 elseif model == 1
     L1 = 18;
 else
