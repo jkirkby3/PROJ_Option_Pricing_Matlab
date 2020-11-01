@@ -7,7 +7,7 @@
 %                   2) Carr-Madan (2000)
 %                   3) CONV (2008)
 %                   4) Lewis (2001) / Lipton (2002)
-%                   5) Mellin Transform
+%                   5) Mellin Transform (Aguilar, 2019)
 %                       ... More to come
 %   
 % Author:      Justin Kirkby
@@ -135,6 +135,13 @@ time_Lewis = toc;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 addpath('../../Fourier/MellinTransform/')
 has_mellin = 0;
+if model == 3  % NIG
+    tic
+    N_terms = 50;
+    price_Mellin = Mellin_NIG_European_Price( S_0, W, T, r, q, call, params.alpha, params.beta, params.delta, N_terms);
+    time_Mellin = toc;
+    has_mellin = 1;
+end
 if model == 8 && params.theta == 0  % Symmetric Variance Gamma
     tic
     N_terms = 12;
@@ -146,7 +153,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Reference Price (Using PROJ)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Nref = 2^16; L1Ref = 20;   % Params to obtain reference price
+Nref = 2^16; L1Ref = max(16, L1+4);   % Params to obtain reference price
 alphaRef = getTruncationAlpha(T, L1Ref, modelInput, model);
 price_Ref = PROJ_European(3, Nref, alphaRef, r, q, T, S_0, W, call, modelInput.rnCHF, modelInput.c1*T);
 
