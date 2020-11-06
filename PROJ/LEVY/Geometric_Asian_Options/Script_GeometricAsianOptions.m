@@ -1,11 +1,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% ASIAN OPTION PRICER  (RUN SCRIPT)
+%%% GEOMETRIC ASIAN OPTION PRICER  (RUN SCRIPT)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Descritpion: Script to Price Asian options in Levy Models using the PROJ method
+% Descritpion: Script to Price Geometric Asian options in Levy Models using the PROJ method
 % Author:      Justin Kirkby
+%
 % Reference:   (1) An Efficient Transform Method For Asian Option Pricing, SIAM J. Financial Math., 2016
-%              (2) American and Exotic Option Pricing with Jump Diffusions
-%              and other Levy Processes, Journal of Computational Finance, 2018
+%              (2) Efficient Option Pricing by Frame Duality with the Fast Fourier Transform. 
+%                  SIAM J. Financial Math (2015), Kirkby, J.L
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 [folder, name, ext] = fileparts(which( mfilename('fullpath')));
@@ -17,7 +19,7 @@ addpath('../Helper_Functions')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Step 1) CHOOSE CONTRACT/GENERAL PARAMETERS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-call = 0;    %For call use 1 (else, its a put)
+call = 1;    %For call use 1 (else, its a put)
 S_0  = 100;  %Initial price
 W    = 100;  %Strike            %NOTE: no error handling in place for extreme values of W (increase grid if strike falls outside)
 r    = 0.05;  %Interest rate
@@ -57,11 +59,12 @@ elseif model == 5 %Kou Double Expo
     params.p_up  = 0.2;
     params.eta1  = 25;
     params.eta2  = 10;
-
+    
 elseif model == 8 % Variance Gamma 
     params.sigma = 0.2; 
     params.nu = 0.85;  
     params.theta = 0;    
+
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -100,8 +103,17 @@ end
 N = 2^logN;    % grid roughly centered on [c1 - alph, c1 + alph]
 
 tic
-price = PROJ_Asian( N,alpha,S_0,M,W,call,T,r,q, modelInput.rnCHF, modelInput.RNmu*dt);
+price = PROJ_Geometric_Asian(N, alpha, S_0, M, W, call, T, r, q, modelInput.rnSYMB);
 toc
 
 
-fprintf('%.8f \n', price)
+fprintf('Geometric Price: %.8f \n', price)
+
+compare_arithmetic = 1;
+
+if compare_arithmetic
+    addpath('../Asian_Options')
+    price_arith = PROJ_Asian( N,alpha,S_0,M,W,call,T,r,q, modelInput.rnCHF, modelInput.RNmu*dt);
+    fprintf('Arithmetic Price: %.8f \n', price_arith)
+end
+    
