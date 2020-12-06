@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% GMWB PRICER (RUN SCRIPT)
+%%% GMDB PRICER (RUN SCRIPT)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Descritpion: Script to Price Guaranteed Minimum Death Benefits (GMDB)
 %              using the PROJ method . This version assume Piecewise constant mortality forces

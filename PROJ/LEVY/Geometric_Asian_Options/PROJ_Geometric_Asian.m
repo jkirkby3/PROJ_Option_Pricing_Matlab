@@ -35,6 +35,11 @@ dx = 2*alph/(N-1); a = 1/dx;
 dt    = T/M;
 
 xmin  = log(W)-dx;
+if abs(xmin) > 1.01*alph
+    alph = 1.01*abs(xmin);
+    price = PROJ_Geometric_Asian(N, alph, S_0, M, W, call, T, r, q, rnSYMB);
+    return;
+end
 
 dw    = 2*pi*a/N;
 omega = (dw: dw: (N-1)*dw);  %We calcuate coefficient of w=0 explicitly
@@ -60,6 +65,7 @@ G(4:N/2) = exp(x1+dx*(2:N/2-2))*a3*(2*sinh(1.5*dx)-6*sinh(.5*dx))-W;
 
 
 price = 960*a^(3)*exp(-r*T)/N*G*beta(1:N/2)';
+price = max(0, price);
 if ~call==1
     error("Sorry, havent yet added the put option... just use PCP");
 end

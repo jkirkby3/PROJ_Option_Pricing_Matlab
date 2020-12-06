@@ -135,7 +135,7 @@ Fphi=@(s)12.*sin(s./2).^2./(s.^2.*(2+cos(s)));
 Fphi1=Fphi(S/a); Fphi1(1)=1;
 
 %coefs
-Ak=[];
+Ak=zeros(1, N);
 for k=0:N-1
     Ak(k+1)=0;
     for j=0:n_years-1
@@ -143,7 +143,7 @@ for k=0:N-1
     end
 end
 
-Bk=[];
+Bk=zeros(1, N);
 for k=0:N-1
     Bk(k+1)=0;
     for j=0:n_years-1

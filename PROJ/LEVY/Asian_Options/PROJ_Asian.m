@@ -43,6 +43,16 @@ Nm   = floor(a*(x1-ER));
 x1   = ER + (1-N/2)*dx + Nm*dx;
 NNM  = N + Nm(M-1);   %Number of columns of PSI
 
+ystar = log((M+1)*W/S_0 -1);
+nbar  = floor((ystar-x1(M))*a+1);
+
+if nbar + 1 > N  
+    % In this case, we fall off the grid when doing final integration, 
+    % so you are deep ITM for the put, try to increase alph
+    alph = 1.25*alph;
+    Val = PROJ_Asian(N, alph, S_0, M, W, call, T, r, q, phiR, ER);
+    return;
+end
 
 dxi   = 2*pi*a/N;
 xi    = dxi*(1:(N-1))';
@@ -103,7 +113,6 @@ end
 
 %%-------------------------------------------------------------------------
 b0    = 1208/2520; b1 = 1191/2520; b2 = 120/2520; b3 = 1/2520;
-
 zeta  = (sin(xi/(2*a))./xi).^4./(b0 + b1*cos(xi/a) +b2*cos(2*xi/a) +b3*cos(3*xi/a));
 
 AA = 1/A;
@@ -117,18 +126,13 @@ beta  = PSI(:,1:N)*beta.*PhiR;  %Nm(1)=0
 for m=3:M
     beta(2:N) = zeta.*beta(2:N).*exp(-1i*x1(m-1)*xi); beta(1) = AA;
     beta      = real(fft(beta));
-    
-    %C_aN*beta(125:132)
-    
     beta      = PSI(:,Nm(m-1)+1:Nm(m-1)+N)*beta.*PhiR;
 end
 
 %%-------------------------------------------------------------------------
 %%%%% FINAL VALUE
-ystar = log((M+1)*W/S_0 -1);
 C     = S_0/(M+1);
 D     = W - C;
-nbar  = floor((ystar-x1(M))*a+1);
 x1(M) = ystar- (nbar-1)*dx;
 
 beta(2:N) = zeta.*beta(2:N).*exp(-1i*x1(M)*xi); beta(1)=AA;
@@ -158,18 +162,17 @@ G(nbar-1)   = 23*D/24 - Cc3*E(nbar-1);
 G(1:nbar-2) = D       - Cc4*E(1:nbar-2);
 %%-------------------------------------------------------------------------
 
-if call==1  %Call Option
+Val = C_aN*exp(-r*T)*sum(beta(1:nbar+1).*G);
+if call==1  %Call Option, use Put-Call-Parity
     if r - q == 0
         mult = M + 1;
     else
         mult = (exp((r-q)*T*(1+1/M))-1)/(exp((r-q)*dt)-1);
     end
-    Val = C_aN*exp(-r*T)*sum(beta(1:nbar+1).*G) + C*exp(-r*T)*mult - W*exp(-r*T);
+    Val = Val + C*exp(-r*T)*mult - W*exp(-r*T);
     
-else  %Put option
-    Val =C_aN*exp(-r*T)*sum(beta(1:nbar+1).*G);
 end
-
+Val = max(0, Val);
 
 end
 

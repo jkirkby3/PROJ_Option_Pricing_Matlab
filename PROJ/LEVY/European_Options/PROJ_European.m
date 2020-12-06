@@ -114,6 +114,8 @@ else
     price = Cons*exp(-r*T)/N*G*(beta(1:length(G))');
 end
 
+price = max(price, 0);  % Protect against deep out of money case
+
 
 end
 

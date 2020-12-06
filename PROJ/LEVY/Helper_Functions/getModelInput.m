@@ -15,6 +15,10 @@ if nargin < 6
 end
 
 modelInputs = {};
+modelInputs.dt = dt;
+modelInputs.T = T;
+modelInputs.model = model;
+
 if model == 1 %BSM (Black Scholes Merton)
     %----------------------------------------------
     % Unpack the model parameters
