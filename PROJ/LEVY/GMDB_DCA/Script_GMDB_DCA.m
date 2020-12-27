@@ -30,6 +30,14 @@ r    = 0.01;  %Interest rate
 q    = 0.00;  %dividend yield
 age  = 30;  % age at time of purchase/valuation
 
+gmdb_params = {};
+gmdb_params.contract_type = 1;  % 1 = GMDB, 2 = GMDB-RS (ratchet strike)
+gmdb_params.alpha = 2*S_0;      % Periodic investment amount
+gmdb_params.gamma = 0.92;       % gamma in [0,1], Administrative fee is (1-gamma)
+gmdb_params.L = 10000;          % Gaurantee Amount at death, set to -1 to take ATMF value
+gmdb_params.g = 0.01;           % Growth rate of guarantee, becomes L*exp(g*tau)
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Step 2) CHOOSE MODEL PARAMETERS (Levy Models)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -37,6 +45,17 @@ age  = 30;  % age at time of purchase/valuation
 % Choose Model for death/mortality
 % -------------
 death_model = 1; % 1 = Mortality Table, 2 = Combination of exponentials (see reference paper above)
+
+if death_model == 1
+    death_prob = make_mortality_table_pmf( age );
+elseif death_model ==2
+    death_prob = make_combo_2_expos_pmf( 3, -2, 0.08, 0.12, 110 - age + 1);
+elseif death_model ==3 
+    % manually specify probability of death
+    death_prob = [0.01 0.05 0.1 0.2 0.1 0.05 0.001 0.5 0.2];
+    death_prob = death_prob / sum(death_prob);
+end
+gmdb_params.death_prob = death_prob;
 
 % -------------
 % Choose Levy Model for risky asset
@@ -94,16 +113,6 @@ modelInput = getModelInput(model, dt, r, q, params);
 %%% PRICE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if death_model == 1
-    death_prob = make_mortality_table_pmf( age );
-elseif death_model ==2
-    death_prob = make_combo_2_expos_pmf( 3, -2, 0.08, 0.12, 110 - age + 1);
-elseif death_model ==3 
-    % manually specify probability of death
-    death_prob = [0.01 0.05 0.1 0.2 0.1 0.05 0.001 0.5 0.2];
-    death_prob = death_prob / sum(death_prob);
-end
-
 plot_death_prob = 1; 
 if plot_death_prob == 1
     plot(1:length(death_prob), death_prob, 'k-', 'linewidth', 1.1)
@@ -111,13 +120,6 @@ if plot_death_prob == 1
     ylabel('probability, $p^\omega_n$', 'interpreter', 'latex')
 end
 
-gmdb_params = {};
-gmdb_params.death_prob = death_prob;
-gmdb_params.contract_type = 1;
-gmdb_params.alpha = 2*S_0;
-gmdb_params.gamma = 0.92;
-gmdb_params.g = 0.01;
-gmdb_params.L = 10000;   % set to -1 to take ATMF value
 
 tic
 proj_params.L1 = 12;  % determines grid width (usually set L1 = 8 to 15 for Levy)
