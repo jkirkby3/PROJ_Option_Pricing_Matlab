@@ -25,15 +25,16 @@ q        = 0;     % dividend yield
 T        = 0.5;     % Time to maturity
 M        = 20;    % Number of monitoring dates on [0, T]
 
-%%%========================
-%%% PROJ Parameters
-%%%========================
-N  = 2^9;    % Number of basis elements
-L1 = 14;     % Truncation width parameter
-m_0 = 40;      % Number of variance states in CTMC
-gamma = 5.5;     % State space grid width parameter  (5.5 is a decent starting point, but depends on the model)
-varGridMult = .8;    % State space stretching paramter, chose in (0,1)... closer to 1 is more uniform grid
-gridMethod = 4;     % Determines the grid method... 4 is a good choice
+%%%----------------------------
+% Set Numerical/Approximation Params
+%%%----------------------------
+numeric_param = {};
+numeric_param.N    = 2^9;    %number of points in density expansion... Value grid size is K:=N/2
+numeric_param.m_0           = 40;  % number of CTMC grid points
+numeric_param.gamma         = 5.5;  % CTMC grid width param
+numeric_param.gridMethod    = 4;
+numeric_param.gridMultParam = 0.8;
+L1 = 14;     % Truncation width parameter (used to set numeric_param.alph below)
 
 %%%========================
 %%%% Select Stochastic Volatility Model
@@ -170,8 +171,10 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   PRICE CONTACT
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-alph = GetAlph_DisreteVariance( c2Jump, c4Jump, model, modparam, T, L1 );
-PROJ_Price = PROJ_DiscreteVariance_StochVol( N,alph,M,r,T,K,m_0,psi_J, model, modparam, gridMethod, gamma, varGridMult, contract );
+%density projection grid on [-alpha,alpha]
+numeric_param.alph = GetAlph_DisreteVariance( c2Jump, c4Jump, model, modparam, T, L1 );
+
+PROJ_Price = PROJ_DiscreteVariance_StochVol(numeric_param,M,r,T,K,psi_J, model, modparam, contract );
 fprintf('PROJ Price: %.8f \n', PROJ_Price)
 
 %%% In the special cases where analytic prices are known, also print the error

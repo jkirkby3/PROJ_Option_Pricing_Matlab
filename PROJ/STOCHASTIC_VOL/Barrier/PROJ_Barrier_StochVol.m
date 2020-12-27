@@ -27,13 +27,14 @@ function price = PROJ_Barrier_StochVol(numeric_param, call, down, S_0, W, H, M, 
 % r  : interest rate 
 % psi_J: characteristic exponenent of jump part...
 %        function handdle: psi_J(xi) = lambda*(phi(xi) -1)
-% model: 1 = Heston, 
-%        2 = SteinStein,
-%        3 = 3/2 Model, 
-%        4 = 4/2 Model, 
-%        5 = HullWhite,
-%        6 = Scott, 
-%        7 = Alpha-Hypergeometric
+% model: 
+%        1 = HESTON:      Sigmav, v0, rho, eta, theta
+%        2 = STEIN-STEIN: Sigmav, v0, rho, eta, theta
+%        3 = 3/2 MODEL:   Sigmav, v0, rho, eta, theta
+%        4 = 4/2 MODEL:   Sigmav, v0, rho, eta, theta, aa, bb
+%        5 = HULL-WHITE:  Sigmav, v0, rho
+%        6 = SCOTT:       Sigmav, v0, rho, eta, theta
+%        7 = ALPHA-HYPER: Sigmav, v0, rho, eta, theta
 %
 % modparam: contains all necessary params for the specific model (see below during assingment which ones are needed)
 %
@@ -46,7 +47,7 @@ function price = PROJ_Barrier_StochVol(numeric_param, call, down, S_0, W, H, M, 
 %   alph: density gridwith param, density on [-alph,alph]... value grid width = alph
 %   m_0: number of states to approximate the Heston model with
 %   gamma: var grid width parameter, grid is +/- gamma*stddev(variance process)
-%   gridMethod: hardcoded to 4 (sinh nonuniform)
+%   gridMethod: which type of var grid to use (typcially use 4)
 %-------------------------------
 
 N = numeric_param.N;

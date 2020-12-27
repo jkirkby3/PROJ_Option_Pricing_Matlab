@@ -23,15 +23,17 @@ T    = .25;
 M    = 1;
 call = 1;
 
+%%%----------------------------
+% Set Numerical/Approximation Params
+%%%----------------------------
+numeric_param = {};
+numeric_param.N    = 2^10;    %number of points in density expansion... Value grid size is K:=N/2
+numeric_param.alph = 5;  %density projection grid on [-alpha,alpha]
 
-%%%----------------------------
-N    = 2^10;    %number of points in density expansion... Value grid size is K:=N/2
-alph = 5;  %density projection grid on [-alpha,alpha]
-%%%----------------------------
-m_0           = 20;  % number of CTMC grid points
-gamma         = 5;  % CTMC grid width param
-gridMethod    = 4;
-gridMultParam = 0.2;
+numeric_param.m_0           = 20;  % number of CTMC grid points
+numeric_param.gamma         = 5;  % CTMC grid width param
+numeric_param.gridMethod    = 4;
+numeric_param.gridMultParam = 0.2;
 
 %%%========================
 %%%% Select Stochastic Volatility Model
@@ -177,7 +179,7 @@ else
 end
 
 tic
-price = Barrier_StochasticVol_func(N,alph,call,down,S_0,W,H,M,r,T,m_0,psi_J,model, modparam, gridMethod, gamma, gridMultParam);
+price = PROJ_Barrier_StochVol(numeric_param,call,down,S_0,W,H,M,r,T,psi_J,model, modparam);
 toc
 fprintf('%.8f \n', price)
 
