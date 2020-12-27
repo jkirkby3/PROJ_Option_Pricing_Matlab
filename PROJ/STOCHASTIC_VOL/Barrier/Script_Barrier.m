@@ -1,8 +1,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Barrier Option Pricier
+%%% Barrier Option Pricer
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Descritpion: Script to Price Barrier Options in Stochastic volatility models (with jumps)
 %              using the PROJ method
+%
 % Author:      Justin Kirkby
 % References:  (1) A unified approach to Bermudan and Barrier options under stochastic
 %               volatility models with jumps. J. Economic Dynamics and Control, 2017
@@ -15,24 +16,27 @@ cd(folder);
 addpath('../Helper_Functions')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-S_0  = 55;
-W    = 55;  %strike
-r    = 0.05; 
-T    = .25;
-M    = 80;
+S_0  = 55;   % Initial Underlying
+W    = 55;   % strike
+r    = 0.05; % interest rate
+T    = .25;  % time to maturity
+M    = 80;   % number of monitoring intervals
 
-call = 1;
-down = 1;
-H    = 50;
+call = 1;  % 1 = call, else put
+down = 1;  % 1 = down-and-out, else up-and-out
+H    = 50; % Barrier level
 
 %%%----------------------------
-N    = 2^10;    %number of points in density expansion... Value grid size is K:=N/2
-alph = 6;  %density projection grid on [-alpha,alpha]
+% Set Numerical/Approximation Params
 %%%----------------------------
-m_0           = 30;  % number of CTMC grid points
-gamma         = 3.3;  % CTMC grid width param
-gridMethod    = 4;
-gridMultParam = 0.2;
+numeric_param = {};
+numeric_param.N    = 2^10;    %number of points in density expansion... Value grid size is K:=N/2
+numeric_param.alph = 6;  %density projection grid on [-alpha,alpha]
+
+numeric_param.m_0           = 30;  % number of CTMC grid points
+numeric_param.gamma         = 3.3;  % CTMC grid width param
+numeric_param.gridMethod    = 4;
+numeric_param.gridMultParam = 0.2;
 
 %%%========================
 %%%% Select Stochastic Volatility Model
@@ -170,7 +174,7 @@ end
 %%% PRICE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tic
-price = Barrier_StochasticVol_func(N,alph,call,down,S_0,W,H,M,r,T,m_0,psi_J,model, modparam, gridMethod, gamma, gridMultParam);
+price = Barrier_StochasticVol_func(numeric_param,call,down,S_0,W,H,M,r,T,psi_J,model, modparam);
 toc
 fprintf('%.8f \n', price)
 
