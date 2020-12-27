@@ -15,13 +15,14 @@
 cd(folder);
 addpath('../Helper_Functions')
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-S_0 = 100;
-W   = 100;  %strike
-r   = 0.05; 
-T   = 0.5;
-M   = 50;
+%%%----------------------------
+% Set Model/Contract Params
+%%%----------------------------
+S_0 = 100;  % initial underlying
+W   = 100;  % strike
+r   = 0.05; % interest ratre
+T   = 0.5;  % time to maturity
+M   = 50;   % number of monitoring intervals (bermudan)
 
 
 %%%----------------------------

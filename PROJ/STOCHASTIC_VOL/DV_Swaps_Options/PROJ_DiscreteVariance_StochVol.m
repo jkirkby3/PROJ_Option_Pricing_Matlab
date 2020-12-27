@@ -17,6 +17,14 @@ function price = PROJ_DiscreteVariance_StochVol( numeric_param, M, r, T, K, psi_
 % M  : number of subintervals of [0,T] (total of M+1 points in time grid)
 % K  : strike  (used instead of K)
 %
+% contract: 
+%           1 = Variance Swap, 
+%           2 = Volatility Swap, 
+%           3 = Call on Variance, 
+%           4 = Put on Variance
+%
+% NOTE: right now only 1 and 3 are supported
+%
 % ----------------------
 % Model Params 
 % ----------------------
@@ -45,14 +53,6 @@ function price = PROJ_DiscreteVariance_StochVol( numeric_param, M, r, T, K, psi_
 %   gamma: var grid width parameter, grid is +/- gamma*stddev(variance process)
 %   gridMethod: which type of var grid to use (typcially use 4)
 %
-%-------------------------------
-% contract: 
-%           1 = Variance Swap, 
-%           2 = Volatility Swap, 
-%           3 = Call on Variance, 
-%           4 = Put on Variance
-%
-% NOTE: right now only 1 and 3 are supported
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 N = numeric_param.N;

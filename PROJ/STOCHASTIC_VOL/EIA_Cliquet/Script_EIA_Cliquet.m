@@ -1,42 +1,58 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Discrete Variance Swap / Option Pricer
+%%% Cliquet/Equity-Indexed Annuity Option Pricer
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Descritpion: Script to Price Discrete Variance Swap / Options under stochastic volatility models (with jumps)
+% Descritpion: Script to Price Cliquets/Equity-Indexed Annuities in Stochastic volatility models (with jumps)
+%              using the PROJ method + CTMC approximation
+%
 % Author:      Justin Kirkby
-% References:  (1) A General Framework for discretely sampled realized
-%              variance derivatives in stocahstic volatility models with
-%              jumps, EJOR, 2017
-%              (2) Efficient Option Pricing By Frame Duality with The Fast
-%              Fourier Transform, SIAM J. Financial Math., 2015
+% References:  (1) Equity-linked annuity pricing with cliquet-style guarantees in regime-switching 
+%               and stochastic volatility models with jumps, IME, 2017, (w/ Z.Cui & D.Nguyen)
+%              (2) Efficient option pricing by frame duality with the fast Fourier transform,
+%                SIFIN, 2015
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 [folder, name, ext] = fileparts(which( mfilename('fullpath')));
 cd(folder);
-
 addpath('../Helper_Functions')
-addpath('./Analytical_Swaps')
+addpath('../DV_Swaps_Options')
 
 %%%----------------------------
 % Set Model/Contract Params
 %%%----------------------------
 
-contract = 1;     % Set contract = 1 for for variance swap, contract = 3 for variance call
-K        = .00;   % strike, only matters for options, but still required for swap function
-r        = 0.01;  % interest rate
+% contract: 1 = sum of local caps
+%           2 = sum of local caps & floors
+%           3 = cliquet: local & global caps & floors
+%           4 = cliquet: local floor & cap, global floor, NO GLOBAL CAP  
+%           5 = MPP: ie monthly point-to-point (COS) or Monthly Cap Sum (Bernard, Li)
+
+contract = 3;
+
+K        = 1;   % strike
+r        = 0.05;  % interest rate
 q        = 0;     % dividend yield
-T        = 0.5;   % Time to maturity
-M        = 20;    % Number of monitoring dates on [0, T]
+T        = 1.0;   % Time to maturity
+M        = 12;    % Number of monitoring points PER YEAR
+
+contractParams.K   = 1;  %Strike
+
+contractParams.C  = .04;  % Local Cap
+contractParams.CG = 0.9*M*contractParams.C; % Global cap
+
+contractParams.F  = 0; % Local Floor
+contractParams.FG = 0;  % Global Floor
 
 %%%----------------------------
 % Set Numerical/Approximation Params
 %%%----------------------------
 numeric_param = {};
-numeric_param.N    = 2^9;    %number of points in density expansion... Value grid size is K:=N/2
-numeric_param.m_0           = 40;  % number of CTMC grid points
+numeric_param.N    = 2^10;    %number of points in density expansion... Value grid size is K:=N/2
+
+numeric_param.m_0           = 50;  % number of CTMC grid points
 numeric_param.gamma         = 5.5;  % CTMC grid width param
 numeric_param.gridMethod    = 4;
 numeric_param.gridMultParam = 0.8;
-L1 = 14;     % Truncation width parameter (used to set numeric_param.alph below)
+L1 = 14;
 
 %%%========================
 %%%% Select Stochastic Volatility Model
@@ -93,6 +109,7 @@ elseif jumpModel == 2 %%%% DE Jumps
     
 end
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%    Set the Stochastic Volatility Model Component
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -100,11 +117,11 @@ if model == 1
     %%%==============================
     %%% HESTON MODEL  Parameters
     %%%==============================
-    modparam.eta    = 3.99;
-    modparam.theta  = 0.014; 
-    modparam.rho    = -0.79;
-    modparam.Sigmav = 0.27;
-    modparam.v0     = (.0994)^2; 
+    modparam.eta    = 4;
+    modparam.theta  = 0.035; 
+    modparam.rho    = -0.75;
+    modparam.Sigmav = 0.15;
+    modparam.v0     = 0.04; 
     
 elseif model == 2
     %%%=============================================================
@@ -169,25 +186,16 @@ elseif model == 7
     modparam.av     = 0.03;
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% PRICE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tic
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   PRICE CONTACT
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %density projection grid on [-alpha,alpha]
 numeric_param.alph = GetAlph_DisreteVariance( c2Jump, c4Jump, model, modparam, T, L1 );
 
-PROJ_Price = PROJ_DiscreteVariance_StochVol(numeric_param,M,r,T,K,psi_J, model, modparam, contract );
-fprintf('PROJ Price: %.8f \n', PROJ_Price)
+price = PROJ_Cliquet_EIA_StochVol(numeric_param,M,r,q,T,psi_J,model, modparam, contract,contractParams);
+toc
+fprintf('%.8f \n', price)
 
-%%% In the special cases where analytic prices are known, also print the error
-if model == 1 && jumpModel == 0 && contract == 1
-   [ref, KcH] = hestonfairstrike(r, modparam.v0, modparam.theta, modparam.eta, modparam.Sigmav, T, modparam.rho, M);
-   fprintf('Analytical Price: %.8f \n', ref)
-   fprintf('Error: %.3e \n', PROJ_Price - ref)
-   
-elseif model == 5 && jumpModel == 0 && contract == 1
-   [ref, KcH] = hullwhitefairstrike(r, modparam.v0, modparam.Sigmav, modparam.av, T, modparam.rho, M);
-   Error1 = PROJ_Price - ref;
-   fprintf('Analytical Price: %.8f \n', ref)
-   fprintf('Error: %.3e \n', PROJ_Price - ref)
-end
+
