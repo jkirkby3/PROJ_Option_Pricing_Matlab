@@ -174,7 +174,7 @@ end
 %%% PRICE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tic
-price = Barrier_StochasticVol_func(numeric_param,call,down,S_0,W,H,M,r,T,psi_J,model, modparam);
+price = PROJ_Barrier_StochVol(numeric_param,call,down,S_0,W,H,M,r,T,psi_J,model, modparam);
 toc
 fprintf('%.8f \n', price)
 

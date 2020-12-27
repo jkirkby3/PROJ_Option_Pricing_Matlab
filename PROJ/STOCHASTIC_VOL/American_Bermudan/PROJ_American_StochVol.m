@@ -1,23 +1,63 @@
-function price = American_StochasticVol_func( N,alph,M,r,T,S_0,W,m_0,psi_J,model, modparam, gridMethod, gamma, gridMultParam)
-%  American PUT Option
-%-----------------------------
-% N  : size of density grid (value grid is K:=N/2)
-% alph: density gridwith param, density on [-\alph,\alph]
-% r  : interest rate (note, can also add dividend yield .. needs to be part of drift below, ie r-q)
+function price = PROJ_American_StochVol(numeric_param, M,r,T,S_0,W,psi_J,model, modparam)
+%  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% About: Pricing Function for American PUT Option using CTMC Approximation + PROJ method
+% Models Supported: Stochastic Volatility (including jumps)
+% Returns: price of contract
+% Author: Justin Lars Kirkby
+%
+% References:  (1) A unified approach to Bermudan and Barrier options under stochastic
+%               volatility models with jumps. J. Economic Dynamics and Control, 2017
+%              (2) Robust barrier option pricing by Frame Projection under
+%               exponential Levy Dynamics. Applied Mathematical Finance, 2018.
+%
+% ----------------------
+% Contract Params 
+% ----------------------
+% H  : Barrier (either up and out, or down and out... No double barrier yet
+% call : 1 for a call, else a put (easily can add digitals, etc)
+% down : 1 for down-and-out, else up and out
 % T  : number of years (T = 2 is two years, T = .5 is half a year)
-% S_0: initial Underlying
 % M  : number of subintervals of [0,T] (total of M+1 points in time grid)
 % W  : strike  (used instead of K)
-% m_0: number of states to approximate the Heston model with
+%
+% ----------------------
+% Model Params 
+% ----------------------
+% S_0: initial Underlying
+% r  : interest rate 
 % psi_J: characteristic exponenent of jump part...
 %        function handdle: psi_J(xi) = lambda*(phi(xi) -1)
-% model: 1 = Heston, 2 = SteinStein, 3 = 3/2 Model, 4 = 4/2 Model, 
-%        5 = HullWhite, 6 = Scott, 7 = alpha-Hypergeometric
-% gamma: var grid width parameter, grid is +/- gamma*stddev(variance process)
-% gridMethod: 1 for uniform, 4 for nonuniform (the sinh approach.. assumes v0 as center)
+% model: 1 = Heston, 
+%        2 = SteinStein,
+%        3 = 3/2 Model, 
+%        4 = 4/2 Model, 
+%        5 = HullWhite,
+%        6 = Scott, 
+%        7 = Alpha-Hypergeometric
+%
 % modparam: contains all necessary params for the specific model (see below during assingment which ones are needed)
+%
+%
+% ----------------------
+% Numerical Params 
+% ----------------------
+% numeric_parm: container of numerical params
+%   N  : size of density grid (value grid is K:=N/2)
+%   alph: density gridwith param, density on [-alph,alph]... value grid width = alph
+%   m_0: number of states to approximate the Heston model with
+%   gamma: var grid width parameter, grid is +/- gamma*stddev(variance process)
+%   gridMethod: hardcoded to 4 (sinh nonuniform)
 %-------------------------------
+%
 %%% Note: be careful about the parameter Rho (vs rho used in algorithm)
+
+N = numeric_param.N;
+alph = numeric_param.alph;
+m_0 = numeric_param.m_0;
+gridMethod = numeric_param.gridMethod;
+gamma = numeric_param.gamma;
+gridMultParam = numeric_param.gridMultParam;
 
 K    = N/2;
 dx   = 2*alph/(N-1);

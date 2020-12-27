@@ -1,4 +1,4 @@
-function price = Barrier_StochasticVol_func(numeric_parm,call,down,S_0,W,H,M,r,T,psi_J,model, modparam)
+function price = PROJ_Barrier_StochVol(numeric_param, call, down, S_0, W, H, M, r, T, psi_J, model, modparam)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % About: Pricing Function for Barrier Options using CTMC Approximation + PROJ method
 % Models Supported: Stochastic Volatility (including jumps)
@@ -27,8 +27,14 @@ function price = Barrier_StochasticVol_func(numeric_parm,call,down,S_0,W,H,M,r,T
 % r  : interest rate 
 % psi_J: characteristic exponenent of jump part...
 %        function handdle: psi_J(xi) = lambda*(phi(xi) -1)
-% model: 1 = Heston, 2 = SteinStein, 3 = 3/2 Model, 4 = 4/2 Model, 
-%        5 = HullWhite, 6 = Scott, 7 = Alpha-Hypergeometric
+% model: 1 = Heston, 
+%        2 = SteinStein,
+%        3 = 3/2 Model, 
+%        4 = 4/2 Model, 
+%        5 = HullWhite,
+%        6 = Scott, 
+%        7 = Alpha-Hypergeometric
+%
 % modparam: contains all necessary params for the specific model (see below during assingment which ones are needed)
 %
 %
@@ -43,12 +49,12 @@ function price = Barrier_StochasticVol_func(numeric_parm,call,down,S_0,W,H,M,r,T
 %   gridMethod: hardcoded to 4 (sinh nonuniform)
 %-------------------------------
 
-N = numeric_parm.N;
-alph = numeric_parm.alph;
-m_0 = numeric_parm.m_0;
-gridMethod = numeric_parm.gridMethod;
-gamma = numeric_parm.gamma;
-gridMultParam = numeric_parm.gridMultParam;
+N = numeric_param.N;
+alph = numeric_param.alph;
+m_0 = numeric_param.m_0;
+gridMethod = numeric_param.gridMethod;
+gamma = numeric_param.gamma;
+gridMultParam = numeric_param.gridMultParam;
 
 K    = N/2;
 dx   = 2*alph/(N-1); a = 1/dx;
@@ -249,7 +255,7 @@ while v0 > v(k_0) && k_0 < m_0
 end
 k_0 = k_0 - 1;
 
-%%% Cubic Interpolation (I think natural cubic spline)
+%%% Cubic Interpolation
 % k_int = [(k_0-1) k_0 (k_0+1)];
 % v_int = [v(k_int(1)) v(k_int(2)) v(k_int(3))];
 % Vals_int = [CONT(nnot,(k_int(1))) CONT(nnot,(k_int(2))) CONT(nnot,(k_int(3)))];

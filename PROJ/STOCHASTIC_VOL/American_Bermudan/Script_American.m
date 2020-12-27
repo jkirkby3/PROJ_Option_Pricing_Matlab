@@ -23,14 +23,19 @@ r   = 0.05;
 T   = 0.5;
 M   = 50;
 
+
 %%%----------------------------
-N    = 2^10;    %number of points in density expansion... Value grid size is K:=N/2
-alph = 6;  %density projection grid on [-alpha,alpha]
+% Set Numerical/Approximation Params
 %%%----------------------------
-m_0           = 50;
-gamma         = 3.3;
-gridMethod    = 4;
-gridMultParam = 0.2;
+numeric_param = {};
+numeric_param.N    = 2^10;    %number of points in density expansion... Value grid size is K:=N/2
+numeric_param.alph = 6;  %density projection grid on [-alpha,alpha]
+
+numeric_param.m_0           = 50;  % number of CTMC grid points
+numeric_param.gamma         = 3.3;  % CTMC grid width param
+numeric_param.gridMethod    = 4;
+numeric_param.gridMultParam = 0.2;
+
 
 %%%========================
 %%%% Select Stochastic Volatility Model
@@ -168,7 +173,7 @@ end
 %%% PRICE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tic
-price = American_StochasticVol_func( N,alph,M,r,T,S_0,W,m_0,psi_J,model, modparam, gridMethod, gamma, gridMultParam);
+price = PROJ_American_StochVol( numeric_param,M,r,T,S_0,W,psi_J,model, modparam);
 toc
 fprintf('%.8f \n', price)
 
