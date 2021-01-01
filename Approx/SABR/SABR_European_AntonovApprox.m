@@ -1,5 +1,10 @@
 function price = SABR_European_AntonovApprox(f,K,T,call,r,ModParams,UB)
-%f     = initial forward value
+% About: Price European Option under SABR model using Antonov approximation
+% K: strike
+% f: initial forward value
+% call: 1 if call option, else put-call
+% ModParams: container of model parameters (.beta, .alpha, .v0, .rho)
+% UB: upper bound numerical parameter (optional)
 
 if nargin < 7
    UB = 100; 

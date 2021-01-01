@@ -375,7 +375,11 @@ elseif contract == 3 || contract == 4 || contract == 5
 end
 
 %Linear Interpolation
-price = vals(1) + (vals(2)-vals(1))*(v0 - v(k_0))/(v(k_0+1)-v(k_0));
+if gridMethod == 5 || gridMethod == 6  %Then NO Interpolation Needed
+    price = vals(1);
+else
+    price = vals(1) + (vals(2)-vals(1))*(v0 - v(k_0))/(v(k_0+1)-v(k_0));
+end
 
 end
 

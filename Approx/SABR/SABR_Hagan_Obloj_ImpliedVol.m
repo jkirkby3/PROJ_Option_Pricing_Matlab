@@ -1,7 +1,9 @@
 function IVs = SABR_Hagan_Obloj_ImpliedVol( Kvec, F0, nu, T, alpha, beta, rho )
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
-%
+% Calculates Implied volatility using asymptotic formulas from Obloj (correction to original SABR formulas)
+% Kvec: strikes
+% F0: initial forward price
+% T: time to maturity of option
+% (nu, alpha, beta, rho) are model parameters
 
 IVs = zeros(length(Kvec),1);
 for k = 1:length(Kvec)  % TODO: can easily vectorize this

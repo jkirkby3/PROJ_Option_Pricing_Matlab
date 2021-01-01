@@ -21,17 +21,17 @@ addpath('../../PROJ/LEVY/Helper_Functions')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Step 1) CHOOSE CONTRACT/GENERAL PARAMETERS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-call = 1;    %For call use 1 (else, its a put)
-S_0  = 100;  %Initial price
-W    = 105;  %Strike            %NOTE: no error handling in place for extreme values of W (increase grid if strike falls outside)
-r    = .05;  %Interest rate
-q    = .02;  %Dividend yield
+call = 0;    %For call use 1 (else, its a put)
+S_0  = 4000;  %Initial price
+W    = 4000;  %Strike            %NOTE: no error handling in place for extreme values of W (increase grid if strike falls outside)
+r    = .01;  %Interest rate
+q    = .00;  %Dividend yield
 T    = 1;    %Time (in years)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Step 2) CHOOSE MODEL PARAMETERS  (Levy Models)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-model = 1;   %See Models Below (e.g. model 1 is Black Scholes), and choose specific params
+model = 3;   %See Models Below (e.g. model 1 is Black Scholes), and choose specific params
 
 params = {};
 if model == 1 %BSM (Black Scholes Merton)
@@ -44,9 +44,9 @@ elseif model == 2 %CGMY
     params.Y  = 1.2;
 
 elseif model == 3 %NIG
-    params.alpha = 15;
-    params.beta  = -5;
-    params.delta = 0.5;
+    params.alpha = 8.9932;
+    params.beta  = -4.5176;
+    params.delta = 1.1528;
     
 elseif model == 4 %MJD (Merton Jump Diffusion)
     params.sigma  = 0.12;
@@ -123,6 +123,17 @@ price_CONV = CONV_European_Price(S_0, W, modelInput.rnCHF, T, r, call, N, alpha)
 time_CONV = toc;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Hilbert Transform
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+addpath('../../Fourier/HilbertTransform/')
+N = 2^14; Nh = 2^5;
+h = 2*pi/Nh;
+
+tic
+price_Hilb = Hilbert_European_Price(h, N, r, q, T, S_0, W, call, modelInput.rnCHF);
+time_Hilb = toc;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Lewis (2001) Fourier Method  (see also Lipton (2002))
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 addpath('../../Fourier/Lewis/')
@@ -169,6 +180,7 @@ fprintf('PROJ        | %.8f  | %.2e | %.4f \n', price_PROJ, abs(price_Ref-price_
 fprintf('CONV        | %.8f  | %.2e | %.4f \n', price_CONV, abs(price_Ref-price_CONV), time_CONV)
 fprintf('Carr-Madan  | %.8f  | %.2e | %.4f \n', price_CM, abs(price_Ref-price_CM), time_CM)
 fprintf('Lewis(2001) | %.8f  | %.2e | %.4f \n', price_Lewis, abs(price_Ref-price_Lewis), time_Lewis)
+fprintf('Hilbert     | %.8f  | %.2e | %.4f \n', price_Hilb, abs(price_Ref-price_Hilb), time_Hilb)
 if has_mellin == 1
    fprintf('Mellin      | %.8f  | %.2e | %.4f \n', price_Mellin, abs(price_Ref-price_Mellin), time_Mellin) 
 end
