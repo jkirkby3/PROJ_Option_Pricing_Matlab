@@ -1,6 +1,37 @@
 function  prices = SABR_EurBarAmer_func(call, M, T, S0, Kvec, r, CTMCParams, ModParams, contract_type, L)
-% Pricer
-% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% About: Pricing Function for European, American, and Barrier Options using
+% double Layer CTMC approximation for SABR
+%
+% Models Supported: SABR
+% Returns: price of contract (for vector of strikes)
+% Author: Justin Lars Kirkby
+%
+% References:  (1) General Valuation Framework for SABR and Stochastic Local Volatility
+%                   Models. SIAM J. Financial Mathematics, 2018. (w/ Z. Cui
+%                   and D. Nguyen)
+%
+% ----------------------
+% Contract/Model Params 
+% ----------------------
+% call = 1 for call option, else Put
+% contract_type = type of contact: % 1 = European, 2 = American, 3 = Down and Out Barrier
+% Kvec  = strike vector
+% S0 = initinal underlying value
+% r   = interest rate (e.g. 0.05)
+% T   = time remaining until maturity (in years, e.g. T=1)
+% ModParams = model parameters: .v0, .alpha, .beta, .rho
+% L =  For barrier contract, this is the barrier
+%
+% ----------------------
+% Numerical (CTMC) Params 
+% ----------------------
+% CTMCParams: .m_0 = grid/state size for variance process
+%             .N = grid/state stize for underlying
+%             .gridMult_v = grid non-uniformity multiplier (for variance)
+%             .gridMult_s = grid non-uniformity multiplier (for underlying)
+%             .gamma = Grid width param for variance grid
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 m_0        = CTMCParams.m_0;
 N          = CTMCParams.N;
@@ -41,21 +72,12 @@ sig2_H = v0^2*(exp(alpha^2*t) - 1);
 lx = max(0.0001,mu_H - gamma*sqrt(sig2_H));
 ux = mu_H + gamma*sqrt(sig2_H);  
 
-%%%% BOUND THE GRID BOUNDS %%%%
-% lx = max(lx, 0.001*v0);
-% ux = min(ux, 5*v0);
-% ux = min(ux, 1.5);  %ie hardcoded upper bound on vol of 150%
-%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%   Step 1: Variance Grid / Generators
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 center_v = v0;
 [Q,v] = General_Q_Matrix_Newest(m_0,mu_func,sig_func,lx,ux,gridMethod_v,center_v, gridMult_v);
-
-% center_v = v0;
-% boundaryMethod = 2;
-% [Q,v] = Q_Matrix_AllForms(m_0, mu_func, sig_func, lx, ux, gridMethod_v, gridMult_v, center_v, boundaryMethod);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%   Step 2: Asset Grid / Grid For Xtilde
@@ -87,7 +109,7 @@ for j = 1:m_0 %loop through rows of big G matrix
 
     Gnu = getGenerator_Q_MatrixOnly(Xgrid, muX_func_nu, sigX_func_nu, gridMethod_v);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%% FORCE absorbing
+    %%% FORCE absorbing vs reflecting
     Gnu(1,1) = 0; Gnu(1,2) =0;
     %Gnu(N,N) = 0; Gnu(N,N-1) = 0;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -123,7 +145,7 @@ j_0 = j_0 - 1;  %left bracketing point:   Xtilde(j_0) <= x0 < Xtilde(j_0 +1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% VALUE : using recursive method
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%
+
 P = expm(G*dt);   %transition matrix of one dimensional CTMC
 initialIndex = (k_0-1)*N + j_0;  %index corresponding to initial conditions
 
@@ -174,7 +196,6 @@ for k = 1:length(Kvec)
         price2 = pVec(initialIndex+1);  %corresponds to j_0 + 1
         prices(k) = price1 + (price2 - price1)*(x0 - Xgrid(j_0))/(Xgrid(j_0+1) - Xgrid(j_0));  %LINEAR INTERPOLATION
     end
-    % fprintf('price: %.8f \n',prices(k))
 end
     
 end
