@@ -27,7 +27,8 @@ if gridMethod == 1  % uniform grid , doesn't include lower bound
     nx = m_0; dx = (ux-lx)/nx;
     v = lx + (1:nx)'*dx; 
     
-elseif gridMethod == 5 || gridMethod == 8 %% Tavella and Randall PLUS we put center (e.g. v0) on grid
+elseif gridMethod == 5 || gridMethod == 8 || gridMethod == 9
+    %%% Tavella and Randall PLUS we put center (e.g. v0) on grid
     % TODO: MAKE MORE EFFICIENT... we need to build grid without searching over it, and always include center point
     % Build left half, add center, build right half: grid = [left_half; center; right_half]
     tol = 1e-5; 
@@ -111,6 +112,7 @@ if gridMethod == 1 %uniform grid
     end
     Q(1,2) = abs(mu_vec(1))/dx;
     Q(m_0,m_0-1) = abs(mu_vec(m_0))/dx; 
+    
 elseif gridMethod == 8
     
     H = diff(v);
@@ -132,17 +134,26 @@ elseif gridMethod == 8
         hrow = C\z;
         Q(i,i-1) = hrow(1);  Q(i,i) = hrow(2); Q(i,i + 1) = hrow(3);
     end
-    
-    
+
 else %nonuniform grids
     H = diff(v);
-    for i=2:m_0-1
-        HD = H(i-1); % down step
-        HU = H(i);   % up step
-        AA = max(sig2(i) - (HU*mu_plus(i) + HD*mu_minus(i)),0)/(HU+HD);
-        Q(i,i-1) = (mu_minus(i) + AA)/HD; 
-        Q(i,i+1) = (mu_plus(i) + AA)/HU;
-        Q(i,i) = -Q(i,i-1) - Q(i,i+1);
+    if gridMethod == 9
+        for i=2:m_0-1  % mija
+            HD = H(i-1); % down step
+            HU = H(i);   % up step
+            Q(i,i-1) = (sig2(i) - HU*mu_vec(i))/(HD*(HU+HD)); 
+            Q(i,i+1) = (sig2(i) + HD*mu_vec(i))/(HU*(HU+HD));
+            Q(i,i) = -Q(i,i-1) - Q(i,i+1);
+        end
+    else  % Lo-Skindillias
+        for i=2:m_0-1
+            HD = H(i-1); % down step
+            HU = H(i);   % up step
+            AA = max(sig2(i) - (HU*mu_plus(i) + HD*mu_minus(i)),0)/(HU+HD);
+            Q(i,i-1) = (mu_minus(i) + AA)/HD; 
+            Q(i,i+1) = (mu_plus(i) + AA)/HU;
+            Q(i,i) = -Q(i,i-1) - Q(i,i+1);
+        end
     end
 
     if boundaryMethod == 1  %% This is the original boundary treatment

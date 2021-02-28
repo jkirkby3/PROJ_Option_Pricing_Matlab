@@ -29,7 +29,7 @@ logS = log(S_0);
 if nargin < 9
     alpha = .75;  % contour shift param (see Lee for recommendations)
 end
-eta = .05;
+eta = .1;
 
 lam = 2*pi/(N*eta);  %spacing for log strike
 b = N*lam/2; 
