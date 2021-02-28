@@ -17,6 +17,7 @@ function Spath = Simulate_RegimeSwitching_Diffusion_func( N_sim, M, T, S_0, drif
 % sigma_vec = diffusion coefficients in each state
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 dt = T/M;
 
 % Initialize the CDFs used to simulate transitions between regimes
@@ -36,7 +37,6 @@ for m = 1:M
     W1 = randn(N_sim,1); 
 
     % Simulate the next Regime
-    %states = sim_ctmc_step(prev_states, cdfs);
     states = sim_ctmc_step(prev_states, cdfs);
     prev_states = states;
 

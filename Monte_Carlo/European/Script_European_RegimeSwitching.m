@@ -34,13 +34,22 @@ initial_state = 1;
 % ---------------------
 % Sim Params
 % ---------------------
-N_sim = 10^5;
-M = 1000;
+N_sim = 5*10^5;
+M = 500;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+method = 2;   %  1 = Euler, biased;   2 = Unbiased
 
-Spath = Simulate_RegimeSwitching_Diffusion_func( N_sim, M, T, S_0, drift_vec, sigma_vec, Q, initial_state);
-histogram(Spath(:,end))
+tic
+if method == 1
+    Spath = Simulate_RegimeSwitching_Diffusion_func( N_sim, M, T, S_0, drift_vec, sigma_vec, Q, initial_state);
+
+else
+   Spath = Simulate_RegimeSwitching_Diffusion_Unbiased( N_sim, T, S_0, drift_vec, sigma_vec, Q, initial_state);
+end
+time = toc
+
+histogram(Spath)
 
 disc = exp(-r*T);
 [prices, stdErrs] = Price_MC_European_Strikes_func(Spath, disc, call, Kvec )
@@ -49,5 +58,3 @@ plot(Kvec, prices)
 ylabel('price')
 xlabel('strike')
 grid on;
-
-
