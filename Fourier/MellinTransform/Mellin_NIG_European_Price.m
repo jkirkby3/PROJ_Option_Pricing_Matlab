@@ -1,6 +1,9 @@
-function [ price ] = Mellin_NIG_European_Price( S_0, W, T, r, q, call, alpha, beta, delta, N1)
+function [ price ] = Mellin_NIG_European_Price( S_0, W, T, r, q, call, alpha, beta, delta, N1, tol)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
+if nargin < 11
+    tol = 0;
+end
 
 N2 = N1;
 N3 = N1;
@@ -11,6 +14,9 @@ adt = alpha*delta*T;
 dta = 0.5*delta*T/alpha;
 
 sum = 0;
+last = 0;
+cons =  W*alpha*exp((gam*delta - r)*T)/sqrt(pi);
+tol = tol/cons;
 
 if beta == 0
     % Symmetric Formula
@@ -22,6 +28,10 @@ if beta == 0
             term = term * besselk((d + 1)/2, adt) * (dta)^((1 - d)/2);
             sum = sum + term;
         end
+        if n1 > 1 && abs(sum - last) < tol
+            break;
+        end
+        last = sum;
     end
 else
    % Asymmetric Formula
@@ -36,10 +46,14 @@ else
                 sum = sum + term;
             end
         end
+        if n1 > 1 && abs(sum - last) < tol
+            break;
+        end
+        last = sum;
     end
 end
 
-cons =  W*alpha*exp((gam*delta - r)*T)/sqrt(pi);
+
 price = cons*sum;
 
 if call ~= 1  % price put using put-call parity
@@ -49,7 +63,6 @@ end
 end
 
 function p = pochhammer(a, n)
-
 if (a == 0 && n <= 0) || (n == 0 && a > 0)
     p = 1;
 elseif a == 0 && n > 0
@@ -79,5 +92,6 @@ if n > m
 else
     p = (-1)^n * factorial(m) / factorial(m - n);
 end
-        
+
 end
+
