@@ -8,7 +8,7 @@ Monte Carlo and other pricing libraries are also provided to support R&D.
   <li> CTMC Approximation </li>
   <li> Monte Carlo </li>
   <li> Analytical </li>
-  <li> Fourier (PROJ, Carr-Madan, CONV, Lewis, COS, Mellin Transform) </li>
+  <li> Fourier (PROJ, Carr-Madan, CONV, Lewis, COS, Mellin Transform, Hilbert Transform) </li>
   <li> PDE/Finite Difference </li>
   <li> Lattice/Tree </li>
 </ul>  
@@ -18,7 +18,7 @@ Monte Carlo and other pricing libraries are also provided to support R&D.
   <li> Diffusions (Black-Scholes-Merton) </li>
   <li> Multi-Dimensional Diffusions (Black-Scholes Multi-Asset) </li>
   <li> Jump Diffusions (Merton Jump, Kou double exponential, Mixed-Normal)  </li>
-  <li> General Levy processes (CGMY/KoBoL, Normal-Inverse-Gaussian (NIG), Variance Gamma, Meixner) </li>
+  <li> General Levy processes (CGMY/KoBoL, Normal-Inverse-Gaussian (NIG), Variance Gamma, Meixner, FMLS, TS) </li>
   <li> SABR </li>
   <li> Stochastic Local Volatility (SLV) </li>
   <li> Regime switching jump diffusions </li>
