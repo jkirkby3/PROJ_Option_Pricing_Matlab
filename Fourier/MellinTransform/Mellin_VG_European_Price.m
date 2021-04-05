@@ -3,11 +3,11 @@ function [ price ] = Mellin_VG_European_Price( S_0, W, T, r, q, call, sigma, the
 % About: Pricing Function for European Options using Mellin Transform
 % Models Supported: Variance Gamma Model, VG(sigma, theta, nu)
 % Returns: price of contract
-% Author: Justin Lars Kirkbyc/ Jean-Philippe Aguilar
+% Author: Justin Lars Kirkby/ Jean-Philippe Aguilar
 %
 % Reference: 1) "Some pricing tools for the Variance Gamma model", J-P Aguilar, 2020
 %            2) "Pricing, risk and volatility in subordinated marketmodels", Aguilar, Kirkby, Korbel, 2020
-%            3) TODO: latest paper which extends to asymmetric case
+%            3) "Closed-form option pricing in exponential Levy models", Aguilar and Kirkby, 2021
 %
 % ----------------------
 % Contract/Model Params 
@@ -18,13 +18,17 @@ function [ price ] = Mellin_VG_European_Price( S_0, W, T, r, q, call, sigma, the
 % q   = dividend yield (e.g. 0.05)
 % T   = time remaining until maturity (in years, e.g. T=1)
 % call  = 1 for call (else put)
+%
 % sigma = param in VG model
+% theta = param in VG model
 % nu = param in VG model
 %
 % ----------------------
 % Numerical Params 
 % ----------------------
-% N1     = number summation terms in the series
+% N1  = maximum number summation terms in the series, will sum fewer terms
+%       if error threshold (tol) is reached
+% tol = desired error threshold of price (will stop adding terms once satisfied) 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if nargin < 11

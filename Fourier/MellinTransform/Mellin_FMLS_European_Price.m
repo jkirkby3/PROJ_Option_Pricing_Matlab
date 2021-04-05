@@ -1,6 +1,32 @@
 function [ price ] = Mellin_FMLS_European_Price( S_0, W, T, r, q, call, sigma, alpha, N1, tol)
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% About: Pricing Function for European Options using Mellin Transform
+% Models Supported: Finite Moment Log Stable (FMLS)
+% Returns: price of contract
+% Author: Justin Lars Kirkby/ Jean-Philippe Aguilar
+%
+% Reference: 1) "Closed-form option pricing in exponential Levy models", Aguilar and Kirkby, 2021
+%
+% ----------------------
+% Contract/Model Params 
+% ----------------------
+% S_0 = initial stock price (e.g. 100)
+% W   = strike  (e.g. 100)
+% r   = interest rate (e.g. 0.05)
+% q   = dividend yield (e.g. 0.05)
+% T   = time remaining until maturity (in years, e.g. T=1)
+% call  = 1 for call (else put)
+%
+% sigma = param in model
+% alpha = param in model
+%
+% ----------------------
+% Numerical Params 
+% ----------------------
+% N1  = maximum number summation terms in the series, will sum fewer terms
+%       if error threshold (tol) is reached
+% tol = desired error threshold of price (will stop adding terms once satisfied) 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if nargin < 10
     tol = 0;

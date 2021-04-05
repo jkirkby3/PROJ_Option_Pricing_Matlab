@@ -1,6 +1,34 @@
 function [ price ] = Mellin_NIG_European_Price( S_0, W, T, r, q, call, alpha, beta, delta, N1, tol)
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% About: Pricing Function for European Options using Mellin Transform
+% Models Supported: Normal Inverse Gaussian (NIG)
+% Returns: price of contract
+% Author: Justin Lars Kirkby/ Jean-Philippe Aguilar
+%
+% Reference: 1) "Closed-form option pricing in exponential Levy models", Aguilar and Kirkby, 2021
+%            2) "Pricing, risk and volatility in subordinated marketmodels", Aguilar, Kirkby, Korbel, 2020
+%
+% ----------------------
+% Contract/Model Params 
+% ----------------------
+% S_0 = initial stock price (e.g. 100)
+% W   = strike  (e.g. 100)
+% r   = interest rate (e.g. 0.05)
+% q   = dividend yield (e.g. 0.05)
+% T   = time remaining until maturity (in years, e.g. T=1)
+% call  = 1 for call (else put)
+%
+% alpha = param in model
+% beta = param in model
+% delta = param in model
+%
+% ----------------------
+% Numerical Params 
+% ----------------------
+% N1  = maximum number summation terms in the series, will sum fewer terms
+%       if error threshold (tol) is reached
+% tol = desired error threshold of price (will stop adding terms once satisfied) 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if nargin < 11
     tol = 0;
 end
