@@ -96,7 +96,7 @@ elseif model == 4 %MJD (Merton Jump Diffusion)
     
     % Set the Risk-Neutral drift (based on interest/div rate and convexity correction)
     modelInputs.sig2 = .5*sigma^2; 
-    w = -.5*sigma^2 - lam*(exp(muj - .5*sigmaj^2)-1);  % convexity correction
+    w = -.5*sigma^2 - lam*(exp(muj + .5*sigmaj^2)-1);  % convexity correction
     modelInputs.RNmu = r - q + w;
     
     % Cumulants (useful for setting trunction range for density support / grids)
