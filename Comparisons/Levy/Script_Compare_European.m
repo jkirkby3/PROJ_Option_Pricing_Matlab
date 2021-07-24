@@ -31,7 +31,7 @@ T    = 1;    %Time (in years)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Step 2) CHOOSE MODEL PARAMETERS  (Levy Models)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-model = 3;   %See Models Below (e.g. model 1 is Black Scholes), and choose specific params
+model = 8;   %See Models Below (e.g. model 1 is Black Scholes), and choose specific params
 
 params = {};
 if model == 1 %BSM (Black Scholes Merton)
@@ -77,7 +77,7 @@ elseif model == 7 %KoBoL
 elseif model == 8 % Variance Gamma 
     params.sigma = 0.2; 
     params.nu = 0.85;  
-    params.theta = 0;    
+    params.theta = -0.1;    
 end
 
 modelInput = getModelInput(model, T, r, q, params);
@@ -153,10 +153,10 @@ if model == 3  % NIG
     time_Mellin = toc;
     has_mellin = 1;
 end
-if model == 8 && params.theta == 0  % Symmetric Variance Gamma
+if model == 8 %  Variance Gamma
     tic
-    N_terms = 12;
-    price_Mellin = Mellin_SymmetricVG_European_Price( S_0, W, T, r, q, call, params.sigma, params.nu, N_terms);
+    N_terms = 24;
+    price_Mellin = Mellin_VG_European_Price( S_0, W, T, r, q, call, params.sigma, params.theta, params.nu, N_terms);
     time_Mellin = toc;
     has_mellin = 1;
 end

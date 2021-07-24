@@ -17,6 +17,8 @@ end
 modelInputs = {};
 modelInputs.dt = dt;
 modelInputs.T = T;
+modelInputs.r = r;
+modelInputs.q = q;
 modelInputs.model = model;
 
 if model == 1 %BSM (Black Scholes Merton)
