@@ -7,6 +7,7 @@ function [prices, stdErrs] = Price_MC_European_Strikes_func(Spath, disc, call, K
 % -----------------
 % Params
 % -----------------
+% Spath = paths of underlying, dimension N_sim x M+1, where M = number of time steps (since includes S_0)
 % disc = discount factor, e.g. exp(-r*T)
 % call = 1 for call (else put)
 % Kvec = strike vector

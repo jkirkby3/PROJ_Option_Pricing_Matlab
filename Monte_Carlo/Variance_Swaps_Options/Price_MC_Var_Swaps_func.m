@@ -8,10 +8,10 @@ function [price, stdErr] = Price_MC_Var_Swaps_func(Spath, disc, M, mult)
 % -----------------
 % Params
 % -----------------
+% Spath = paths of underlying, dimension N_sim x M+1, where M = number of time steps (since includes S_0)
 % M = number of monitoring points, e.g. 252 for "daily" monitoring
 % mult = time partitioning multiplier to reduce bias (e.g. mult = 2 or 5)
-% disc = discount factor, e.g. exp(-r*T)
-% T = Time (in years)
+% disc = discount factor, e.g. exp(-r*T), where T = Time (in years)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 

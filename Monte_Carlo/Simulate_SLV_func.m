@@ -4,20 +4,20 @@ function Spath = Simulate_SLV_func( N_sim, M, T, S_0, r, q, model, params)
 % M = #time steps on [0,T], ie dt =T/M   
 % Note: returns paths of dimension (N_sim,M+1), since they include S_0
 %
-% SVLModel:    (with parameters)
-%        1 = Heston (base case SV): 
-%        2 = SABR:      alpha, v0, rho, beta
-%        3 = Shifted SABR
-%        4 = Quadratic SLV: 
-%        5 = TanHyp-Heston
-%        6 = Heston-SABR
+% SVLModel:                         (parameters)
+%        1 = Heston:                alpha, v0, rho, theta, eta
+%        2 = SABR:                  alpha, v0, rho, beta
+%        3 = Shifted SABR:          alpha, v0, rho, beta, shift
+%        4 = Quadratic SLV:         alpha, v0, rho, theta, eta, a, b, c
+%        5 = TanHyp-Heston:         alpha, v0, rho, theta, eta, beta
+%        6 = Heston-SABR:           alpha, v0, rho, theta, eta, beta
 %
 %==============================
 % Initialize Common Params/Vectors
 %==============================
-alpha  = params.alpha;  
-v0     = params.v0;
-rho    = params.rho;
+alpha  = params.alpha;   % (vol of vol)
+v0     = params.v0;  % initial vol/var
+rho    = params.rho; % covar bewteen asset and vol innovations
 
 Sigmav = alpha; %NOTE: alpha is same as Sigmav (vol of vol)
 

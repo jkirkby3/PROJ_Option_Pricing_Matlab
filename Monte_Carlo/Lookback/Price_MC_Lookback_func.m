@@ -10,6 +10,7 @@ function [price, stdErr] = Price_MC_Lookback_func(Spath, call, M, mult, disc)
 % Floating Strike (Lookback) Put:  max{S_m: 0<=m<=M} - S_T
 % Floating Strike (Lookback) Call: S_T - min{S_m: 0<=m<=M}
 %
+% Spath = paths of underlying, dimension N_sim x M+1, where M = number of time steps (since includes S_0)
 % call = 1 for call (else put)
 % M = number of monitoring points, e.g. 252 for "daily" monitoring
 % mult = time partitioning multiplier to reduce bias (e.g. mult = 2 or 5)

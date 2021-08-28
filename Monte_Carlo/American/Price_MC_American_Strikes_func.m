@@ -7,9 +7,11 @@ function [prices, stdErrs] = Price_MC_American_Strikes_func(Spath, disc, call, K
 % -----------------
 % Params
 % -----------------
+% Spath = paths of underlying, dimension N_sim x M+1, where M = number of time steps (since includes S_0)
 % disc = discount factor for each time step, e.g. exp(-r*dt), where dt is time step, and r is interest rate
 % call = 1 for call (else put)
 % Kvec = strike vector
+% polyOrder = order of polynomial regression of continuation val, e.g. 3
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if nargin < 5
     polyOrder = 3;  % Cubic polynomial by default

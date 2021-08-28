@@ -10,6 +10,7 @@ function [prices, stdErrs] = Price_MC_Hindsight_Strikes_func(Spath, call, strike
 % Fixed Strike (Hindsight) Put: (W - min{S_m: 0<=m<=M})^+
 % Fixed Strike (Hindsight) Call: (max{S_m: 0<=m<=M} - W)^+
 %
+% Spath = paths of underlying, dimension N_sim x M+1, where M = number of time steps (since includes S_0)
 % call = 1 for call (else put)
 % Kvec = strike vector
 % M = number of monitoring points, e.g. 252 for "daily" monitoring

@@ -1,22 +1,28 @@
 function Spath = Simulate_StochVol_Jumps_func( N_sim, M, T, S_0, r, q, SVModel, SVModelParams, jumpModel, jumpParams)
 % Simulates Paths of Stochastic Volatility Models (basic Euler Scheme for most cases) with jumps
 % By default, if no jumpModel or jumpParams are passed, it defaults to stochastic vol without jumps
+%
 % N_sim = # paths
 % M = #time steps on [0,T], ie dt =T/M   
+% T = final time
+% S_0 = initial underlying (spot) value
+% r = interest rate
+% q = dividend / convenience yield
+%
 % Note: returns paths of dimension (N_sim,M+1), since they include S_0
 %
 %===================================
 % jumpModel: 0 = NoJumps, 1 = NormalJumps, 2 = DEJumps, 3 = MixedNormalJumps
 %===================================
 % SVModel:    (with parameters)
-%        1 = HESTON:      Sigmav, v0, rho, eta, theta
-%        2 = STEIN-STEIN: Sigmav, v0, rho, eta, theta
-%        3 = 3/2 MODEL:   Sigmav, v0, rho, eta, theta
-%        4 = 4/2 MODEL:   Sigmav, v0, rho, eta, theta, aa, bb
-%        5 = HULL-WHITE:  Sigmav, v0, rho, av
-%        6 = SCOTT:       Sigmav, v0, rho, eta, theta
-%        7 = ALPHA-HYPER: Sigmav, v0, rho, eta, theta
-%        8 = "VAR" MODEL: Sigmav, v0, rho, eta, theta
+%        1 = HESTON:       Sigmav, v0, rho, eta, theta
+%        2 = STEIN-STEIN:  Sigmav, v0, rho, eta, theta
+%        3 = 3/2 MODEL:    Sigmav, v0, rho, eta, theta
+%        4 = 4/2 MODEL:    Sigmav, v0, rho, eta, theta, aa, bb
+%        5 = HULL-WHITE:   Sigmav, v0, rho, av
+%        6 = SCOTT:        Sigmav, v0, rho, eta, theta
+%        7 = ALPHA-HYPER:  Sigmav, v0, rho, eta, theta
+%        8 = "VAR" MODEL:  Sigmav, v0, rho, eta, theta
 %        9 = Jacobi Model: vmin, vmax, Sigmav, v0, rho, eta, theta
 %
 %==============================

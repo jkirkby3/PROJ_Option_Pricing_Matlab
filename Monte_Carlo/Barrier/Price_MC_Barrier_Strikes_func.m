@@ -9,6 +9,7 @@ function [prices, stdErrs] = Price_MC_Barrier_Strikes_func(Spath, call, down, H,
 % -----------------
 % Params
 % -----------------
+% Spath = paths of underlying, dimension N_sim x M+1, where M = number of time steps (since includes S_0)
 % call = 1 for call (else put)
 % down = 1 for down and out, else up and out
 % H = Barrier 

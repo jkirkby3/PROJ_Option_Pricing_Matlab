@@ -7,12 +7,12 @@ function [prices, stdErrs] = Price_MC_Asian_Strikes_func(Spath, call, disc, Kvec
 % -----------------
 % Params
 % -----------------
+% Spath = paths of underlying, dimension N_sim x M+1, where M = number of time steps (since includes S_0)
 % call = 1 for call (else put)
 % Kvec = strike vector
 % M = number of monitoring points, e.g. 252 for "daily" monitoring
 % mult = time partitioning multiplier to reduce bias (e.g. mult = 2 or 5)
-% disc = discount factor, e.g. exp(-r*T)
-% T = Time (in years)
+% disc = discount factor, e.g. exp(-r*T), where T = Time (in years)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 prices = zeros(length(Kvec),1);
