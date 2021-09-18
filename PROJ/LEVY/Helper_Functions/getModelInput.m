@@ -225,6 +225,33 @@ elseif model == 8 %Variance Gamma
     modelInputs.rnCHF = @(u) cf_RN_VG( u, r-q, dt, sigma, nu, theta);
     modelInputs.rnCHF_T = @(u) cf_RN_VG( u, r-q, T, sigma, nu, theta);
     modelInputs.rnSYMB = @(u) SYMB_RN_VG(u, r-q, sigma, nu, theta);  % DEF: risk neutral Levy symbol
+    
+elseif model == 9 %Bilateral Gamma
+    %----------------------------------------------
+    % Unpack the model parameters
+    alpha_p = modelParams.alpha_p;
+    lam_p = modelParams.lam_p;
+    alpha_m = modelParams.alpha_m;
+    lam_m = modelParams.lam_m;
+    %----------------------------------------------
+    
+    % Set the Risk-Neutral drift (based on interest/div rate and convexity correction)
+    m1 = alpha_p / lam_p - alpha_m / lam_m;
+    w = -log((lam_p/(lam_p -1))^alpha_p*(lam_m/(lam_m +1))^alpha_m); % convexity correction
+
+    modelInputs.RNmu = r - q + w;
+    
+    cumulants = @(n) factorial(n-1)*(alpha_p/lam_p^n + (-1)^n*alpha_m/lam_m^n);
+    
+    % Cumulants (useful for setting trunction range for density support / grids)
+    modelInputs.c1 = modelInputs.RNmu + m1;
+    modelInputs.c2 = cumulants(2);
+    modelInputs.c4 = cumulants(4);
+    
+    % Charachteristic Functions / Levy Symbol
+    modelInputs.rnCHF = @(u) cf_RN_BilateralGamma( u, r-q, dt, alpha_p, lam_p, alpha_m, lam_m);
+    modelInputs.rnCHF_T = @(u) cf_RN_BilateralGamma( u, r-q, T, alpha_p, lam_p, alpha_m, lam_m);
+    modelInputs.rnSYMB = @(u) SYMB_RN_BilateralGamma(u, r-q, alpha_p, lam_p, alpha_m, lam_m);  % DEF: risk neutral Levy symbol
 end
 
 

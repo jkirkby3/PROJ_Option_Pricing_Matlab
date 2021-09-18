@@ -12,7 +12,7 @@
 %   
 % Author:      Justin Kirkby
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+clear;
 [folder, name, ext] = fileparts(which( mfilename('fullpath')));
 cd(folder);
 addpath('../../PROJ/LEVY/RN_CHF')
@@ -77,7 +77,13 @@ elseif model == 7 %KoBoL
 elseif model == 8 % Variance Gamma 
     params.sigma = 0.2; 
     params.nu = 0.85;  
-    params.theta = -0.1;    
+    params.theta = -0.1;   
+
+elseif model == 9 % Bilateral Gamma 
+    params.alpha_p = 1.18; 
+    params.lam_p = 10.57;  
+    params.alpha_m = 1.44; 
+    params.lam_m = 5.57;
 end
 
 modelInput = getModelInput(model, T, r, q, params);
