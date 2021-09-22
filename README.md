@@ -18,7 +18,7 @@ Monte Carlo and other pricing libraries are also provided to support R&D.
   <li> Diffusions (Black-Scholes-Merton) </li>
   <li> Multi-Dimensional Diffusions (Black-Scholes Multi-Asset) </li>
   <li> Jump Diffusions (Merton Jump, Kou double exponential, Mixed-Normal)  </li>
-  <li> General Levy processes (CGMY/KoBoL, Normal-Inverse-Gaussian (NIG), Variance Gamma, Meixner, FMLS, TS) </li>
+  <li> General Levy processes (CGMY/KoBoL, Normal-Inverse-Gaussian (NIG), Variance Gamma, Meixner, FMLS, TS, Bilateral Gamma) </li>
   <li> SABR </li>
   <li> Stochastic Local Volatility (SLV) </li>
   <li> Regime switching jump diffusions </li>
