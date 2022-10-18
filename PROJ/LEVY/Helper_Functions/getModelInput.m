@@ -236,7 +236,7 @@ elseif model == 9 %Bilateral Gamma
     %----------------------------------------------
     
     % Set the Risk-Neutral drift (based on interest/div rate and convexity correction)
-    m1 = alpha_p / lam_p - alpha_m / lam_m;
+    %m1 = alpha_p / lam_p - alpha_m / lam_m;
     w = -log((lam_p/(lam_p -1))^alpha_p*(lam_m/(lam_m +1))^alpha_m); % convexity correction
 
     modelInputs.RNmu = r - q + w;
@@ -244,7 +244,7 @@ elseif model == 9 %Bilateral Gamma
     cumulants = @(n) factorial(n-1)*(alpha_p/lam_p^n + (-1)^n*alpha_m/lam_m^n);
     
     % Cumulants (useful for setting trunction range for density support / grids)
-    modelInputs.c1 = modelInputs.RNmu + m1;
+    modelInputs.c1 = modelInputs.RNmu + cumulants(1);
     modelInputs.c2 = cumulants(2);
     modelInputs.c4 = cumulants(4);
     
