@@ -66,7 +66,8 @@ elseif model == 2  % SABR
     vOld  = v0*ones(N_sim,1); %used to store variance process
     for m = 1:M
         W1 = randn(N_sim,1); W2 = randn(N_sim,1);  %Generate two Brownian motions
-        Spath(:,m+1) = max(0, Spath(:,m) + Spath(:,m).^beta.* vOld .*sqdt.*W1);  %level scheme
+        %Spath(:,m+1) = max(0.0001, Spath(:,m) + Spath(:,m).^beta.* vOld .*sqdt.*W1);  %level scheme
+        Spath(:,m+1) = abs(Spath(:,m) + Spath(:,m).^beta.* vOld .*sqdt.*W1);  %level scheme
         vOld = vOld.*exp(cons1 + alpha*(sqdtrho1*W1 + sqdtrho2*W2));
         %vOld = vOld + alpha*vOld.*(sqdtrho1*W1 + sqdtrho2*W2);
     end

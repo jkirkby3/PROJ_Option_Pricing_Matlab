@@ -1,4 +1,4 @@
-function [price, stdErr] = Price_MC_Var_Swaps_func(Spath, disc, M, mult)
+function [price, stdErr] = Price_MC_Var_Swaps_func(Spath, disc, M, mult, cv)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % About: Calculates Variance Swap prices (fair strike) for vector of strikes, given the simulated paths 
 %           Uses Prices of Underlying for Control Variate
@@ -14,6 +14,9 @@ function [price, stdErr] = Price_MC_Var_Swaps_func(Spath, disc, M, mult)
 % disc = discount factor, e.g. exp(-r*T), where T = Time (in years)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+if nargin < 5
+    cv = 0;
+end
 
 N_sim = size(Spath,1);  % number of paths
 M_mult = M*mult;  %time partitioning to reduce bias
@@ -29,16 +32,20 @@ end
 meanRV = mean(RV); 
 price_NoCV  = disc*meanRV;
 
-CV = Spath(:,M_mult + 1);
+if cv == 1
+    CV = Spath(:,M_mult + 1);
 
-Ref = S_0/disc;
-meanCV = mean(CV);
-covXY = 1/(N_sim-1)*sum((CV - meanCV).*(RV - meanRV));
-cstar = - covXY/var(CV);
+    Ref = S_0/disc;
+    meanCV = mean(CV);
+    covXY = 1/(N_sim-1)*sum((CV - meanCV).*(RV - meanRV));
+    cstar = - covXY/var(CV);
+    price = price_NoCV + cstar*(meanCV - Ref);
+    stdErr = std(disc*RV + cstar*(CV - Ref))/sqrt(N_sim);
+else
+    price = price_NoCV;
+    stdErr = std(disc*RV)/sqrt(N_sim);
+end
 
-price = price_NoCV + cstar*(meanCV - Ref);
-
-stdErr = std(disc*RV + cstar*(CV - Ref))/sqrt(N_sim);
 
 end
 
