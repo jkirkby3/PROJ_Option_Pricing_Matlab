@@ -23,7 +23,8 @@ Monte Carlo and other pricing libraries are also provided to support R&D.
   <li> Stochastic Local Volatility (SLV) </li>
   <li> Regime switching jump diffusions </li>
   <li> Time-changed processes </li>
-  <li> Stochastic Volatility (Heston/Bates, Hull-White, 4/2, 3/2, alpha-hypergeometric, Jacobi, Schobel-Zhu, Stein-Stein, Scott, tau/2)   </li>
+  <li> Stochastic Volatility (Heston, Hull-White, 4/2, 3/2, alpha-hypergeometric, Jacobi, Schobel-Zhu, Stein-Stein, Scott, tau/2)   </li>
+  <li> Stochastic Volatility With Jumps (e.g. Bates, HKDE) </li>
 </ul>
 
 <b>Contract types supported (single underlying):</b>
