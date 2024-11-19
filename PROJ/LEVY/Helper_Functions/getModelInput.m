@@ -147,7 +147,7 @@ elseif model == 5 %Kou's Double Expo
     modelInputs.rnCHF_T = @(u)cf_RN_KOU(u,T,r-q,sigma,lam,p_up,eta1,eta2);
     modelInputs.rnSYMB = @(u) SYMB_RN_Kou( u, r-q, sigma,lam,p_up,eta1,eta2);  % DEF: risk neutral Levy symbol
     
-elseif model == 6  % Heston's model (Note: there are two supported parameter conventions here)
+elseif model == 6  || model == 11 % Heston's model (Note: there are two supported parameter conventions here)   || HDKE
     %----------------------------------------------
     theta = modelParams.theta;
     rho = modelParams.rho; 
@@ -184,10 +184,33 @@ elseif model == 6  % Heston's model (Note: there are two supported parameter con
         + 8*kappa^2*(v_0-theta)*(1-exp(-kappa*dt)));
     modelInputs.c4 = 0;
     
-    % Charachteristic Functions / Levy Symbol
-    modelInputs.rnCHF = @(u)cf_RN_Heston(u,dt,r-q,v_0,theta,kappa,sigma_v,rho);
-    modelInputs.rnCHF_T = @(u)cf_RN_Heston(u,T,r-q,v_0,theta,kappa,sigma_v,rho);
-    % NOTE: no rnSYMB for this model, as we have no current use for it
+    if model == 6  % Heston
+        % Charachteristic Functions / Levy Symbol
+        modelInputs.rnCHF = @(u)cf_RN_Heston(u,dt,r-q,v_0,theta,kappa,sigma_v,rho);
+        modelInputs.rnCHF_T = @(u)cf_RN_Heston(u,T,r-q,v_0,theta,kappa,sigma_v,rho);
+        % NOTE: no rnSYMB for this model, as we have no current use for it
+
+    elseif model == 11  % HDKE (Heston with Kou Double Expo Jumps)
+        %----------------------------------------------
+        lam = modelParams.lam;
+        p_up = modelParams.p_up; 
+        eta1 = modelParams.eta1;
+        eta2 = modelParams.eta2; 
+        %----------------------------------------------
+
+        % Set the Risk-Neutral drift (based on interest/div rate and convexity correction)
+        w = - lam*(p_up*eta1/(eta1-1) + (1-p_up)*eta2/(eta2+1)-1);  % convexity correction
+        modelInputs.RNmu = modelInputs.RNmu + w;
+
+        % Cumulants (useful for setting trunction range for density support / grids)
+        modelInputs.c1 = modelInputs.c1 + lam*p_up/eta1 + lam*(1-p_up)/eta2;
+        modelInputs.c2 = modelInputs.c2 + 2*lam*p_up/(eta1^2) + 2*lam*(1-p_up)/(eta2^2);
+        modelInputs.c4 = modelInputs.c4 + 24*lam*(p_up/eta1^4 + (1-p_up)/eta2^4);
+
+        % Charachteristic Functions / Levy Symbol
+        modelInputs.rnCHF = @(u)cf_RN_Heston_KDE(u,dt,r-q,v_0,theta,kappa,sigma_v,rho,lam,p_up,eta1,eta2);
+        modelInputs.rnCHF_T = @(u)cf_RN_Heston_KDE(u,T,r-q,v_0,theta,kappa,sigma_v,rho,lam,p_up,eta1,eta2);
+    end
     
 elseif model == 7 %KoBoL Model  
     %----------------------------------------------

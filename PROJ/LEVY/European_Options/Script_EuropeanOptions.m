@@ -66,6 +66,18 @@ elseif model == 6 % Heston Model
     params.sigma_v = 0.5751;   % volatility of variance
     params.rho = -0.5711;   % correlation between Brownian motions
     
+elseif model == 11 % Heston with Kou Double Expo Jumps Model  
+    params.v_0 = 0.0175; % initial variance
+    params.theta = 0.0398;   % long term variance level
+    params.kappa =1.5768;   % rate of variance mean reversion
+    params.sigma_v = 0.5751;   % volatility of variance
+    params.rho = -0.5711;   % correlation between Brownian motions
+    
+    params.lam   = 3;
+    params.p_up  = 0.2;
+    params.eta1  = 25;
+    params.eta2  = 10;
+    
 elseif model == 8 % Variance Gamma 
     params.sigma = 0.2; 
     params.nu = 0.85;  
