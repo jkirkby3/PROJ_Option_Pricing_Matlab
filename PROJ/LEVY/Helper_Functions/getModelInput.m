@@ -163,7 +163,7 @@ elseif model == 6  % Heston's model (Note: there are two supported parameter con
     modelInputs.RNmu = r - q - .5*theta;
     
     % Cumulants (useful for setting trunction range for density support / grids)
-    modelInputs.c1 = modelInputs.RNmu*dt + (1-exp(-kappa*dt))*(theta - v_0)/(2*kappa);
+    modelInputs.c1 = modelInputs.RNmu + (1-exp(-kappa*dt))*(theta - v_0)/(2*kappa) / dt;
     modelInputs.c2 = 1/(8*kappa^3)*(sigma_v*dt*kappa*exp(-kappa*dt)*(v_0-theta)*(8*kappa*rho-4*sigma_v)...
         + kappa*rho*sigma_v*(1-exp(-kappa*dt))*(16*theta - 8*v_0)...
         +2*theta*kappa*dt*(-4*kappa*rho*sigma_v + sigma_v^2 + 4*kappa^2)...
@@ -226,19 +226,27 @@ elseif model == 8 %Variance Gamma
     modelInputs.rnCHF_T = @(u) cf_RN_VG( u, r-q, T, sigma, nu, theta);
     modelInputs.rnSYMB = @(u) SYMB_RN_VG(u, r-q, sigma, nu, theta);  % DEF: risk neutral Levy symbol
     
-elseif model == 9 %Bilateral Gamma
+elseif model == 9 || model == 10 %Bilateral Gamma  || Bilateral Gamma Motion
     %----------------------------------------------
     % Unpack the model parameters
     alpha_p = modelParams.alpha_p;
     lam_p = modelParams.lam_p;
     alpha_m = modelParams.alpha_m;
     lam_m = modelParams.lam_m;
+    if model == 10
+       sigma = modelParams.sigma; 
+       sig2 = 0.5 * sigma^2;
+    end
     %----------------------------------------------
     
     % Set the Risk-Neutral drift (based on interest/div rate and convexity correction)
     %m1 = alpha_p / lam_p - alpha_m / lam_m;
     w = -log((lam_p/(lam_p -1))^alpha_p*(lam_m/(lam_m +1))^alpha_m); % convexity correction
 
+    if model == 10
+        w = w - sig2;
+    end
+    
     modelInputs.RNmu = r - q + w;
     
     cumulants = @(n) factorial(n-1)*(alpha_p/lam_p^n + (-1)^n*alpha_m/lam_m^n);
@@ -248,10 +256,20 @@ elseif model == 9 %Bilateral Gamma
     modelInputs.c2 = cumulants(2);
     modelInputs.c4 = cumulants(4);
     
+    if model == 10
+        modelInputs.c2 = modelInputs.c2 + sigma^2;
+    end
+    
     % Charachteristic Functions / Levy Symbol
-    modelInputs.rnCHF = @(u) cf_RN_BilateralGamma( u, r-q, dt, alpha_p, lam_p, alpha_m, lam_m);
-    modelInputs.rnCHF_T = @(u) cf_RN_BilateralGamma( u, r-q, T, alpha_p, lam_p, alpha_m, lam_m);
-    modelInputs.rnSYMB = @(u) SYMB_RN_BilateralGamma(u, r-q, alpha_p, lam_p, alpha_m, lam_m);  % DEF: risk neutral Levy symbol
+    if model == 9
+        modelInputs.rnCHF = @(u) cf_RN_BilateralGamma( u, r-q, dt, alpha_p, lam_p, alpha_m, lam_m);
+        modelInputs.rnCHF_T = @(u) cf_RN_BilateralGamma( u, r-q, T, alpha_p, lam_p, alpha_m, lam_m);
+        modelInputs.rnSYMB = @(u) SYMB_RN_BilateralGamma(u, r-q, alpha_p, lam_p, alpha_m, lam_m);  % DEF: risk neutral Levy symbol
+    else
+        modelInputs.rnCHF = @(u) cf_RN_BilateralGammaMotion( u, r-q, dt, alpha_p, lam_p, alpha_m, lam_m, sigma);
+        modelInputs.rnCHF_T = @(u) cf_RN_BilateralGammaMotion( u, r-q, T, alpha_p, lam_p, alpha_m, lam_m, sigma);
+        modelInputs.rnSYMB = @(u) SYMB_RN_BilateralGammaMotion(u, r-q, alpha_p, lam_p, alpha_m, lam_m, sigma); 
+    end
 end
 
 
