@@ -31,6 +31,7 @@ Monte Carlo and other pricing libraries are also provided to support R&D.
 <ul>
   <li> European Options </li>
   <li> Barrier Options (Single/Double barrier, and rebates) </li>
+  <li> Return Barrier Options </li>
   <li> Asian Options (Discrete/Continuous)</li>
   <li> Discrete Variance Swaps, Variance/Volatility Options </li>
   <li> Bermudan/American early-exercise Options </li>
