@@ -10,6 +10,19 @@ function modelInputs = getModelInput(model, dt, r, q, modelParams, T)
 % case of Heston, but not the Levy models (this is so we can use this
 % function in Exotic contexts)
 
+% Model List
+%  1: Black Scholes
+%  2: CGMY (aka KoBoL, but see model 7 for KoBoL paramaterization)
+%  3: NIG (Normal-Inverse-Gaussian)
+%  4: MJD (Merton Jump Diffusion)
+%  5: KDE (Kou's Double Exponential)
+%  6: Heston's model
+%  7: KoBoL 
+%  8: VG (Variance Gamma)
+%  9: BG (Bilateral Gamma)
+%  10: BGM (Bilateral Gamma Motion)
+%  11: HKDE (Heston with double Exponential Jumps)
+
 if nargin < 6
    T = dt;  % Optional param allowing us to obtain an rnCHF(dt) and rnCHF(T), useful in some cases 
 end
